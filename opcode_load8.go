@@ -239,7 +239,7 @@ var load8 = []OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			d := cpu.IR.Hi
 			cpu.AF.Hi = d
-			// TODO: update F by d
+			// update F by d
 			// - S is set if the I Register is negative; otherwise, it is
 			//   reset.
 			// - Z is set if the I Register is 0; otherwise, it is reset.
@@ -249,6 +249,13 @@ var load8 = []OPCode{
 			// - C is not affected.
 			// - If an interrupt occurs during execution of this instruction,
 			//   the Parity flag contains a 0.
+			cpu.flagUpdate(FlagOp{}.
+				Put(S, d&0x80 != 0).
+				Put(Z, d == 0).
+				Reset(H).
+				Put(PV, cpu.IFF2).
+				Reset(N).
+				Keep(C))
 		},
 	},
 
@@ -262,7 +269,7 @@ var load8 = []OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			d := cpu.IR.Lo
 			cpu.AF.Hi = d
-			// TODO: update F by d
+			// update F by d
 			// - S is set if, R-Register is negative; otherwise, it is reset.
 			// - Z is set if the R Register is 0; otherwise, it is reset.
 			// - H is reset.
@@ -271,6 +278,13 @@ var load8 = []OPCode{
 			// - C is not affected.
 			// - If an interrupt occurs during execution of this instruction,
 			//	 the parity flag contains a 0.
+			cpu.flagUpdate(FlagOp{}.
+				Put(S, d&0x80 != 0).
+				Put(Z, d == 0).
+				Reset(H).
+				Put(PV, cpu.IFF2).
+				Reset(N).
+				Keep(C))
 		},
 	},
 

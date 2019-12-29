@@ -94,6 +94,15 @@ func (cpu *CPU) regP(n uint8) *uint8 {
 	}
 }
 
+// Flag gets a bit of flag register (F)
+func (cpu *CPU) Flag(n int) bool {
+	return Flag(cpu.AF.Lo, n)
+}
+
+func (cpu *CPU) flagUpdate(fo FlagOp) {
+	fo.ApplyOn(&cpu.AF.Lo)
+}
+
 // Next executes an instruction.
 func (cpu *CPU) Next() *CPU {
 	// TODO:
