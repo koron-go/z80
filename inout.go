@@ -1,5 +1,5 @@
 package z80
 
-var ctrl = []*OPCode{
+var inout = []*OPCode{
 	// TODO: implement me.
 }

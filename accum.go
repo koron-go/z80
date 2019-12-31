@@ -183,3 +183,93 @@ func (cpu *CPU) decU16(a uint16) uint16 {
 	v := a - 1
 	return v
 }
+
+func (cpu *CPU) rlcU8(a uint8) uint8 {
+	a2 := a<<1 | a>>7
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x80 != 0))
+	return a2
+}
+
+func (cpu *CPU) rlU8(a uint8) uint8 {
+	a2 := a << 1
+	if cpu.flag(C) {
+		a2 |= 0x01
+	}
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x80 != 0))
+	return a2
+}
+
+func (cpu *CPU) rrcU8(a uint8) uint8 {
+	a2 := a>>1 | a<<7
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x01 != 0))
+	return a2
+}
+
+func (cpu *CPU) rrU8(a uint8) uint8 {
+	a2 := a >> 1
+	if cpu.flag(C) {
+		a2 |= 0x80
+	}
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x01 != 0))
+	return a2
+}
+
+func (cpu *CPU) slaU8(a uint8) uint8 {
+	a2 := a << 1
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x80 != 0))
+	return a2
+}
+
+func (cpu *CPU) sraU8(a uint8) uint8 {
+	a2 := a&0x80 | a>>1
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x01 != 0))
+	return a2
+}
+
+func (cpu *CPU) srlU8(a uint8) uint8 {
+	a2 := a >> 1
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x01 != 0))
+	return a2
+}

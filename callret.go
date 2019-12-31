@@ -1,5 +1,5 @@
 package z80
 
-var ctrl = []*OPCode{
+var callret = []*OPCode{
 	// TODO: implement me.
 }
