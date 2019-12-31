@@ -7,12 +7,11 @@ import (
 )
 
 func TestDecodeLayer(t *testing.T) {
-	l := newDecodeLayer(0, load8)
-	m := l.mapTo()
+	l := defaultDecodeLayer()
 
 	e := json.NewEncoder(os.Stdout)
 	e.SetIndent("", "  ")
-	err := e.Encode(m)
+	err := e.Encode(l.mapTo())
 	if err != nil {
 		t.Fatal(err)
 	}

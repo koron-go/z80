@@ -9,6 +9,10 @@ type decodeLayer struct {
 	nodes [256]*decodeNode
 }
 
+func defaultDecodeLayer() *decodeLayer {
+	return newDecodeLayer(0, load8, load16, exbtsg)
+}
+
 func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
 	l := &decodeLayer{}
 	for _, cc := range opcodes {

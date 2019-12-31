@@ -43,7 +43,15 @@ func vReg8_3(b uint8) bool {
 }
 
 func vReg88(b uint8) bool {
-	return vReg8(b >> 3) && vReg8(b)
+	return vReg8(b>>3) && vReg8(b)
+}
+
+func vReg16(b uint8) bool {
+	return true
+}
+
+func vReg16_4(b uint8) bool {
+	return vReg16(b >> 4)
 }
 
 // OPCode defines opration code and its function.
@@ -56,6 +64,9 @@ type OPCode struct {
 
 	// T is T cycle and its length is M cycle.
 	T []int
+
+	// T2 is T cycle for the special conditions.
+	T2 []int
 
 	// F is the function of opcode.
 	F func(*CPU, []uint8)
@@ -78,6 +89,10 @@ func addrOff(addr uint16, off uint8) uint16 {
 	return addr + uint16(int16(int8(off)))
 }
 
-func toU16(l, u uint8) uint16 {
-	return (uint16(u) << 8) | uint16(l)
+func toU16(l, h uint8) uint16 {
+	return (uint16(h) << 8) | uint16(l)
+}
+
+func fromU16(v uint16) (l, h uint8) {
+	return uint8(v & 0xff), uint8(v >> 8)
 }
