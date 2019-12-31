@@ -18,21 +18,19 @@ func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
 			}
 		}
 	}
-	for i, n := range l.nodes {
+	for _, n := range l.nodes {
 		if n == nil {
 			continue
 		}
 		switch len(n.codes) {
 		case 0:
+			continue
 		case 1:
 			n.opcode = n.codes[0]
-			n.codes = nil
-			fmt.Printf("HERE_A0: %02X %+v\n", i, n.opcode.C)
-		default:
-			//n.next = newDecodeLayer(level+1, n.codes)
-			//n.codes = nil
-			fmt.Printf("HERE_A1: %02X %+v\n", i, n.codes)
+			continue
 		}
+		n.next = newDecodeLayer(level+1, n.codes)
+		n.codes = nil
 	}
 	return l
 }
@@ -40,7 +38,10 @@ func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
 func (l *decodeLayer) put(level int, opcode *OPCode) {
 	c := opcode.C[level]
 	s := bits.OnesCount8(^c.M)
-	for i, e := int(c.V), int(c.V|c.M); i <= e; i++ {
+	for i, e := c.beginEnd(); i <= e; i++ {
+		if !c.match(uint8(i)) {
+			continue
+		}
 		n := l.nodes[i]
 		if n == nil || s > n.score {
 			n = &decodeNode{score: s}
@@ -77,7 +78,7 @@ func (n *decodeNode) mapTo() map[string]interface{} {
 	if n.next != nil {
 		m["next"] = n.next.mapTo()
 	}
-	if len(n.codes) > 0 {
+	if len(n.codes) >= 2 {
 		m["codes"] = len(n.codes)
 	}
 	return m

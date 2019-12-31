@@ -2,16 +2,48 @@ package z80
 
 import "fmt"
 
-// Code is definition of an operation code.  It is consist from V (value) and M
+// Code is definition of an operation code.
 // (mask).  0 bits in M are for constant bits, 1 bits are variable bits for
 // operation code.
 type Code struct {
-	V uint8
+	C uint8
 	M uint8
+	V func(uint8) bool
 }
 
-func (c Code)String() string {
-	return fmt.Sprintf("%02X/%02X", c.V, c.M)
+func (c Code) String() string {
+	return fmt.Sprintf("%02X/%02X", c.C, c.M)
+}
+
+func (c Code) beginEnd() (int, int) {
+	return int(c.C), int(c.C | c.M)
+}
+
+func (c Code) match(b uint8) bool {
+	b2 := b &^ c.M
+	if b2 != c.C {
+		return false
+	}
+	if c.V != nil && !c.V(b2) {
+		return false
+	}
+	return true
+}
+
+func vReg8(b uint8) bool {
+	b &= 0x07
+	if b == 6 {
+		return false
+	}
+	return true
+}
+
+func vReg8_3(b uint8) bool {
+	return vReg8(b >> 3)
+}
+
+func vReg88(b uint8) bool {
+	return vReg8(b >> 3) && vReg8(b)
 }
 
 // OPCode defines opration code and its function.

@@ -2,7 +2,6 @@ package z80
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"testing"
 )
