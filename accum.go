@@ -17,14 +17,15 @@ func (cpu *CPU) addU8(a, b uint8) uint8 {
 
 func (cpu *CPU) adcU8(a, b uint8) uint8 {
 	a16 := uint16(a)
-	x16 := uint16(b)
+	b16 := uint16(b)
 	if cpu.flag(C) {
-		x16++
+		b16++
 	}
-	v := a16 + x16
+	v := a16 + b16
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
+		// TODO: verify H behavior.
 		Put(H, a&0x0f+b&0x0f > 0x0f).
 		// TODO: verify PV behavior.
 		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
@@ -48,14 +49,15 @@ func (cpu *CPU) subU8(a, b uint8) uint8 {
 
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	a16 := uint16(a)
-	x16 := uint16(b)
+	b16 := uint16(b)
 	if cpu.flag(C) {
-		x16++
+		b16++
 	}
-	v := a16 - x16
+	v := a16 - b16
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
+		// TODO: verify H behavior.
 		Put(H, a&0x0f < b&0x0f).
 		// TODO: verify PV behavior.
 		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
@@ -122,5 +124,62 @@ func (cpu *CPU) decU8(a uint8) uint8 {
 		Put(H, a&0x0f < 1).
 		Put(PV, a == 0x80).
 		Reset(N))
+	return v
+}
+
+func (cpu *CPU) addU16(a, b uint16) uint16 {
+	v := uint32(a) + uint32(b)
+	cpu.flagUpdate(FlagOp{}.
+		Put(H, a&0x0fff+b&0x0fff > 0x0fff).
+		Reset(N).
+		Put(C, v > 0xffff))
+	return uint16(v)
+}
+
+func (cpu *CPU) adcU16(a, b uint16) uint16 {
+	a16 := uint32(a)
+	b16 := uint32(a)
+	if cpu.flag(C) {
+		b16++
+	}
+	v := a16 + b16
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x8000 != 0).
+		Put(Z, v&0xffff == 0).
+		// TODO: verify H behavior.
+		Put(H, a&0x0fff+b&0x0fff > 0x0fff).
+		// TODO: verify PV behavior.
+		Put(PV, a&0x8000 == b&0x8000 && a&0x8000 != uint16(v&0x8000)).
+		Reset(N).
+		Put(C, v > 0xffff))
+	return uint16(v)
+}
+
+func (cpu *CPU) sbcU16(a, b uint16) uint16 {
+	a16 := int32(a)
+	b16 := int32(a)
+	if cpu.flag(C) {
+		b16++
+	}
+	v := a16 - b16
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x8000 != 0).
+		Put(Z, v&0xffff == 0).
+		// TODO: verify H behavior.
+		Put(H, a&0x0fff < b&0x0fff).
+		// TODO: verify PV behavior.
+		Put(PV, a&0x8000 == b&0x8000 && a&0x8000 != uint16(v&0x8000)).
+		Reset(N).
+		Put(C, v < 0x0000))
+	return uint16(v)
+}
+
+func (cpu *CPU) incU16(a uint16) uint16 {
+	v := a + 1
+	return v
+}
+
+func (cpu *CPU) decU16(a uint16) uint16 {
+	v := a - 1
 	return v
 }
