@@ -68,7 +68,7 @@ func (cpu *CPU) failf(msg string, args ...interface{}) {
 
 func (cpu *CPU) readU16(addr uint16) uint16 {
 	l := cpu.Memory.Get(addr)
-	h := cpu.Memory.Get(addr+1)
+	h := cpu.Memory.Get(addr + 1)
 	return toU16(l, h)
 }
 
@@ -137,6 +137,22 @@ func (cpu *CPU) reg16dd(n uint8) reg16 {
 	}
 }
 
+func (cpu *CPU) reg16ss(n uint8) uint16 {
+	switch n & 0x03 {
+	case 0x00:
+		return cpu.BC.U16()
+	case 0x01:
+		return cpu.DE.U16()
+	case 0x02:
+		return cpu.HL.U16()
+	case 0x03:
+		return cpu.SP
+	default:
+		cpu.failf("invalid reg16ss: %02x", n)
+		return 0
+	}
+}
+
 func (cpu *CPU) reg16qq(n uint8) *Register {
 	switch n & 0x03 {
 	case 0x00:
@@ -155,6 +171,10 @@ func (cpu *CPU) reg16qq(n uint8) *Register {
 
 // Flag gets a bit of flag register (F)
 func (cpu *CPU) Flag(n int) bool {
+	return cpu.flag(n)
+}
+
+func (cpu *CPU) flag(n int) bool {
 	return Flag(cpu.AF.Lo, n)
 }
 

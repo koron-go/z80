@@ -10,7 +10,7 @@ type decodeLayer struct {
 }
 
 func defaultDecodeLayer() *decodeLayer {
-	return newDecodeLayer(0, load8, load16, exbtsg)
+	return newDecodeLayer(0, load8, load16, exbtsg, arith8)
 }
 
 func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {

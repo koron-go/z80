@@ -20,11 +20,10 @@ func (c Code) beginEnd() (int, int) {
 }
 
 func (c Code) match(b uint8) bool {
-	b2 := b &^ c.M
-	if b2 != c.C {
+	if b&^c.M != c.C {
 		return false
 	}
-	if c.V != nil && !c.V(b2) {
+	if c.V != nil && !c.V(b&c.M) {
 		return false
 	}
 	return true

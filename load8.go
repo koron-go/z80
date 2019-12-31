@@ -16,7 +16,7 @@ var load8 = []*OPCode{
 	{
 		N: "LD r, n",
 		C: []Code{
-			{0x05, 0x38, vReg8},
+			{0x06, 0x38, vReg88},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3},
@@ -29,7 +29,7 @@ var load8 = []*OPCode{
 	{
 		N: "LD r, (HL)",
 		C: []Code{
-			{0x45, 0x38, vReg8},
+			{0x45, 0x38, vReg8_3},
 		},
 		T: []int{4, 3},
 		F: func(cpu *CPU, codes []uint8) {
@@ -42,7 +42,7 @@ var load8 = []*OPCode{
 		N: "LD r, (IX+d)",
 		C: []Code{
 			{0xdd, 0x00, nil},
-			{0x45, 0x38, vReg8},
+			{0x45, 0x38, vReg8_3},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
@@ -57,7 +57,7 @@ var load8 = []*OPCode{
 		N: "LD r, (IY+d)",
 		C: []Code{
 			{0xfd, 0x00, nil},
-			{0x45, 0x38, vReg8},
+			{0x45, 0x38, vReg8_3},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
@@ -71,7 +71,7 @@ var load8 = []*OPCode{
 	{
 		N: "LD (HL), r",
 		C: []Code{
-			{0x70, 0x07, vReg8_3},
+			{0x70, 0x07, vReg8},
 		},
 		T: []int{4, 3},
 		F: func(cpu *CPU, codes []uint8) {
@@ -84,7 +84,7 @@ var load8 = []*OPCode{
 		N: "LD (IX+d), r",
 		C: []Code{
 			{0xdd, 0x00, nil},
-			{0x70, 0x07, vReg8_3},
+			{0x70, 0x07, vReg8},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
@@ -99,7 +99,7 @@ var load8 = []*OPCode{
 		N: "LD (IY+d), r",
 		C: []Code{
 			{0xfd, 0x00, nil},
-			{0x70, 0x07, vReg8_3},
+			{0x70, 0x07, vReg8},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
