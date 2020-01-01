@@ -139,7 +139,7 @@ var load8 = []*OPCode{
 	},
 
 	{
-		N: "LD (IY+d), r",
+		N: "LD (IY+d), n",
 		C: []Code{
 			{0xfd, 0x00, nil},
 			{0x36, 0x00, nil},

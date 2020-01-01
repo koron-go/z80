@@ -11,6 +11,9 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 	for _, cc := range allOPCodes {
 		for _, c := range cc {
 			k := c.String()
+			if _, ok := m[k]; ok {
+				t.Fatalf("duplicated: %+v", c)
+			}
 			m[k] = 0
 		}
 	}

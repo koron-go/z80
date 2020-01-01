@@ -61,6 +61,14 @@ func vBit3_3(b uint8) bool {
 	return true
 }
 
+func vCC3_3(b uint8) bool {
+	return true
+}
+
+func vRSTp3_3(b uint8) bool{
+	return true
+}
+
 // OPCode defines opration code and its function.
 type OPCode struct {
 	// N is string presentation (=label) of opcode.
