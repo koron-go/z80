@@ -53,6 +53,14 @@ func vReg16_4(b uint8) bool {
 	return vReg16(b >> 4)
 }
 
+func vBit3Reg8(b uint8) bool {
+	return vBit3_3(b) && vReg8(b)
+}
+
+func vBit3_3(b uint8) bool {
+	return true
+}
+
 // OPCode defines opration code and its function.
 type OPCode struct {
 	// N is string presentation (=label) of opcode.

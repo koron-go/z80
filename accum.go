@@ -273,3 +273,19 @@ func (cpu *CPU) srlU8(a uint8) uint8 {
 		Put(C, a&0x01 != 0))
 	return a2
 }
+
+func (cpu *CPU) bitchk8(b, v uint8) {
+	f := v&(0x01<<b) != 0
+	cpu.flagUpdate(FlagOp{}.
+		Put(Z, !f).
+		Set(H).
+		Reset(N))
+}
+
+func (cpu *CPU) bitset8(b, v uint8) uint8 {
+	return v | 0x01<<b
+}
+
+func (cpu *CPU) bitres8(b, v uint8) uint8 {
+	return v &^ (0x01 << b)
+}
