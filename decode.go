@@ -1,17 +1,32 @@
 package z80
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"math/bits"
 )
+
+var allOPCodes = [][]*OPCode{
+	load8,
+	load16,
+	exbtsg,
+	arith8,
+	ctrl,
+	arith16,
+	rotateshift,
+	bitop,
+	jump,
+	callret,
+	inout,
+}
 
 type decodeLayer struct {
 	nodes [256]*decodeNode
 }
 
 func defaultDecodeLayer() *decodeLayer {
-	return newDecodeLayer(0, load8, load16, exbtsg, arith8, ctrl, arith16,
-		rotateshift, bitop, jump, callret, inout)
+	return newDecodeLayer(0, allOPCodes...)
 }
 
 func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
@@ -87,4 +102,11 @@ func (n *decodeNode) mapTo() map[string]interface{} {
 		m["codes"] = len(n.codes)
 	}
 	return m
+}
+
+// DumpDecodeLayer dumps default decode layer to io.Writer for debugging
+func DumpDecodeLayer(w io.Writer) error {
+	e := json.NewEncoder(w)
+	e.SetIndent("", "  ")
+	return e.Encode(defaultDecodeLayer().mapTo())
 }
