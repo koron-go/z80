@@ -70,7 +70,9 @@ var callret = []*OPCode{
 		},
 		T: []int{4, 4, 3, 3},
 		F: func(cpu *CPU, codes []uint8) {
-			// TODO: implement "RETI"
+			cpu.PC = cpu.readU16(cpu.SP)
+			cpu.SP += 2
+			cpu.INT.ReturnINT()
 		},
 	},
 
@@ -82,7 +84,9 @@ var callret = []*OPCode{
 		},
 		T: []int{4, 4, 3, 3},
 		F: func(cpu *CPU, codes []uint8) {
-			// TODO: implement "RETN"
+			cpu.PC = cpu.readU16(cpu.SP)
+			cpu.SP += 2
+			cpu.IFF1 = cpu.IFF2
 		},
 	},
 

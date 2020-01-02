@@ -58,7 +58,7 @@ var arith16 = []*OPCode{
 	},
 
 	{
-		N: "ADD IY, pp",
+		N: "ADD IY, rr",
 		C: []Code{
 			{0xfd, 0x00, nil},
 			{0x09, 0x30, vReg16_4},
@@ -66,7 +66,7 @@ var arith16 = []*OPCode{
 		T: []int{4, 4, 4, 3},
 		F: func(cpu *CPU, codes []uint8) {
 			a := cpu.IY
-			x := cpu.reg16pp(codes[0] >> 4)
+			x := cpu.reg16rr(codes[0] >> 4)
 			cpu.IY = cpu.addU16(a, x)
 		},
 	},

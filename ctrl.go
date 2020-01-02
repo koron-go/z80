@@ -124,7 +124,7 @@ var ctrl = []*OPCode{
 		},
 		T: []int{4, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			// TODO: implement "IM 0"
+			cpu.IM = 0
 		},
 	},
 
@@ -136,7 +136,7 @@ var ctrl = []*OPCode{
 		},
 		T: []int{4, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			// TODO: implement "IM 1"
+			cpu.IM = 1
 		},
 	},
 
@@ -148,7 +148,7 @@ var ctrl = []*OPCode{
 		},
 		T: []int{4, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			// TODO: implement "IM 2"
+			cpu.IM = 2
 		},
 	},
 }

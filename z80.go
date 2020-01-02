@@ -48,6 +48,22 @@ type IO interface {
 	Out(addr uint8, value uint8)
 }
 
+// INT is interface for maskable interrupt.
+type INT interface {
+	// CheckINT should return valid pointer if maskable interruption made.
+	// Pointed value is used for interruption code or vector depending on mode.
+	CheckINT()*uint8
+
+	// ReturnINT is called when "RETI" op is executed.
+	ReturnINT()
+}
+
+// NMI is interruption for non-maskable interrupt.
+type NMI interface{
+	// CheckNMI should return true if non-maskable interruption made.
+	CheckNMI() bool
+}
+
 // CPU is Z80 emulator.
 type CPU struct {
 	RegisterSet
@@ -60,6 +76,10 @@ type CPU struct {
 
 	Memory Memory
 	IO     IO
+
+	IM  int
+	INT INT
+	NMI NMI
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -165,6 +185,22 @@ func (cpu *CPU) reg16pp(n uint8) uint16 {
 		return cpu.SP
 	default:
 		cpu.failf("invalid reg16pp: %02x", n)
+		return 0
+	}
+}
+
+func (cpu *CPU) reg16rr(n uint8) uint16 {
+	switch n & 0x03 {
+	case 0x00:
+		return cpu.BC.U16()
+	case 0x01:
+		return cpu.DE.U16()
+	case 0x02:
+		return cpu.IY
+	case 0x03:
+		return cpu.SP
+	default:
+		cpu.failf("invalid reg16rr: %02x", n)
 		return 0
 	}
 }
