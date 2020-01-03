@@ -30,7 +30,7 @@ func rGet(t *testing.T, gpr *GPR, n int) *uint8 {
 
 var rLabel = []string{"B", "C", "D", "E", "H", "L", "(N/A)", "A"}
 
-var testInitGRP = GPR{
+var testInitGPR = GPR{
 	AF: Register{Hi: 0x12},
 	BC: Register{Hi: 0x34, Lo: 0x56},
 	DE: Register{Hi: 0x78, Lo: 0x9A},
@@ -38,6 +38,7 @@ var testInitGRP = GPR{
 }
 
 func TestLoad8_LDr1r2(t *testing.T) {
+	t.Parallel()
 	for r1 := 0; r1 <= 7; r1++ {
 		if r1 == 6 {
 			continue
@@ -48,22 +49,49 @@ func TestLoad8_LDr1r2(t *testing.T) {
 			}
 			n := fmt.Sprintf("LD %s, %s", rLabel[r1], rLabel[r2])
 			c := uint8(0x40 | r1<<3 | r2)
-			beforeGpr := testInitGRP
-			afterGpr := testInitGRP
-			*rGet(t, &afterGpr, r1) = *rGet(t, &beforeGpr, r2)
+			beforeGPR := testInitGPR
+			afterGPR := testInitGPR
+			*rGet(t, &afterGPR, r1) = *rGet(t, &beforeGPR, r2)
 			t.Run(n, func(t *testing.T) {
 				testStep(t,
 					&testStates{
-						States{GPR: beforeGpr},
+						States{GPR: beforeGPR},
 						DumbMemory{c},
-						DumbIO{},
-					},
+						DumbIO{}},
 					&testStates{
-						States{GPR: afterGpr, SPR: SPR{PC: 0x0001}},
+						States{GPR: afterGPR, SPR: SPR{PC: 0x0001}},
 						DumbMemory{c},
-						DumbIO{},
-					})
+						DumbIO{}})
 			})
 		}
+	}
+}
+
+func TestLoad8_LDrn(t *testing.T) {
+	t.Parallel()
+	for r := 0; r <= 7; r++ {
+		if r == 6 {
+			continue
+		}
+		n := fmt.Sprintf("LD %s, n", rLabel[r])
+		c := uint8(0x06 | r<<3)
+		beforeGPR := testInitGPR
+		var afterGPR GPR
+		p := rGet(t, &afterGPR, r)
+		t.Run(n, func(t *testing.T) {
+			for n := 0; n <= 0xff; n++ {
+				afterGPR = testInitGPR
+				*p = uint8(n)
+				testStep(t,
+					&testStates{
+						States{GPR: beforeGPR},
+						DumbMemory{c, uint8(n)},
+						DumbIO{}},
+					&testStates{
+						States{GPR: afterGPR, SPR: SPR{PC: 0x0002}},
+						DumbMemory{c, uint8(n)},
+						DumbIO{}})
+			}
+		})
 	}
 }

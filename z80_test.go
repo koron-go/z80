@@ -28,4 +28,10 @@ func testStep(t *testing.T, before *testStates, after *testStates) {
 	if diff := cmp.Diff(after.states, cpu.States); diff != "" {
 		t.Fatalf("unexpected states: -want +got\n%s", diff)
 	}
+	if diff := cmp.Diff(after.memory, mem); diff != "" {
+		t.Fatalf("memory unmatch: -want +got\n%s", diff)
+	}
+	if diff := cmp.Diff(after.io, io); diff != "" {
+		t.Fatalf("io unmatch: -want +got\n%s", diff)
+	}
 }
