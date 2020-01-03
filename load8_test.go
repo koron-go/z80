@@ -59,7 +59,8 @@ func TestLoad8_LDr1r2(t *testing.T) {
 						DumbMemory{c},
 						DumbIO{}},
 					&testStates{
-						States{GPR: afterGPR, SPR: SPR{PC: 0x0001}},
+						States{GPR: afterGPR,
+							SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},
 						DumbMemory{c},
 						DumbIO{}})
 			})
@@ -88,7 +89,8 @@ func TestLoad8_LDrn(t *testing.T) {
 						DumbMemory{c, uint8(n)},
 						DumbIO{}},
 					&testStates{
-						States{GPR: afterGPR, SPR: SPR{PC: 0x0002}},
+						States{GPR: afterGPR,
+							SPR: SPR{PC: 0x0002, IR: Register{Lo: 0x01}}},
 						DumbMemory{c, uint8(n)},
 						DumbIO{}})
 			}

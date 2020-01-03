@@ -374,11 +374,15 @@ func (cpu *CPU) Step() error {
 func (cpu *CPU) step(f fetcher, enableInt bool) error {
 	afterEI := false
 	if !cpu.HALT {
+		// fetch an OPCode and increase refresh register.
 		label := f.fetchLabel()
 		op, buf, err := decode(cpu.decoder(), f)
 		if err != nil {
 			return fmt.Errorf("decode failed %X at %s: %w", buf, label, err)
 		}
+		rr := cpu.IR.Lo
+		cpu.IR.Lo = rr&0x80 | (rr+1)&0x7f
+		// execute an OPCode.
 		cpu.debugf("execute OPCode:%s with %X at %s", op.N, buf, label)
 		cpu.exec(op, buf)
 		switch op {
