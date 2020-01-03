@@ -1,7 +1,7 @@
 package z80
 
 import (
-	"errors"
+	"context"
 	"fmt"
 	"log"
 )
@@ -93,7 +93,9 @@ type CPU struct {
 
 	HALT  bool
 	InNMI bool
-	Debug bool
+
+	Debug       bool
+	BreakPoints map[uint16]struct{}
 
 	decodeLayer *decodeLayer
 }
@@ -296,12 +298,6 @@ func (cpu *CPU) pcOff(offset int) uint16 {
 	return cpu.PC + uint16(int16(offset))
 }
 
-var (
-	ErrInvalidCodes   = errors.New("invalid codes")
-	ErrNotImplemented = errors.New("not implemented")
-	ErrTooShortIM0 = errors.New("too short data for IM 0")
-)
-
 type fetcher interface {
 	fetch() (uint8, error)
 	fetchLabel() string
@@ -350,11 +346,16 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 }
 
 // Run executes instructions till HALT or error.
-func (cpu *CPU) Run() error {
+func (cpu *CPU) Run(ctx context.Context) error {
 	for !cpu.HALT {
 		err := cpu.Step()
 		if err != nil {
 			return err
+		}
+		if cpu.BreakPoints != nil {
+			if _, ok := cpu.BreakPoints[cpu.PC]; ok {
+				return ErrBreakPoint
+			}
 		}
 	}
 	return nil
@@ -413,7 +414,7 @@ func (m *memSrc) fetch() (uint8, error) {
 	return b, nil
 }
 
-func (m*memSrc) fetchLabel() string {
+func (m *memSrc) fetchLabel() string {
 	return "IM0"
 }
 

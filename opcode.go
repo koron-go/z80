@@ -65,7 +65,7 @@ func vCC3_3(b uint8) bool {
 	return true
 }
 
-func vRSTp3_3(b uint8) bool{
+func vRSTp3_3(b uint8) bool {
 	return true
 }
 
