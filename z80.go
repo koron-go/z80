@@ -23,8 +23,8 @@ func (r *Register) SetU16(v uint16) {
 	r.Lo = uint8(v & 0x00ff)
 }
 
-// RegisterSet is pair of four registers AF, BC, DE and HL.
-type RegisterSet struct {
+// GPR is general purpose reigsters, pair of four registers AF, BC, DE and HL.
+type GPR struct {
 	AF Register
 	BC Register
 	DE Register
@@ -76,10 +76,10 @@ type InterruptMonitor interface {
 
 // States is collection of Z80's internal state.
 type States struct {
-	RegisterSet
+	GPR
 	SPR
 
-	Alternate RegisterSet
+	Alternate GPR
 
 	IFF1 bool
 	IFF2 bool

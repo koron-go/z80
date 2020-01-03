@@ -29,7 +29,7 @@ var load8 = []*OPCode{
 	{
 		N: "LD r, (HL)",
 		C: []Code{
-			{0x45, 0x38, vReg8_3},
+			{0x46, 0x38, vReg8_3},
 		},
 		T: []int{4, 3},
 		F: func(cpu *CPU, codes []uint8) {
