@@ -1,5 +1,28 @@
 package z80
 
+var opHALT = &OPCode{
+	N: "HALT",
+	C: []Code{
+		{0x76, 0x00, nil},
+	},
+	T: []int{4},
+	F: func(cpu *CPU, codes []uint8) {
+		// nothing todo.
+	},
+}
+
+var opEI = &OPCode{
+	N: "EI",
+	C: []Code{
+		{0xfb, 0x00, nil},
+	},
+	T: []int{4},
+	F: func(cpu *CPU, codes []uint8) {
+		cpu.IFF1 = true
+		cpu.IFF2 = true
+	},
+}
+
 var ctrl = []*OPCode{
 
 	{
@@ -81,16 +104,7 @@ var ctrl = []*OPCode{
 		},
 	},
 
-	{
-		N: "HALT",
-		C: []Code{
-			{0x76, 0x00, nil},
-		},
-		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.PC--
-		},
-	},
+	opHALT,
 
 	{
 		N: "DI",
@@ -104,17 +118,7 @@ var ctrl = []*OPCode{
 		},
 	},
 
-	{
-		N: "EI",
-		C: []Code{
-			{0xfb, 0x00, nil},
-		},
-		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IFF1 = true
-			cpu.IFF2 = true
-		},
-	},
+	opEI,
 
 	{
 		N: "IM 0",

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"math/bits"
+	"sync"
 )
 
 var allOPCodes = [][]*OPCode{
@@ -25,8 +26,14 @@ type decodeLayer struct {
 	nodes [256]*decodeNode
 }
 
+var defaultDecoder *decodeLayer
+var decoderOnce sync.Once
+
 func defaultDecodeLayer() *decodeLayer {
-	return newDecodeLayer(0, allOPCodes...)
+	decoderOnce.Do(func() {
+		defaultDecoder = newDecodeLayer(0, allOPCodes...)
+	})
+	return defaultDecoder
 }
 
 func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {

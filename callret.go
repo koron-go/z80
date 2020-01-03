@@ -1,5 +1,32 @@
 package z80
 
+var opRETI = &OPCode{
+	N: "RETI",
+	C: []Code{
+		{0xed, 0x00, nil},
+		{0x4d, 0x00, nil},
+	},
+	T: []int{4, 4, 3, 3},
+	F: func(cpu *CPU, codes []uint8) {
+		cpu.PC = cpu.readU16(cpu.SP)
+		cpu.SP += 2
+	},
+}
+
+var opRETN = &OPCode{
+	N: "RETN",
+	C: []Code{
+		{0xed, 0x00, nil},
+		{0x45, 0x00, nil},
+	},
+	T: []int{4, 4, 3, 3},
+	F: func(cpu *CPU, codes []uint8) {
+		cpu.PC = cpu.readU16(cpu.SP)
+		cpu.SP += 2
+		cpu.IFF1 = cpu.IFF2
+	},
+}
+
 var callret = []*OPCode{
 
 	{
@@ -62,33 +89,9 @@ var callret = []*OPCode{
 		},
 	},
 
-	{
-		N: "RETI",
-		C: []Code{
-			{0xed, 0x00, nil},
-			{0x4d, 0x00, nil},
-		},
-		T: []int{4, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.PC = cpu.readU16(cpu.SP)
-			cpu.SP += 2
-			cpu.INT.ReturnINT()
-		},
-	},
+	opRETI,
 
-	{
-		N: "RETN",
-		C: []Code{
-			{0xed, 0x00, nil},
-			{0x45, 0x00, nil},
-		},
-		T: []int{4, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.PC = cpu.readU16(cpu.SP)
-			cpu.SP += 2
-			cpu.IFF1 = cpu.IFF2
-		},
-	},
+	opRETN,
 
 	{
 		N: "RST p",
