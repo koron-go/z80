@@ -12,6 +12,19 @@ type testStates struct {
 	io     DumbIO
 }
 
+func equalBytes(a, b []uint8) bool {
+	n := len(a)
+	if n != len(b) {
+		return false
+	}
+	for i := 0; i < n;i++ {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func testStep(t *testing.T, before *testStates, after *testStates) {
 	t.Helper()
 	mem := before.memory
@@ -25,13 +38,16 @@ func testStep(t *testing.T, before *testStates, after *testStates) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if diff := cmp.Diff(after.states, cpu.States); diff != "" {
+	if after.states != cpu.States {
+		diff := cmp.Diff(after.states, cpu.States)
 		t.Fatalf("unexpected states: -want +got\n%s", diff)
 	}
-	if diff := cmp.Diff(after.memory, mem); diff != "" {
+	if !equalBytes(after.memory, mem) {
+		diff := cmp.Diff(after.memory, mem)
 		t.Fatalf("memory unmatch: -want +got\n%s", diff)
 	}
-	if diff := cmp.Diff(after.io, io); diff != "" {
+	if !equalBytes(after.io, io) {
+		diff := cmp.Diff(after.io, io)
 		t.Fatalf("io unmatch: -want +got\n%s", diff)
 	}
 }
