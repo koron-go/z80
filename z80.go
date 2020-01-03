@@ -74,8 +74,8 @@ type InterruptMonitor interface {
 	OnInterrupt(maskable bool, oldPC, newPC uint16)
 }
 
-// CPU is Z80 emulator.
-type CPU struct {
+// States is collection of Z80's internal state.
+type States struct {
 	RegisterSet
 	SPR
 
@@ -85,14 +85,19 @@ type CPU struct {
 	IFF2 bool
 	IM   int
 
+	HALT  bool
+	InNMI bool
+}
+
+// CPU is Z80 emulator.
+type CPU struct {
+	States
+
 	Memory Memory
 	IO     IO
 	INT    INT
 	NMI    NMI
 	IMon   InterruptMonitor
-
-	HALT  bool
-	InNMI bool
 
 	Debug       bool
 	BreakPoints map[uint16]struct{}
