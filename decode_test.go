@@ -18,44 +18,18 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 		}
 	}
 
-	mark := func(c *OPCode) {
+	l.forNodes(func(n *decodeNode) {
 		t.Helper()
-		k := c.String()
-		v, ok := m[k]
-		if !ok {
-			t.Errorf("unknown OPCode: %s", c)
-			return
-		}
-		m[k] = v + 1
-	}
-
-	var procNode func(*decodeNode)
-	procLayer := func(l *decodeLayer) {
-		t.Helper()
-		if l.anyNode != nil {
-			procNode(l.anyNode)
-			return
-		}
-		for _, n := range l.nodes {
-			if n == nil {
-				continue
+		if c := n.opcode; c != nil {
+			k := c.String()
+			v, ok := m[k]
+			if !ok {
+				t.Errorf("unknown OPCode: %s", c)
+				return
 			}
-			procNode(n)
+			m[k] = v + 1
 		}
-	}
-	procNode = func(n *decodeNode) {
-		t.Helper()
-		if n.opcode != nil {
-			mark(n.opcode)
-		}
-		for _, c := range n.codes {
-			mark(c)
-		}
-		if n.next != nil {
-			procLayer(n.next)
-		}
-	}
-	procLayer(l)
+	})
 
 	for c, n := range m {
 		if n > 0 {

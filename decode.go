@@ -121,6 +121,24 @@ func (l *decodeLayer) mapTo() map[string]interface{} {
 	return m
 }
 
+func (l *decodeLayer) forNodes(f func(*decodeNode)) {
+	if l.anyNode != nil {
+		f(l.anyNode)
+		if l.anyNode.next != nil {
+			l.anyNode.next.forNodes(f)
+		}
+		return
+	}
+	if l.nodes != nil {
+		for _, n := range l.nodes {
+			f(n)
+			if n.next != nil {
+				n.next.forNodes(f)
+			}
+		}
+	}
+}
+
 type decodeNode struct {
 	score  int
 	opcode *OPCode
