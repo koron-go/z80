@@ -40,18 +40,6 @@ type SPR struct {
 	PC uint16
 }
 
-// Memory is requirements interface for memory.
-type Memory interface {
-	Get(addr uint16) uint8
-	Set(addr uint16, value uint8)
-}
-
-// IO is requirements interface for I/O.
-type IO interface {
-	In(addr uint8) uint8
-	Out(addr uint8, value uint8)
-}
-
 // INT is interface for maskable interrupt.
 type INT interface {
 	// CheckINT should return valid interruption data if maskable interruption
@@ -475,4 +463,18 @@ func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {
 		return true, err
 	}
 	return true, nil
+}
+
+func (cpu *CPU) ioIn(addr uint8) uint8 {
+	if cpu.IO == nil {
+		return 0
+	}
+	return cpu.IO.In(addr)
+}
+
+func (cpu *CPU) ioOut(addr uint8, value uint8) {
+	if cpu.IO == nil {
+		return
+	}
+	cpu.IO.Out(addr, value)
 }

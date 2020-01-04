@@ -115,7 +115,7 @@ func TestLoad8_LDrHL(t *testing.T) {
 			t.Parallel()
 			rnd := rand.New(rand.NewSource(time.Now().UnixNano() * int64(r)))
 			for hl := 0; hl <= 0xffff; hl++ {
-				memory := MapRAM{}.Put(0, c)
+				memory := MapMemory{}.Put(0, c)
 				if hl != 0 {
 					d := uint8(rnd.Intn(255)+1)
 					memory.Put(uint16(hl), d)

@@ -12,7 +12,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.AF.Hi = cpu.IO.In(codes[1])
+			cpu.AF.Hi = cpu.ioIn(codes[1])
 		},
 	},
 
@@ -24,7 +24,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 4, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.IO.In(cpu.BC.Lo)
+			v := cpu.ioIn(cpu.BC.Lo)
 			// FIXME: support 0x06 to apply flags only.
 			r := cpu.regP(codes[1] >> 3)
 			*r = v
@@ -45,7 +45,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.Memory.Set(cpu.HL.U16(), cpu.IO.In(cpu.BC.Hi))
+			cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() + 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -63,7 +63,7 @@ var inout = []*OPCode{
 		T:  []int{4, 5, 3, 4, 5},
 		T2: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.Memory.Set(cpu.HL.U16(), cpu.IO.In(cpu.BC.Hi))
+			cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() + 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -83,7 +83,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.Memory.Set(cpu.HL.U16(), cpu.IO.In(cpu.BC.Hi))
+			cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() - 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -101,7 +101,7 @@ var inout = []*OPCode{
 		T:  []int{4, 5, 3, 4, 5},
 		T2: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.Memory.Set(cpu.HL.U16(), cpu.IO.In(cpu.BC.Hi))
+			cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() - 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -121,7 +121,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.IO.Out(codes[1], cpu.AF.Hi)
+			cpu.ioOut(codes[1], cpu.AF.Hi)
 		},
 	},
 
@@ -134,7 +134,7 @@ var inout = []*OPCode{
 		T: []int{4, 4, 4},
 		F: func(cpu *CPU, codes []uint8) {
 			r := cpu.regP(codes[1] >> 3)
-			cpu.IO.Out(cpu.BC.Lo, *r)
+			cpu.ioOut(cpu.BC.Lo, *r)
 		},
 	},
 
@@ -146,7 +146,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.IO.Out(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() + 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -164,7 +164,7 @@ var inout = []*OPCode{
 		T:  []int{4, 5, 3, 4, 5},
 		T2: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.IO.Out(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() + 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -184,7 +184,7 @@ var inout = []*OPCode{
 		},
 		T: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.IO.Out(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() - 1)
 			cpu.flagUpdate(FlagOp{}.
@@ -202,7 +202,7 @@ var inout = []*OPCode{
 		T:  []int{4, 5, 3, 4, 5},
 		T2: []int{4, 5, 3, 4},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.IO.Out(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 			cpu.BC.Hi--
 			cpu.HL.SetU16(cpu.HL.U16() - 1)
 			cpu.flagUpdate(FlagOp{}.
