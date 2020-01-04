@@ -17,7 +17,7 @@ func equalBytes(a, b []uint8) bool {
 	if n != len(b) {
 		return false
 	}
-	for i := 0; i < n;i++ {
+	for i := 0; i < n; i++ {
 		if a[i] != b[i] {
 			return false
 		}
@@ -50,4 +50,32 @@ func testStep(t *testing.T, before *testStates, after *testStates) {
 		diff := cmp.Diff(after.io, io)
 		t.Fatalf("io unmatch: -want +got\n%s", diff)
 	}
+}
+
+type testRAM interface {
+	Memory
+	Equal(interface{}) bool
+}
+
+func testStepNoIO(t *testing.T, states States, memory testRAM, afterStates States, afterMemory testRAM) {
+	t.Helper()
+	io := DumbIO{}
+	cpu := &CPU{
+		States: states,
+		Memory: memory,
+		IO:     io,
+	}
+	err := cpu.Step()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cpu.States != afterStates {
+		diff := cmp.Diff(afterStates, cpu.States)
+		t.Fatalf("unexpected states: -want +got\n%s", diff)
+	}
+	if !memory.Equal(afterMemory) {
+		diff := cmp.Diff(afterMemory, memory)
+		t.Fatalf("memory unmatch: -want +got\n%s", diff)
+	}
+	// IO won't be checked. with testStepNoIO()
 }

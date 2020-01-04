@@ -82,6 +82,7 @@ func TestLoad8_LDrn(t *testing.T) {
 		var afterGPR GPR
 		p := rGet(t, &afterGPR, r)
 		t.Run(n, func(t *testing.T) {
+			t.Parallel()
 			for n := 0; n <= 0xff; n++ {
 				afterGPR = testInitGPR
 				*p = uint8(n)
@@ -102,7 +103,6 @@ func TestLoad8_LDrn(t *testing.T) {
 
 func TestLoad8_LDrHL(t *testing.T) {
 	t.Parallel()
-	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for r := 0; r <= 7; r++ {
 		if r == 6 {
 			continue
@@ -113,22 +113,24 @@ func TestLoad8_LDrHL(t *testing.T) {
 		p := rGet(t, &afterGPR, r)
 		t.Run(n, func(t *testing.T) {
 			t.Parallel()
-			mem := make(DumbMemory, 65536)
-			rnd.Read(mem)
-			mem[0] = c
-			expmem := make(DumbMemory, 65536)
-			copy(expmem, mem)
+			rnd := rand.New(rand.NewSource(time.Now().UnixNano() * int64(r)))
 			for hl := 0; hl <= 0xffff; hl++ {
+				memory := MapRAM{}.Put(0, c)
+				if hl != 0 {
+					d := uint8(rnd.Intn(255)+1)
+					memory.Put(uint16(hl), d)
+				}
+				wantMem := memory.Clone()
+				//wantMem := memory.Clone()
 				beforeGPR = testInitGPR
 				beforeGPR.HL.SetU16(uint16(hl))
 				afterGPR = beforeGPR
-				*p = mem[hl]
-				testStep(t,
-					&testStates{States{GPR: beforeGPR}, mem, DumbIO{}},
-					&testStates{
-						States{GPR: afterGPR,
-							SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},
-						expmem, DumbIO{}})
+				*p = memory.Get(uint16(hl))
+				testStepNoIO(t,
+					States{GPR: beforeGPR}, memory,
+					States{GPR: afterGPR,
+						SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},
+					wantMem)
 			}
 		})
 	}
