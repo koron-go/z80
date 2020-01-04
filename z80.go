@@ -305,7 +305,7 @@ func decode(l *decodeLayer, f fetcher) (*OPCode, []uint8, error) {
 			return nil, buf, fmt.Errorf("fetch failed: %w", err)
 		}
 		buf = append(buf, b)
-		n := l.nodes[b]
+		n := l.get(b)
 		if n == nil {
 			break
 		}

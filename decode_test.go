@@ -32,6 +32,10 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 	var procNode func(*decodeNode)
 	procLayer := func(l *decodeLayer) {
 		t.Helper()
+		if l.anyNode != nil {
+			procNode(l.anyNode)
+			return
+		}
 		for _, n := range l.nodes {
 			if n == nil {
 				continue
@@ -57,6 +61,6 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 		if n > 0 {
 			continue
 		}
-		t.Errorf("unseen OPCode: %s %d", c, n)
+		t.Errorf("unseen OPCode: %s", c)
 	}
 }

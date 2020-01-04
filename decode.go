@@ -23,7 +23,9 @@ var allOPCodes = [][]*OPCode{
 }
 
 type decodeLayer struct {
-	nodes [256]*decodeNode
+	nodes   map[uint8]*decodeNode
+	any     bool
+	anyNode *decodeNode
 }
 
 var defaultDecoder *decodeLayer
@@ -37,13 +39,24 @@ func defaultDecodeLayer() *decodeLayer {
 }
 
 func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
-	l := &decodeLayer{}
+	l := &decodeLayer{
+		nodes: map[uint8]*decodeNode{},
+		any:   true,
+	}
 	for _, cc := range opcodes {
 		for _, opcode := range cc {
 			if level < len(opcode.C) {
 				l.put(level, opcode)
 			}
 		}
+	}
+	if l.any {
+		n := l.nodes[0]
+		n.next = newDecodeLayer(level+1, n.codes)
+		n.codes = nil
+		l.anyNode = n
+		l.nodes = nil
+		return l
 	}
 	for _, n := range l.nodes {
 		if n == nil {
@@ -64,22 +77,41 @@ func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
 
 func (l *decodeLayer) put(level int, opcode *OPCode) {
 	c := opcode.C[level]
+	if l.any && (c.C != 0x00 || c.M != 0xff) {
+		l.any = false
+	}
 	s := bits.OnesCount8(^c.M)
 	for i, e := c.beginEnd(); i <= e; i++ {
-		if !c.match(uint8(i)) {
+		d := uint8(i)
+		if !c.match(d) {
 			continue
 		}
-		n := l.nodes[i]
-		if n == nil || s > n.score {
+		n, ok := l.nodes[d]
+		if !ok || s > n.score {
 			n = &decodeNode{score: s}
-			l.nodes[i] = n
+			l.nodes[d] = n
 		}
 		n.codes = append(n.codes, opcode)
 	}
 }
 
+func (l *decodeLayer) get(d uint8) *decodeNode {
+	if l.anyNode != nil {
+		return l.anyNode
+	}
+	n, ok := l.nodes[d]
+	if !ok {
+		return nil
+	}
+	return n
+}
+
 func (l *decodeLayer) mapTo() map[string]interface{} {
 	m := map[string]interface{}{}
+	if l.anyNode != nil {
+		m["*"] = l.anyNode.mapTo()
+		return m
+	}
 	for i, n := range l.nodes {
 		if n == nil {
 			continue
