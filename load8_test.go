@@ -55,16 +55,12 @@ func TestLoad8_LDr1r2(t *testing.T) {
 			afterGPR := testInitGPR
 			*rGet(t, &afterGPR, r1) = *rGet(t, &beforeGPR, r2)
 			t.Run(n, func(t *testing.T) {
-				testStep(t,
-					&testStates{
-						States{GPR: beforeGPR},
-						DumbMemory{c},
-						DumbIO{}},
-					&testStates{
-						States{GPR: afterGPR,
-							SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},
-						DumbMemory{c},
-						DumbIO{}})
+				tStepNoIO(t,
+					States{GPR: beforeGPR},
+					MapMemory{}.Put(0, c),
+					States{GPR: afterGPR,
+						SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},
+					MapMemory{}.Put(0, c))
 			})
 		}
 	}
@@ -86,16 +82,12 @@ func TestLoad8_LDrn(t *testing.T) {
 			for n := 0; n <= 0xff; n++ {
 				afterGPR = testInitGPR
 				*p = uint8(n)
-				testStep(t,
-					&testStates{
-						States{GPR: beforeGPR},
-						DumbMemory{c, uint8(n)},
-						DumbIO{}},
-					&testStates{
-						States{GPR: afterGPR,
-							SPR: SPR{PC: 0x0002, IR: Register{Lo: 0x01}}},
-						DumbMemory{c, uint8(n)},
-						DumbIO{}})
+				tStepNoIO(t,
+					States{GPR: beforeGPR},
+					MapMemory{}.Put(0, c, uint8(n)),
+					States{GPR: afterGPR,
+						SPR: SPR{PC: 0x0002, IR: Register{Lo: 0x01}}},
+					MapMemory{}.Put(0, c, uint8(n)))
 			}
 		})
 	}
@@ -117,16 +109,15 @@ func TestLoad8_LDrHL(t *testing.T) {
 			for hl := 0; hl <= 0xffff; hl++ {
 				memory := MapMemory{}.Put(0, c)
 				if hl != 0 {
-					d := uint8(rnd.Intn(255)+1)
+					d := uint8(rnd.Intn(255) + 1)
 					memory.Put(uint16(hl), d)
 				}
 				wantMem := memory.Clone()
-				//wantMem := memory.Clone()
 				beforeGPR = testInitGPR
 				beforeGPR.HL.SetU16(uint16(hl))
 				afterGPR = beforeGPR
 				*p = memory.Get(uint16(hl))
-				testStepNoIO(t,
+				tStepNoIO(t,
 					States{GPR: beforeGPR}, memory,
 					States{GPR: afterGPR,
 						SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},
