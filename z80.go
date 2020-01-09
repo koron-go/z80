@@ -341,6 +341,11 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
 	for !cpu.HALT {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+		}
 		err := cpu.Step()
 		if err != nil {
 			return err
