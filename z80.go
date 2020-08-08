@@ -1,3 +1,6 @@
+/*
+Package z80 emulates Zilog's Z80 CPU.
+*/
 package z80
 
 import (
@@ -285,10 +288,6 @@ func (cpu *CPU) decoder() *decodeLayer {
 		return defaultDecodeLayer()
 	}
 	return cpu.decodeLayer
-}
-
-func (cpu *CPU) pcOff(offset int) uint16 {
-	return cpu.PC + uint16(int16(offset))
 }
 
 type fetcher interface {

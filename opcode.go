@@ -31,10 +31,7 @@ func (c Code) match(b uint8) bool {
 
 func vReg8(b uint8) bool {
 	b &= 0x07
-	if b == 6 {
-		return false
-	}
-	return true
+	return b != 6
 }
 
 func vReg8_3(b uint8) bool {
