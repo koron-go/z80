@@ -1,5 +1,7 @@
 package z80
 
+import "math/bits"
+
 var opHALT = &OPCode{
 	N: "HALT",
 	C: []Code{
@@ -31,9 +33,7 @@ var ctrl = []*OPCode{
 			{0x27, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			// TODO: implmenet "DAA"
-		},
+		F: opDAA,
 	},
 
 	{
@@ -155,4 +155,80 @@ var ctrl = []*OPCode{
 			cpu.IM = 2
 		},
 	},
+}
+
+func in(v, bottom, up uint8) bool {
+	return v >= bottom && v <= up
+}
+
+func opDAA(cpu *CPU, codes []uint8) {
+	var a, b uint8
+	var fo FlagOp
+	hc := cpu.flag(H)
+	a = cpu.AF.Hi
+	h4 := (a >> 4) & 0x0f
+	l4 := a & 0x0f
+	if !cpu.flag(N) {
+		// addition adjustment.
+		if !cpu.flag(C) {
+			if in(h4, 0, 9) && !hc && in(l4, 0, 9) {
+				b = 0x00
+				fo.Reset(C)
+			} else if in(h4, 0, 8) && !hc && in(l4, 10, 15) {
+				b = 0x06
+				fo.Reset(C)
+			} else if in(h4, 0, 9) && hc && in(l4, 0, 3) {
+				b = 0x06
+				fo.Reset(C)
+			} else if in(h4, 10, 15) && !hc && in(l4, 0, 9) {
+				b = 0x60
+				fo.Set(C)
+			} else if in(h4, 9, 15) && !hc && in(l4, 10, 15) {
+				b = 0x66
+				fo.Set(C)
+			} else if in(h4, 10, 15) && hc && in(l4, 0, 3) {
+				b = 0x66
+				fo.Set(C)
+			}
+		} else {
+			if in(h4, 0, 2) && !hc && in(l4, 0, 9) {
+				b = 0x60
+				fo.Set(C)
+			} else if in(h4, 0, 2) && !hc && in(l4, 10, 15) {
+				b = 0x66
+				fo.Set(C)
+			} else if in(h4, 0, 3) && hc && in(l4, 0, 3) {
+				b = 0x66
+				fo.Set(C)
+			}
+		}
+	} else {
+		// subtraction adjustment.
+		if !cpu.flag(C) {
+			if in(h4, 0, 9) && !hc && in(l4, 0, 9) {
+				b = 0x00
+				fo.Reset(C)
+			} else if in(h4, 0, 8) && hc && in(l4, 6, 15) {
+				b = 0xfa
+				fo.Reset(C)
+			}
+		} else {
+			if in(h4, 7, 15) && !hc && in(l4, 0, 9) {
+				b = 0xa0
+				fo.Set(C)
+			} else if in(h4, 6, 15) && hc && in(l4, 6, 15) {
+				// different from the manual, it is `in(h4, 6, 7)`
+				b = 0x9a
+				fo.Set(C)
+			}
+		}
+	}
+	v := uint16(a) + uint16(b)
+	// update regsiter && flags.
+	cpu.AF.Hi = uint8(v)
+	cpu.flagUpdate(fo.
+		Put(S, v&0x80 != 0).
+		Put(Z, v&0xff == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(cpu.AF.Hi)%2 == 0))
 }

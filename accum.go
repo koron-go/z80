@@ -1,6 +1,8 @@
 package z80
 
-import "math/bits"
+import (
+	"math/bits"
+)
 
 func (cpu *CPU) addU8(a, b uint8) uint8 {
 	v := uint16(a) + uint16(b)
@@ -26,7 +28,7 @@ func (cpu *CPU) adcU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
 		// TODO: verify H behavior.
-		Put(H, a&0x0f+b&0x0f > 0x0f).
+		Put(H, a16&0x0f+b16&0x0f > 0x0f).
 		// TODO: verify PV behavior.
 		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
 		Reset(N).
@@ -123,7 +125,7 @@ func (cpu *CPU) decU8(a uint8) uint8 {
 		Put(Z, v == 0).
 		Put(H, a&0x0f < 1).
 		Put(PV, a == 0x80).
-		Reset(N))
+		Set(N))
 	return v
 }
 

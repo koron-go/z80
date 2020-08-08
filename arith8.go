@@ -585,7 +585,7 @@ var arith8 = []*OPCode{
 		},
 		T: []int{4},
 		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[0])
+			r := cpu.regP(codes[0] >> 3)
 			*r = cpu.incU8(*r)
 		},
 	},
@@ -640,7 +640,7 @@ var arith8 = []*OPCode{
 		},
 		T: []int{4},
 		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[0])
+			r := cpu.regP(codes[0] >> 3)
 			*r = cpu.decU8(*r)
 		},
 	},

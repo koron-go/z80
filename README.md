@@ -5,3 +5,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/koron-go/z80)](https://goreportcard.com/report/github.com/koron-go/z80)
 
 Z80 emulation in Go.
+
+## References
+
+* [Zilog Z80 DAA実行結果](http://ver0.sakura.ne.jp/doc/daa.html)
+
+    LZ8514(SHARPのZ80互換CPU)で実際に実行して得た結果
