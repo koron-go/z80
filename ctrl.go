@@ -173,33 +173,33 @@ func opDAA(cpu *CPU, codes []uint8) {
 		if !cpu.flag(C) {
 			if in(h4, 0, 9) && !hc && in(l4, 0, 9) {
 				b = 0x00
-				fo.Reset(C)
+				fo = fo.Reset(C)
 			} else if in(h4, 0, 8) && !hc && in(l4, 10, 15) {
 				b = 0x06
-				fo.Reset(C)
+				fo = fo.Reset(C)
 			} else if in(h4, 0, 9) && hc && in(l4, 0, 3) {
 				b = 0x06
-				fo.Reset(C)
+				fo = fo.Reset(C)
 			} else if in(h4, 10, 15) && !hc && in(l4, 0, 9) {
 				b = 0x60
-				fo.Set(C)
+				fo = fo.Set(C)
 			} else if in(h4, 9, 15) && !hc && in(l4, 10, 15) {
 				b = 0x66
-				fo.Set(C)
+				fo = fo.Set(C)
 			} else if in(h4, 10, 15) && hc && in(l4, 0, 3) {
 				b = 0x66
-				fo.Set(C)
+				fo = fo.Set(C)
 			}
 		} else {
 			if in(h4, 0, 2) && !hc && in(l4, 0, 9) {
 				b = 0x60
-				fo.Set(C)
+				fo = fo.Set(C)
 			} else if in(h4, 0, 2) && !hc && in(l4, 10, 15) {
 				b = 0x66
-				fo.Set(C)
+				fo = fo.Set(C)
 			} else if in(h4, 0, 3) && hc && in(l4, 0, 3) {
 				b = 0x66
-				fo.Set(C)
+				fo = fo.Set(C)
 			}
 		}
 	} else {
@@ -207,19 +207,19 @@ func opDAA(cpu *CPU, codes []uint8) {
 		if !cpu.flag(C) {
 			if in(h4, 0, 9) && !hc && in(l4, 0, 9) {
 				b = 0x00
-				fo.Reset(C)
+				fo = fo.Reset(C)
 			} else if in(h4, 0, 8) && hc && in(l4, 6, 15) {
 				b = 0xfa
-				fo.Reset(C)
+				fo = fo.Reset(C)
 			}
 		} else {
 			if in(h4, 7, 15) && !hc && in(l4, 0, 9) {
 				b = 0xa0
-				fo.Set(C)
+				fo = fo.Set(C)
 			} else if in(h4, 6, 15) && hc && in(l4, 6, 15) {
 				// different from the manual, it is `in(h4, 6, 7)`
 				b = 0x9a
-				fo.Set(C)
+				fo = fo.Set(C)
 			}
 		}
 	}

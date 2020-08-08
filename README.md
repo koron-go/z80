@@ -11,3 +11,5 @@ Z80 emulation in Go.
 * [Zilog Z80 DAA実行結果](http://ver0.sakura.ne.jp/doc/daa.html)
 
     LZ8514(SHARPのZ80互換CPU)で実際に実行して得た結果
+
+* [Z80 DAA 内部キャリーフラグは実在するのか?](https://uniabis.net/pico/msx/z80daa/)

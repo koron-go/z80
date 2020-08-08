@@ -17,11 +17,14 @@ func TestDAA_INC(t *testing.T) {
 		next := toBCD(i + 1)
 		// compute expected flag
 		var flag uint8
+		if i+1 >= 100 {
+			flag |= 0x01 // C
+		}
 		if bits.OnesCount8(next)%2 == 0 {
 			flag |= 0x04 // P/V: parity flag
 		}
 		if next == 0 {
-			flag |= 0x41 // Z & C
+			flag |= 0x40 // Z
 		}
 		if next&0x80 != 0 {
 			flag |= 0x80 // S: sign flag
@@ -173,7 +176,7 @@ func TestDAA_DEC(t *testing.T) {
 				Lo: flag,
 			}},
 			SPR: SPR{PC: 0x04, IR: Register{Lo: 0x03}},
-		}, wantMem, 2)
+		}, wantMem, 3)
 	}
 }
 
@@ -248,7 +251,6 @@ func TestDAA_SBC_0(t *testing.T) {
 }
 
 func TestDAA_SBC_1(t *testing.T) {
-	t.Skip("WIP")
 	for i := 0; i < 100; i++ {
 		for j := 0; j < 100; j++ {
 			a, b := toBCD(i), toBCD(j)
@@ -272,7 +274,9 @@ func TestDAA_SBC_1(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xde, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; SBC A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{}, mem, States{
+			tStepNoIO_N(t, n, States{
+				GPR: GPR{AF: Register{Lo: 0x01}},
+			}, mem, States{
 				GPR: GPR{AF: Register{
 					Hi: res,
 					Lo: flag,
