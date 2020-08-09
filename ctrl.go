@@ -182,6 +182,7 @@ func opDAA(cpu *CPU, codes []uint8) {
 		Put(Z, r == 0).
 		Put(H, (cpu.AF.Hi^r)&0x10 != 0).
 		Put(PV, bits.OnesCount8(r)%2 == 0).
+		Keep(N).
 		Put(C, c || cpu.AF.Hi > 0x99))
 	cpu.AF.Hi = r
 }

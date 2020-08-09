@@ -31,30 +31,35 @@ var _ IO = (*tForbiddenIO)(nil)
 // tOneStep executes one step without I/O.
 func tOneStep(t *testing.T, states States, memory tMemory, afterStates States, afterMemory tMemory) {
 	t.Helper()
-	tSteps(t, "", states, memory, afterStates, afterMemory, 1)
+	tSteps(t, "", states, memory, 1, afterStates, afterMemory, maskDefault)
 }
 
 // tSteps executes N steps without I/O.
-func tSteps(t *testing.T, label string, states States, memory tMemory, afterStates States, afterMemory tMemory, n int) {
+func tSteps(t *testing.T, label string, states States, memory tMemory, steps int, afterStates States, afterMemory tMemory, ignoreFlags uint8) {
 	t.Helper()
 	cpu := &CPU{
 		States: states,
 		Memory: memory,
 		IO:     &tForbiddenIO{},
 	}
-	for i := 0; i < n; i++ {
+	for i := 0; i < steps; i++ {
 		err := cpu.Step()
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
-	if cpu.States != afterStates {
-		diff := cmp.Diff(afterStates, cpu.States)
+
+	mask := ^ignoreFlags
+	act := maskFlags(cpu.States, mask)
+	exp := maskFlags(afterStates, mask)
+	if act != exp {
+		diff := cmp.Diff(exp, act)
 		if label != "" {
 			t.Errorf("failed label: %s", label)
 		}
 		t.Fatalf("unexpected states: -want +got\n%s", diff)
 	}
+
 	if !memory.Equal(afterMemory) {
 		diff := cmp.Diff(afterMemory, memory)
 		if label != "" {
@@ -64,3 +69,20 @@ func tSteps(t *testing.T, label string, states States, memory tMemory, afterStat
 	}
 	// IO won't be called in tStepNoIO()
 }
+
+func maskFlags(s States, mask uint8) States {
+	s.GPR.AF.Lo &= mask
+	s.Alternate.AF.Lo &= mask
+	return s
+}
+
+const (
+	maskNone    = 0x00
+	maskDefault = 0x28
+	maskC       = 0x01
+	maskN       = 0x02
+	maskPV      = 0x04
+	maskH       = 0x10
+	maskZ       = 0x40
+	maskS       = 0x80
+)

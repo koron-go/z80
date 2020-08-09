@@ -5,6 +5,7 @@ import (
 )
 
 func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
+	t.Parallel()
 	l := defaultDecodeLayer()
 
 	m := map[string]int{}

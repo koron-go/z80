@@ -3,6 +3,7 @@ package z80
 import "testing"
 
 func TestAccum_bitchk8(t *testing.T) {
+	t.Parallel()
 	for b := 0; b <= 7; b++ {
 		for v := 0; v <= 255; v++ {
 			cpu := &CPU{}

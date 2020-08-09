@@ -3,6 +3,7 @@ package z80
 import "testing"
 
 func TestFlagOp_ApplyOn(t *testing.T) {
+	t.Parallel()
 	for _, c := range []struct {
 		op  FlagOp
 		v   []uint8

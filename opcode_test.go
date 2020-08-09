@@ -3,6 +3,7 @@ package z80
 import "testing"
 
 func TestAddrOff(t *testing.T) {
+	t.Parallel()
 	for _, c := range []struct {
 		addr uint16
 		off  uint8
