@@ -86,3 +86,8 @@ const (
 	maskZ       = 0x40
 	maskS       = 0x80
 )
+
+type tReg struct {
+	Label string
+	Code  int
+}
