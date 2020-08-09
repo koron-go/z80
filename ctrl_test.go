@@ -91,7 +91,7 @@ func TestDAA_ADC_0(t *testing.T) {
 		for j := 0; j < 100; j++ {
 			a, b := toBCD(i), toBCD(j)
 			res := toBCD(i + j)
-			// TODO: compute expected flag
+			// compute expected flag
 			var flag uint8
 			if i+j >= 100 {
 				flag |= 0x01 // C: carry flag
@@ -129,7 +129,7 @@ func TestDAA_ADC_1(t *testing.T) {
 		for j := 0; j < 100; j++ {
 			a, b := toBCD(i), toBCD(j)
 			res := toBCD(i + j + 1)
-			// TODO: compute expected flag
+			// compute expected flag
 			var flag uint8
 			if i+j+1 >= 100 {
 				flag |= 0x01 // C: carry flag
