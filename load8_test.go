@@ -55,7 +55,7 @@ func TestLoad8_LDr1r2(t *testing.T) {
 			afterGPR := testInitGPR
 			*rGet(t, &afterGPR, r1) = *rGet(t, &beforeGPR, r2)
 			t.Run(n, func(t *testing.T) {
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: beforeGPR},
 					MapMemory{}.Put(0, c),
 					States{GPR: afterGPR,
@@ -82,7 +82,7 @@ func TestLoad8_LDrn(t *testing.T) {
 			for n := 0; n <= 0xff; n++ {
 				afterGPR = testInitGPR
 				*p = uint8(n)
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: beforeGPR},
 					MapMemory{}.Put(0, c, uint8(n)),
 					States{GPR: afterGPR,
@@ -117,7 +117,7 @@ func TestLoad8_LDrHL(t *testing.T) {
 				beforeGPR.HL.SetU16(uint16(hl))
 				afterGPR = beforeGPR
 				*p = memory.Get(uint16(hl))
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: beforeGPR}, memory,
 					States{GPR: afterGPR,
 						SPR: SPR{PC: 0x0001, IR: Register{Lo: 0x01}}},

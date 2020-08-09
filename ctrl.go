@@ -157,78 +157,31 @@ var ctrl = []*OPCode{
 	},
 }
 
-func in(v, bottom, up uint8) bool {
-	return v >= bottom && v <= up
-}
-
+// port from WebMSX.
+// See https://github.com/ppeccin/WebMSX/blob/654e3aa303e84404fba4a89d5fa21fae32753cf5/src/main/msx/cpu/CPU.js#L1010-L1030
 func opDAA(cpu *CPU, codes []uint8) {
-	var a, b uint8
-	var fo FlagOp
-	hc := cpu.flag(H)
-	a = cpu.AF.Hi
-	h4 := (a >> 4) & 0x0f
-	l4 := a & 0x0f
-	if !cpu.flag(N) {
-		// addition adjustment.
-		if !cpu.flag(C) {
-			if in(h4, 0, 9) && !hc && in(l4, 0, 9) {
-				b = 0x00
-				fo = fo.Reset(C)
-			} else if in(h4, 0, 8) && !hc && in(l4, 10, 15) {
-				b = 0x06
-				fo = fo.Reset(C)
-			} else if in(h4, 0, 9) && hc && in(l4, 0, 3) {
-				b = 0x06
-				fo = fo.Reset(C)
-			} else if in(h4, 10, 15) && !hc && in(l4, 0, 9) {
-				b = 0x60
-				fo = fo.Set(C)
-			} else if in(h4, 9, 15) && !hc && in(l4, 10, 15) {
-				b = 0x66
-				fo = fo.Set(C)
-			} else if in(h4, 10, 15) && hc && in(l4, 0, 3) {
-				b = 0x66
-				fo = fo.Set(C)
-			}
-		} else {
-			if in(h4, 0, 2) && !hc && in(l4, 0, 9) {
-				b = 0x60
-				fo = fo.Set(C)
-			} else if in(h4, 0, 2) && !hc && in(l4, 10, 15) {
-				b = 0x66
-				fo = fo.Set(C)
-			} else if in(h4, 0, 3) && hc && in(l4, 0, 3) {
-				b = 0x66
-				fo = fo.Set(C)
-			}
+	r := cpu.AF.Hi
+	c := cpu.flag(C)
+	if cpu.flag(N) {
+		if cpu.flag(H) || (cpu.AF.Hi&0x0f) > 9 {
+			r -= 0x06
+		}
+		if c || (cpu.AF.Hi > 0x99) {
+			r -= 0x60
 		}
 	} else {
-		// subtraction adjustment.
-		if !cpu.flag(C) {
-			if in(h4, 0, 9) && !hc && in(l4, 0, 9) {
-				b = 0x00
-				fo = fo.Reset(C)
-			} else if in(h4, 0, 8) && hc && in(l4, 6, 15) {
-				b = 0xfa
-				fo = fo.Reset(C)
-			}
-		} else {
-			if in(h4, 7, 15) && !hc && in(l4, 0, 9) {
-				b = 0xa0
-				fo = fo.Set(C)
-			} else if in(h4, 6, 15) && hc && in(l4, 6, 15) {
-				// different from the manual, it is `in(h4, 6, 7)`
-				b = 0x9a
-				fo = fo.Set(C)
-			}
+		if cpu.flag(H) || (cpu.AF.Hi&0x0f) > 9 {
+			r += 0x06
+		}
+		if c || (cpu.AF.Hi > 0x99) {
+			r += 0x60
 		}
 	}
-	v := uint16(a) + uint16(b)
-	// update regsiter && flags.
-	cpu.AF.Hi = uint8(v)
-	cpu.flagUpdate(fo.
-		Put(S, v&0x80 != 0).
-		Put(Z, v&0xff == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(cpu.AF.Hi)%2 == 0))
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, r&0x80 != 0).
+		Put(Z, r == 0).
+		Put(H, (cpu.AF.Hi^r)&0x10 != 0).
+		Put(PV, bits.OnesCount8(r)%2 == 0).
+		Put(C, c || cpu.AF.Hi > 0x99))
+	cpu.AF.Hi = r
 }

@@ -28,12 +28,14 @@ func (fio *tForbiddenIO) Out(addr uint8, v uint8) {
 
 var _ IO = (*tForbiddenIO)(nil)
 
-func tStepNoIO(t *testing.T, states States, memory tMemory, afterStates States, afterMemory tMemory) {
+// tOneStep executes one step without I/O.
+func tOneStep(t *testing.T, states States, memory tMemory, afterStates States, afterMemory tMemory) {
 	t.Helper()
-	tStepNoIO_N(t, "", states, memory, afterStates, afterMemory, 1)
+	tSteps(t, "", states, memory, afterStates, afterMemory, 1)
 }
 
-func tStepNoIO_N(t *testing.T, label string, states States, memory tMemory, afterStates States, afterMemory tMemory, n int) {
+// tSteps executes N steps without I/O.
+func tSteps(t *testing.T, label string, states States, memory tMemory, afterStates States, afterMemory tMemory, n int) {
 	t.Helper()
 	cpu := &CPU{
 		States: states,

@@ -23,6 +23,9 @@ func TestDAA_INC(t *testing.T) {
 		if bits.OnesCount8(next)%2 == 0 {
 			flag |= 0x04 // P/V: parity flag
 		}
+		if (curr^next)&0x10 != 0 {
+			flag |= 0x10 // H
+		}
 		if next == 0 {
 			flag |= 0x40 // Z
 		}
@@ -33,7 +36,7 @@ func TestDAA_INC(t *testing.T) {
 		mem := MapMemory{}.Put(0, 0x3e, curr, 0x3c, 0x27)
 		wantMem := mem.Clone()
 		n := fmt.Sprintf("LD A, 0x%02x ; INC A ; DAA", curr)
-		tStepNoIO_N(t, n, States{}, mem, States{
+		tSteps(t, n, States{}, mem, States{
 			GPR: GPR{AF: Register{
 				Hi: next,
 				Lo: flag,
@@ -56,6 +59,9 @@ func TestDAA_ADD(t *testing.T) {
 			if bits.OnesCount8(res)%2 == 0 {
 				flag |= 0x04 // P/V: parity flag
 			}
+			if (a+b)&0x0f > 9 {
+				flag |= 0x10 // H
+			}
 			if res == 0 {
 				flag |= 0x40 // Z: zero flag
 			}
@@ -66,7 +72,7 @@ func TestDAA_ADD(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xc6, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; ADD A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{}, mem, States{
+			tSteps(t, n, States{}, mem, States{
 				GPR: GPR{AF: Register{
 					Hi: res,
 					Lo: flag,
@@ -90,6 +96,9 @@ func TestDAA_ADC_0(t *testing.T) {
 			if bits.OnesCount8(res)%2 == 0 {
 				flag |= 0x04 // P/V: parity flag
 			}
+			if (a+b)&0x0f > 9 {
+				flag |= 0x10 // H
+			}
 			if res == 0 {
 				flag |= 0x40 // Z: zero flag
 			}
@@ -100,7 +109,7 @@ func TestDAA_ADC_0(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xce, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; ADC A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{}, mem, States{
+			tSteps(t, n, States{}, mem, States{
 				GPR: GPR{AF: Register{
 					Hi: res,
 					Lo: flag,
@@ -124,6 +133,9 @@ func TestDAA_ADC_1(t *testing.T) {
 			if bits.OnesCount8(res)%2 == 0 {
 				flag |= 0x04 // P/V: parity flag
 			}
+			if (a+b+1)&0x0f > 9 {
+				flag |= 0x10 // H
+			}
 			if res == 0 {
 				flag |= 0x40 // Z: zero flag
 			}
@@ -134,7 +146,7 @@ func TestDAA_ADC_1(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xce, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; ADC A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{
+			tSteps(t, n, States{
 				GPR: GPR{AF: Register{Lo: 0x01}},
 			}, mem, States{
 				GPR: GPR{AF: Register{
@@ -148,15 +160,15 @@ func TestDAA_ADC_1(t *testing.T) {
 }
 
 func TestDAA_DEC(t *testing.T) {
-	t.Skip("work later")
 	for i := 0; i < 100; i++ {
 		curr := toBCD(i)
 		next := toBCD(i + 99)
 		// compute expected flag
 		var flag uint8
-		if next == 99 {
+		if next == 0x99 {
 			flag |= 0x01 // C
 		}
+		flag |= 0x02 // N: subtract flag
 		if bits.OnesCount8(next)%2 == 0 {
 			flag |= 0x04 // P/V: parity flag
 		}
@@ -170,7 +182,7 @@ func TestDAA_DEC(t *testing.T) {
 		mem := MapMemory{}.Put(0, 0x3e, curr, 0x3d, 0x27)
 		wantMem := mem.Clone()
 		n := fmt.Sprintf("LD A, 0x%02x ; DEC A ; DAA", curr)
-		tStepNoIO_N(t, n, States{}, mem, States{
+		tSteps(t, n, States{}, mem, States{
 			GPR: GPR{AF: Register{
 				Hi: next,
 				Lo: flag,
@@ -204,7 +216,7 @@ func TestDAA_SUB(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xd6, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; SUB A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{}, mem, States{
+			tSteps(t, n, States{}, mem, States{
 				GPR: GPR{AF: Register{
 					Hi: res,
 					Lo: flag,
@@ -239,7 +251,7 @@ func TestDAA_SBC_0(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xde, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; SBC A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{}, mem, States{
+			tSteps(t, n, States{}, mem, States{
 				GPR: GPR{AF: Register{
 					Hi: res,
 					Lo: flag,
@@ -274,7 +286,7 @@ func TestDAA_SBC_1(t *testing.T) {
 			mem := MapMemory{}.Put(0, 0x3e, a, 0xde, b, 0x27)
 			wantMem := mem.Clone()
 			n := fmt.Sprintf("LD A, 0x%02x ; SBC A, 0x%02x ; DAA", a, b)
-			tStepNoIO_N(t, n, States{
+			tSteps(t, n, States{
 				GPR: GPR{AF: Register{Lo: 0x01}},
 			}, mem, States{
 				GPR: GPR{AF: Register{

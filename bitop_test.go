@@ -25,7 +25,7 @@ func TestBitop_BITbr(t *testing.T) {
 					wantGPR = gpr
 					FlagOp{}.Put(Z, v&(1<<b) == 0).Set(H).Reset(N).
 						ApplyOn(&wantGPR.AF.Lo)
-					tStepNoIO(t,
+					tOneStep(t,
 						States{GPR: gpr, SPR: SPR{IX: 0x1000}},
 						mem,
 						States{
@@ -55,7 +55,7 @@ func TestBitop_BITbIXd(t *testing.T) {
 					wantZ := v&(1<<b) == 0
 					var flag uint8
 					FlagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
-					tStepNoIO(t,
+					tOneStep(t,
 						States{GPR: GPR{}, SPR: SPR{IX: 0x1000}},
 						mem,
 						States{
@@ -85,7 +85,7 @@ func TestBitop_BITbIYd(t *testing.T) {
 					wantZ := v&(1<<b) == 0
 					var flag uint8
 					FlagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
-					tStepNoIO(t,
+					tOneStep(t,
 						States{GPR: GPR{}, SPR: SPR{IY: 0x4180}},
 						mem,
 						States{
@@ -112,7 +112,7 @@ func TestBitop_SETbIXd(t *testing.T) {
 					Put(0, 0xdd, 0xcb, uint8(d), uint8(0xc6|b<<3)).
 					Put(base+uint16(d), 0)
 				wantMem := mem.Clone().Put(base+uint16(d), 1<<b)
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: GPR{}, SPR: SPR{IX: base}},
 					mem,
 					States{GPR: GPR{},
@@ -135,7 +135,7 @@ func TestBitop_SETbIYd(t *testing.T) {
 					Put(0, 0xfd, 0xcb, uint8(d), uint8(0xc6|b<<3)).
 					Put(base+uint16(d), 0)
 				wantMem := mem.Clone().Put(base+uint16(d), 1<<b)
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: GPR{}, SPR: SPR{IY: base}},
 					mem,
 					States{GPR: GPR{},
@@ -158,7 +158,7 @@ func TestBitop_RESbIXd(t *testing.T) {
 					Put(0, 0xdd, 0xcb, uint8(d), uint8(0x86|b<<3)).
 					Put(base+uint16(d), 0xff)
 				wantMem := mem.Clone().Put(base+uint16(d), 0xff&^(1<<b))
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: GPR{}, SPR: SPR{IX: base}},
 					mem,
 					States{GPR: GPR{},
@@ -181,7 +181,7 @@ func TestBitop_RESbIYd(t *testing.T) {
 					Put(0, 0xfd, 0xcb, uint8(d), uint8(0x86|b<<3)).
 					Put(base+uint16(d), 0xff)
 				wantMem := mem.Clone().Put(base+uint16(d), 0xff&^(1<<b))
-				tStepNoIO(t,
+				tOneStep(t,
 					States{GPR: GPR{}, SPR: SPR{IY: base}},
 					mem,
 					States{GPR: GPR{},
