@@ -13,3 +13,5 @@ Z80 emulation in Go.
     LZ8514(SHARPのZ80互換CPU)で実際に実行して得た結果
 
 * [Z80 DAA 内部キャリーフラグは実在するのか?](https://uniabis.net/pico/msx/z80daa/)
+
+* [8ビット CPU Z80命令セット](http://www.yamamo10.jp/yamamoto/comp/Z80/instructions/index.php)
