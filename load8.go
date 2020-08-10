@@ -42,7 +42,7 @@ var load8 = []*OPCode{
 		N: "LD r, (IX+d)",
 		C: []Code{
 			{0xdd, 0x00, nil},
-			{0x45, 0x38, vReg8_3},
+			{0x46, 0x38, vReg8_3},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
@@ -57,7 +57,7 @@ var load8 = []*OPCode{
 		N: "LD r, (IY+d)",
 		C: []Code{
 			{0xfd, 0x00, nil},
-			{0x45, 0x38, vReg8_3},
+			{0x46, 0x38, vReg8_3},
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},

@@ -111,7 +111,7 @@ var jump = []*OPCode{
 		T: []int{4},
 		F: func(cpu *CPU, codes []uint8) {
 			p := cpu.HL.U16()
-			cpu.PC = cpu.readU16(p)
+			cpu.PC = p
 		},
 	},
 
@@ -124,7 +124,7 @@ var jump = []*OPCode{
 		T: []int{4, 4},
 		F: func(cpu *CPU, codes []uint8) {
 			p := cpu.IX
-			cpu.PC = cpu.readU16(p)
+			cpu.PC = p
 		},
 	},
 
@@ -137,7 +137,7 @@ var jump = []*OPCode{
 		T: []int{4, 4},
 		F: func(cpu *CPU, codes []uint8) {
 			p := cpu.IY
-			cpu.PC = cpu.readU16(p)
+			cpu.PC = p
 		},
 	},
 
@@ -150,8 +150,8 @@ var jump = []*OPCode{
 		T:  []int{5, 3, 5},
 		T2: []int{5, 3},
 		F: func(cpu *CPU, codes []uint8) {
-			cpu.BC.Lo--
-			if cpu.BC.Lo != 0 {
+			cpu.BC.Hi--
+			if cpu.BC.Hi != 0 {
 				cpu.PC = addrOff(cpu.PC, codes[1])
 			}
 		},

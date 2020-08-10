@@ -3,7 +3,7 @@ package z80
 var load16 = []*OPCode{
 
 	{
-		N: "",
+		N: "LD dd, nn",
 		C: []Code{
 			{0x01, 0x30, nil},
 			{0x00, 0xff, nil},
