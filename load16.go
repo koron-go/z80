@@ -71,7 +71,7 @@ var load16 = []*OPCode{
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
 		F: func(cpu *CPU, codes []uint8) {
-			dd := cpu.reg16dd(codes[0] >> 4)
+			dd := cpu.reg16dd(codes[1] >> 4)
 			nn := toU16(codes[2], codes[3])
 			dd.SetU16(cpu.readU16(nn))
 		},

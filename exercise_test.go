@@ -3,8 +3,10 @@ package z80
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/ioutil"
 	"testing"
+	"time"
 )
 
 type prerimIO struct {
@@ -56,6 +58,21 @@ var testFn09 = []byte{
 	0x6c, 0x6f, 0x20, 0x30, 0x39, 0x68, 0x24,
 }
 
+func dumpBytes(mem Memory, p uint16, n int) string {
+	bb := &bytes.Buffer{}
+	for i := n - 1; i >= 0; i-- {
+		fmt.Fprintf(bb, "%02X", mem.Get(p+uint16(i)))
+	}
+	return bb.String()
+}
+
+func dumpCounterShifter(mem Memory) {
+	fmt.Printf("  counter=%s/%s\n", dumpBytes(mem, 0x15c7, 20), dumpBytes(mem, 0x15db, 20))
+	fmt.Printf("  shifter=%s/%s\n", dumpBytes(mem, 0x15ef, 20), dumpBytes(mem, 0x1603, 20))
+}
+
+var lastTime = time.Now()
+
 func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool, breakpoints ...uint16) {
 	t.Helper()
 
@@ -86,7 +103,20 @@ func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool, breakpoi
 		err := cpu.Run(context.Background())
 		if err != nil {
 			if err == ErrBreakPoint {
-				t.Logf("break: %#v", cpu.States)
+				switch cpu.PC {
+				case 0x122:
+					p := cpu.HL.U16()
+					v := uint16(mem.Get(p+1))<<8 | uint16(mem.Get(p+0))
+					fmt.Printf("loop: HL=%04X (HL)=%04X\n", p, v)
+				case 0x1431:
+					if time.Since(lastTime) < 5*time.Second {
+						break
+					}
+					fmt.Printf("1431:\n")
+					dumpCounterShifter(cpu.Memory)
+					lastTime = time.Now()
+				}
+				//t.Logf("break: %#v", cpu.States)
 				continue
 			}
 			t.Fatal(err)
@@ -122,6 +152,6 @@ func TestExerciser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		tRunMinibios(t, b, "Z80doc instruction exerciser\r\n", true)
+		tRunMinibios(t, b, "Z80doc instruction exerciser\r\n", false, 0x0122, 0x1431)
 	})
 }

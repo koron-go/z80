@@ -1,6 +1,8 @@
 package z80
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // Memory is requirements interface for memory.
 type Memory interface {
@@ -63,7 +65,7 @@ type MapMemory map[uint16]uint8
 func (mm MapMemory) Get(addr uint16) uint8 {
 	v, ok := mm[addr]
 	if !ok {
-		return 0
+		return 0xC7 // RST 0
 	}
 	return v
 }

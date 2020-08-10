@@ -88,7 +88,7 @@ var exbtsg = []*OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			de := cpu.DE.U16()
 			hl := cpu.HL.U16()
-			cpu.writeU16(de, cpu.readU16(hl))
+			cpu.Memory.Set(de, cpu.Memory.Get(hl))
 			cpu.DE.SetU16(de + 1)
 			cpu.HL.SetU16(hl + 1)
 			bc := cpu.BC.U16() - 1
@@ -111,7 +111,7 @@ var exbtsg = []*OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			de := cpu.DE.U16()
 			hl := cpu.HL.U16()
-			cpu.writeU16(de, cpu.readU16(hl))
+			cpu.Memory.Set(de, cpu.Memory.Get(hl))
 			cpu.DE.SetU16(de + 1)
 			cpu.HL.SetU16(hl + 1)
 			bc := cpu.BC.U16() - 1
@@ -136,7 +136,7 @@ var exbtsg = []*OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			de := cpu.DE.U16()
 			hl := cpu.HL.U16()
-			cpu.writeU16(de, cpu.readU16(hl))
+			cpu.Memory.Set(de, cpu.Memory.Get(hl))
 			cpu.DE.SetU16(de - 1)
 			cpu.HL.SetU16(hl - 1)
 			bc := cpu.BC.U16() - 1
@@ -159,7 +159,7 @@ var exbtsg = []*OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			de := cpu.DE.U16()
 			hl := cpu.HL.U16()
-			cpu.writeU16(de, cpu.readU16(hl))
+			cpu.Memory.Set(de, cpu.Memory.Get(hl))
 			cpu.DE.SetU16(de - 1)
 			cpu.HL.SetU16(hl - 1)
 			bc := cpu.BC.U16() - 1
