@@ -27,10 +27,21 @@ func (io *prerimIO) Out(addr uint8, value uint8) {
 	io.out.WriteByte(value)
 }
 
-// source: _z80/minibios.z80
-var minibios = []byte{
+// Page 0:
+// ref. http://ngs.no.coocan.jp/doc/wiki.cgi/datapack?page=12%BE%CF+%B3%B0%C9%F4%A5%D7%A5%ED%A5%B0%A5%E9%A5%E0%A4%CE%B4%C4%B6%AD#p2
+var minibios_0000 = []byte{
+	0xc3, 0x03, 0xff, 0x00, 0x00, 0xc3, 0x06, 0xfe,
+}
+
+// source: _z80/minibios.asm
+var minibios_fe06 = []byte{
 	0x79, 0xfe, 0x02, 0x28, 0x05, 0xfe, 0x09, 0x28, 0x05, 0x76, 0x7b, 0xd3,
 	0x00, 0xc9, 0x1a, 0xfe, 0x24, 0xc8, 0xd3, 0x00, 0x13, 0x18, 0xf7,
+}
+
+// page for stop code.
+var minibios_ff03 = []byte{
+	0x76,
 }
 
 // source: _z80/testfn02.z80
@@ -53,15 +64,16 @@ func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool, breakpoi
 	io := &prerimIO{t: t, out: buf}
 
 	mem := MapMemory{}
-	mem.Put(0, 0x76, 0x00, 076, 0x00, 0x76)
-	mem.Put(5, minibios...)
+	mem.Put(0x0000, minibios_0000...)
+	mem.Put(0xfe06, minibios_fe06...)
+	mem.Put(0xff03, minibios_ff03...)
 	mem.Put(0x100, prog...)
 
 	cpu := CPU{
 		States: stt,
 		Memory: mem,
 		IO:     io,
-		Debug: debug,
+		Debug:  debug,
 	}
 	if len(breakpoints) > 0 {
 		cpu.BreakPoints = map[uint16]struct{}{}
@@ -81,12 +93,12 @@ func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool, breakpoi
 		}
 		break
 	}
-	if cpu.PC == 0x0001 {
-		t.Fatalf("halted on 0x0000: buf=%q", buf.String())
+	if cpu.PC == 0xff04 {
+		t.Fatalf("halted on 0xff03+1: buf=%q", buf.String())
 	}
 	actOut := buf.String()
 	if actOut != expOut {
-		t.Errorf("output mismatch (PC=%04x):\nwant=%s\n got=%s\n", cpu.PC, expOut, actOut)
+		t.Errorf("output mismatch (PC=%04x):\nwant=%q\n got=%q\n", cpu.PC, expOut, actOut)
 	}
 }
 
@@ -110,6 +122,6 @@ func TestExerciser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		tRunMinibios(t, b, "Z80doc instruction exerciser\r\nTests complete", true, 0x140e)
+		tRunMinibios(t, b, "Z80doc instruction exerciser\r\n", true)
 	})
 }

@@ -1,5 +1,5 @@
 	aseg
-	org	5h
+	org	fe06h
 
 	ld	a, c
 	cp	2
