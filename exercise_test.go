@@ -45,7 +45,7 @@ var testFn09 = []byte{
 	0x6c, 0x6f, 0x20, 0x30, 0x39, 0x68, 0x24,
 }
 
-func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool) {
+func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool, breakpoints ...uint16) {
 	t.Helper()
 
 	buf := &bytes.Buffer{}
@@ -63,9 +63,23 @@ func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool) {
 		IO:     io,
 		Debug: debug,
 	}
-	err := cpu.Run(context.Background())
-	if err != nil {
-		t.Fatal(err)
+	if len(breakpoints) > 0 {
+		cpu.BreakPoints = map[uint16]struct{}{}
+		for _, v := range breakpoints {
+			cpu.BreakPoints[v] = struct{}{}
+		}
+	}
+
+	for {
+		err := cpu.Run(context.Background())
+		if err != nil {
+			if err == ErrBreakPoint {
+				t.Logf("break: %#v", cpu.States)
+				continue
+			}
+			t.Fatal(err)
+		}
+		break
 	}
 	if cpu.PC == 0x0001 {
 		t.Fatalf("halted on 0x0000: buf=%q", buf.String())
@@ -76,7 +90,7 @@ func tRunMinibios(t *testing.T, prog []byte, expOut string, debug bool) {
 	}
 }
 
-func TestPrelim(t *testing.T) {
+func TestExerciser(t *testing.T) {
 	t.Run("test function call 02h", func(t *testing.T) {
 		tRunMinibios(t, testFn02, "OK", false)
 	})
@@ -89,5 +103,13 @@ func TestPrelim(t *testing.T) {
 			t.Fatal(err)
 		}
 		tRunMinibios(t, b, "Preliminary tests complete", false)
+	})
+	t.Run("run testdata/zexdoc.cim", func(t *testing.T) {
+		t.Skip("not run")
+		b, err := ioutil.ReadFile("testdata/zexdoc.cim")
+		if err != nil {
+			t.Fatal(err)
+		}
+		tRunMinibios(t, b, "Z80doc instruction exerciser\r\nTests complete", true, 0x140e)
 	})
 }
