@@ -37,4 +37,8 @@ clean:
 	rm -f tags
 	rm -f tmp/_cover.out tmp/cover.html
 
+.PHONY: zexdoc
+zexdoc:
+	$(MAKE) -C cmd/zexdoc run
+
 # based on: github.com/koron-go/_skeleton/Makefile
