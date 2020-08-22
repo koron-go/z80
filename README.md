@@ -17,7 +17,8 @@ Z80 instruction set exerciser, passed tests:
 * [x] alu8i   - `aluop a,nn (28,672 cycles)`
 * [ ] alu8r   - `aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)` CRC
 * [ ] alu8rx  - `aluop a,<ixh,ixl,iyh,iyl> (376,832 cycles)` DECODE
-* [ ] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)`
+    * ADD/ADC/SUB/SBC/AND/XOR/OR/CP IXH/IXL/IYH/IYL
+* [ ] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)` CRC
 * [x] bitx    - `bit n,(<ix,iy>+1) (2048 cycles)`
 * [x] bitz80  - `bit n,<b,c,d,e,h,l,(hl),a> (49,152 cycles)`
 * [ ] cpd1    - `cpd<r> (1) (6144 cycles)` CRC
@@ -61,6 +62,7 @@ Z80 instruction set exerciser, passed tests:
 * [x] ld8ixy  - `ld <ixh,ixl,iyh,iyl>,nn (32 cycles)`
 * [x] ld8rr   - `ld <b,c,d,e,h,l,a>,<b,c,d,e,h,l,a> (3456 cycles)`
 * [ ] ld8rrx  - `ld <b,c,d,e,ixy,a>,<b,c,d,e,ixy,a> (6912 cycles)` DECODE
+    * `DD40` undefined/unknown code
 * [x] lda     - `ld a,(nnnn) / ld (nnnn),a (44 cycles)`
 * [x] ldd1    - `ldd<r> (1) (44 cycles)`
 * [x] ldd2    - `ldd<r> (2) (44 cycles)`
@@ -94,3 +96,9 @@ Z80 instruction set exerciser, passed tests:
 
     * [zmac port](https://github.com/obiwanjacobi/Zim80/tree/master/Source/Code/Jacobi.Zim80.IntegrationTests/CpuZ80/Zexlax)
     * [another zmac port](https://github.com/DavidDiPaola/esp32_crimbus-lights-z80/blob/master/src/z80/roms/zexdoc.src)
+
+* [HOME OF THE Z80 CPU](http://www.z80.info/)
+
+    * [Z80 instruction set (tables)](http://clrhome.org/table/)
+
+* [WebMSX's Z80 implementation](https://github.com/ppeccin/WebMSX/blob/master/src/main/msx/cpu/CPU.js)
