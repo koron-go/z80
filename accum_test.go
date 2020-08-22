@@ -1,10 +1,208 @@
 package z80
 
 import (
+	"fmt"
+	"math/bits"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
+
+func carry2n(c bool) int {
+	if c {
+		return 1
+	}
+	return 0
+}
+
+func tCheckFlags(t *testing.T, name string, cpu *CPU, fo FlagOp) {
+	t.Helper()
+	exp := fo.Or & ^uint8(maskDefault)
+	act := cpu.States.GPR.AF.Lo & ^uint8(maskDefault)
+	if act != exp {
+		t.Fatalf("%s: unexpected flags: want=%02x got=%02x", name, exp, act)
+	}
+}
+
+func TestAccum_addU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			name := fmt.Sprintf("addU8(%02x, %02x)", a, b)
+			r := a + b
+			hc := a&0x0f+b&0x0f > 0x0f
+			pv := isOverflowS8(int32(int8(a)) + int32(int8(b)))
+			fo := FlagOp{}.
+				Put(S, r&0x80 != 0). // S is set if result is negative
+				Put(Z, r&0xff == 0). // Z is set if result is 0
+				Put(H, hc).          // H is set if carry for bit3
+				Put(PV, pv).         // PV is set if overflow (-128~+127)
+				Reset(N).            // N is reset
+				Put(C, r > 0xff)     // C is set if carry from bit 7
+			cpu := &CPU{}
+			act := cpu.addU8(uint8(a), uint8(b))
+			if act != uint8(r) {
+				t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+			}
+			tCheckFlags(t, name, cpu, fo)
+		}
+	}
+}
+
+func TestAccum_adcU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			for _, carry := range []bool{false, true} {
+				name := fmt.Sprintf("adcU8(%02x, %02x, C=%t)", a, b, carry)
+				c := carry2n(carry)
+				r := a + b + c
+				hc := a&0x0f+b&0x0f+c > 0x0f
+				pv := isOverflowS8(int32(int8(a)) + int32(int8(b)) + int32(c))
+				fo := FlagOp{}.
+					Put(S, r&0x80 != 0). // S is set if result is negative
+					Put(Z, r&0xff == 0). // Z is set if result is 0
+					Put(H, hc).          // H is set if carry for bit3
+					Put(PV, pv).         // PV is set if overflow (-128~+127)
+					Reset(N).            // N is reset
+					Put(C, r > 0xff)     // C is set if carry from bit 7
+				cpu := &CPU{}
+				cpu.AF.Lo = uint8(c)
+				act := cpu.adcU8(uint8(a), uint8(b))
+				if act != uint8(r) {
+					t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+				}
+				tCheckFlags(t, name, cpu, fo)
+			}
+		}
+	}
+}
+
+func TestAccum_subU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			name := fmt.Sprintf("subU8(%02x, %02x)", a, b)
+			r := a - b
+			hc := a&0x0f < b&0x0f
+			pv := isOverflowS8(int32(int8(a)) - int32(int8(b)))
+			fo := FlagOp{}.
+				Put(S, r&0x80 != 0). // S is set if result is negative
+				Put(Z, r&0xff == 0). // Z is set if result is 0
+				Put(H, hc).          // H is set if carry for bit3
+				Put(PV, pv).         // PV is set if overflow (-128~+127)
+				Set(N).              // N is reset
+				Put(C, r < 0)        // C is set if carry from bit 7
+			cpu := &CPU{}
+			act := cpu.subU8(uint8(a), uint8(b))
+			if act != uint8(r) {
+				t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+			}
+			tCheckFlags(t, name, cpu, fo)
+		}
+	}
+}
+
+func TestAccum_sbcU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			for _, carry := range []bool{false, true} {
+				name := fmt.Sprintf("sbcU8(%02x, %02x, C=%t)", a, b, carry)
+				c := carry2n(carry)
+				r := a - b - c
+				hc := a&0x0f < (b+c)&0x0f
+				pv := isOverflowS8(int32(int8(a)) - int32(int8(b)) - int32(c))
+				fo := FlagOp{}.
+					Put(S, r&0x80 != 0). // S is set if result is negative
+					Put(Z, r&0xff == 0). // Z is set if result is 0
+					Put(H, hc).          // H is set if carry for bit3
+					Put(PV, pv).         // PV is set if overflow (-128~+127)
+					Set(N).              // N is reset
+					Put(C, r < 0)        // C is set if carry from bit 7
+				cpu := &CPU{}
+				cpu.AF.Lo = uint8(c)
+				act := cpu.sbcU8(uint8(a), uint8(b))
+				if act != uint8(r) {
+					t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+				}
+				tCheckFlags(t, name, cpu, fo)
+			}
+		}
+	}
+}
+
+func TestAccum_andU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			name := fmt.Sprintf("andU8(%02x, %02x)", a, b)
+			r := a & b
+			pv := bits.OnesCount8(uint8(r))%2 == 0
+			fo := FlagOp{}.
+				Put(S, r&0x80 != 0). // S is set if result is negative
+				Put(Z, r&0xff == 0). // Z is set if result is 0
+				Set(H).              // H is set
+				Put(PV, pv).         // PV is set if parity even
+				Reset(N).            // N is reset
+				Reset(C)             // C is reset
+			cpu := &CPU{}
+			act := cpu.andU8(uint8(a), uint8(b))
+			if act != uint8(r) {
+				t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+			}
+			tCheckFlags(t, name, cpu, fo)
+		}
+	}
+}
+
+func TestAccum_orU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			name := fmt.Sprintf("orU8(%02x, %02x)", a, b)
+			r := a | b
+			pv := bits.OnesCount8(uint8(r))%2 == 0
+			fo := FlagOp{}.
+				Put(S, r&0x80 != 0). // S is set if result is negative
+				Put(Z, r&0xff == 0). // Z is set if result is 0
+				Reset(H).            // H is reset
+				Put(PV, pv).         // PV is set if parity even
+				Reset(N).            // N is reset
+				Reset(C)             // C is reset
+			cpu := &CPU{}
+			act := cpu.orU8(uint8(a), uint8(b))
+			if act != uint8(r) {
+				t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+			}
+			tCheckFlags(t, name, cpu, fo)
+		}
+	}
+}
+
+func TestAccum_xorU8(t *testing.T) {
+	t.Parallel()
+	for a := 0; a <= 0xff; a++ {
+		for b := 0; b <= 0xff; b++ {
+			name := fmt.Sprintf("xorU8(%02x, %02x)", a, b)
+			r := a ^ b
+			pv := bits.OnesCount8(uint8(r))%2 == 0
+			fo := FlagOp{}.
+				Put(S, r&0x80 != 0). // S is set if result is negative
+				Put(Z, r&0xff == 0). // Z is set if result is 0
+				Reset(H).            // H is reset
+				Put(PV, pv).         // PV is set if parity even
+				Reset(N).            // N is reset
+				Reset(C)             // C is reset
+			cpu := &CPU{}
+			act := cpu.xorU8(uint8(a), uint8(b))
+			if act != uint8(r) {
+				t.Fatalf("%s: failed: want=%02x got=%02x", name, uint8(r), act)
+			}
+			tCheckFlags(t, name, cpu, fo)
+		}
+	}
+}
 
 func TestAccum_bitchk8(t *testing.T) {
 	t.Parallel()

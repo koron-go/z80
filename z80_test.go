@@ -77,14 +77,15 @@ func maskFlags(s States, mask uint8) States {
 }
 
 const (
-	maskNone    = 0x00
+	maskNone = 0x00
+	maskC    = 0x01
+	maskN    = 0x02
+	maskPV   = 0x04
+	maskH    = 0x10
+	maskZ    = 0x40
+	maskS    = 0x80
+
 	maskDefault = 0x28
-	maskC       = 0x01
-	maskN       = 0x02
-	maskPV      = 0x04
-	maskH       = 0x10
-	maskZ       = 0x40
-	maskS       = 0x80
 )
 
 type tReg struct {
