@@ -20,6 +20,7 @@ var allOPCodes = [][]*OPCode{
 	jump,
 	callret,
 	inout,
+	undoc,
 }
 
 type decodeLayer struct {
