@@ -87,3 +87,10 @@ Z80 instruction set exerciser, passed tests:
 * [Z80 DAA 内部キャリーフラグは実在するのか?](https://uniabis.net/pico/msx/z80daa/)
 
 * [8ビット CPU Z80命令セット](http://www.yamamo10.jp/yamamoto/comp/Z80/instructions/index.php)
+
+* [zmac - Z-80 Macro Cross Assembler](http://48k.ca/zmac.html)
+
+* [Z80 Instruction Exerciser](http://mdfs.net/Software/Z80/Exerciser/)
+
+    * [zmac port](https://github.com/obiwanjacobi/Zim80/tree/master/Source/Code/Jacobi.Zim80.IntegrationTests/CpuZ80/Zexlax)
+    * [another zmac port](https://github.com/DavidDiPaola/esp32_crimbus-lights-z80/blob/master/src/z80/roms/zexdoc.src)
