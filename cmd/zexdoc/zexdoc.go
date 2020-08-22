@@ -15,26 +15,26 @@ import (
 
 func newMemory() z80.MapMemory {
 	m := z80.MapMemory{}
-	m.Put(0x0000, bios_0000...)
-	m.Put(0xfe06, bios_fe06...)
-	m.Put(0xff03, bios_ff03...)
+	m.Put(0x0000, bios0000...)
+	m.Put(0xfe06, biosFE06...)
+	m.Put(0xff03, biosFF03...)
 	return m
 }
 
 // Page 0:
 // ref. http://ngs.no.coocan.jp/doc/wiki.cgi/datapack?page=12%BE%CF+%B3%B0%C9%F4%A5%D7%A5%ED%A5%B0%A5%E9%A5%E0%A4%CE%B4%C4%B6%AD#p2
-var bios_0000 = []byte{
+var bios0000 = []byte{
 	0xc3, 0x03, 0xff, 0x00, 0x00, 0xc3, 0x06, 0xfe,
 }
 
 // source: _z80/minibios.asm
-var bios_fe06 = []byte{
+var biosFE06 = []byte{
 	0x79, 0xfe, 0x02, 0x28, 0x05, 0xfe, 0x09, 0x28, 0x05, 0x76, 0x7b, 0xd3,
 	0x00, 0xc9, 0x1a, 0xfe, 0x24, 0xc8, 0xd3, 0x00, 0x13, 0x18, 0xf7,
 }
 
 // page for stop code.
-var bios_ff03 = []byte{
+var biosFF03 = []byte{
 	0x76,
 }
 

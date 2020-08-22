@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var rArith16_ss = []tReg{
+var rArith16ss = []tReg{
 	{"BC", 0}, {"DE", 1}, {"HL", 2}, {"SP", 3},
 }
 
@@ -81,7 +81,7 @@ func tADChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 
 func TestAirth16_adc16_ADChlss(t *testing.T) {
 	t.Parallel()
-	for _, r := range rArith16_ss {
+	for _, r := range rArith16ss {
 		for _, hl := range u16casesSummary {
 			if r.Label == "HL" {
 				tADChlss(t, r, uint16(hl), uint16(hl), false)
@@ -163,7 +163,7 @@ func tSBChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 
 func TestArith16_adc16_SBChlss(t *testing.T) {
 	t.Parallel()
-	for _, r := range rArith16_ss {
+	for _, r := range rArith16ss {
 		for _, hl := range u16casesSummary {
 			if r.Label == "HL" {
 				tSBChlss(t, r, uint16(hl), uint16(hl), false)
