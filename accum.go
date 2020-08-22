@@ -66,7 +66,6 @@ func (cpu *CPU) andU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v == 0).
 		Set(H).
-		// TODO: verify PV behavior. compare with zexdoc
 		Put(PV, bits.OnesCount8(v)%2 == 0).
 		Reset(N).
 		Reset(C))
@@ -79,7 +78,6 @@ func (cpu *CPU) orU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v == 0).
 		Reset(H).
-		// TODO: verify PV behavior. compare with zexdoc
 		Put(PV, bits.OnesCount8(v)%2 == 0).
 		Reset(N).
 		Reset(C))
@@ -92,7 +90,6 @@ func (cpu *CPU) xorU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v == 0).
 		Reset(H).
-		// TODO: verify PV behavior. compare with zexdoc
 		Put(PV, bits.OnesCount8(v)%2 == 0).
 		Reset(N).
 		Reset(C))
@@ -157,7 +154,6 @@ func (cpu *CPU) sbcU16(a, b uint16) uint16 {
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x8000 != 0).
 		Put(Z, v&0xffff == 0).
-		// TODO: verify H behavior.
 		Put(H, a32&0x0fff < (b32+c32)&0x0fff).
 		Put(PV, a&0x8000 != b&0x8000 && a&0x8000 != uint16(v&0x8000)).
 		Set(N).

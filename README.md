@@ -8,7 +8,7 @@ Z80 emulation in Go.
 
 ## Progress
 
-Z80 instruction set exerciser, passed tests:
+Z80 instruction set exerciser, passed 64/67 (95.5%) tests: 
 
 * [x] adc16   - `<adc,sbc> hl,<bc,de,hl,sp> (38,912 cycles)`
 * [x] add16   - `add hl,<bc,de,hl,sp> (19,456 cycles)`
