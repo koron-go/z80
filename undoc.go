@@ -1,5 +1,91 @@
 package z80
 
+func (cpu *CPU) getRX(n uint8) uint8 {
+	switch n & 0x07 {
+	case 0x00:
+		return cpu.BC.Hi
+	case 0x01:
+		return cpu.BC.Lo
+	case 0x02:
+		return cpu.DE.Hi
+	case 0x03:
+		return cpu.DE.Lo
+	case 0x04:
+		return uint8(cpu.IX >> 8)
+	case 0x05:
+		return uint8(cpu.IX & 0xff)
+	case 0x07:
+		return cpu.AF.Hi
+	default:
+		cpu.failf("getRX invalid register: %02x", n)
+		return 0
+	}
+}
+
+func (cpu *CPU) setRX(n uint8, v uint8) {
+	switch n & 0x07 {
+	case 0x00:
+		cpu.BC.Hi = v
+	case 0x01:
+		cpu.BC.Lo = v
+	case 0x02:
+		cpu.DE.Hi = v
+	case 0x03:
+		cpu.DE.Lo = v
+	case 0x04:
+		cpu.IX = uint16(v)<<8 | cpu.IX&0x00ff
+	case 0x05:
+		cpu.IX = uint16(v) | cpu.IX&0xff00
+	case 0x07:
+		cpu.AF.Hi = v
+	default:
+		cpu.failf("setRX invalid register: %02x", n)
+	}
+}
+
+func (cpu *CPU) getRY(n uint8) uint8 {
+	switch n & 0x07 {
+	case 0x00:
+		return cpu.BC.Hi
+	case 0x01:
+		return cpu.BC.Lo
+	case 0x02:
+		return cpu.DE.Hi
+	case 0x03:
+		return cpu.DE.Lo
+	case 0x04:
+		return uint8(cpu.IY >> 8)
+	case 0x05:
+		return uint8(cpu.IY & 0xff)
+	case 0x07:
+		return cpu.AF.Hi
+	default:
+		cpu.failf("getRY invalid register: %02x", n)
+		return 0
+	}
+}
+
+func (cpu *CPU) setRY(n uint8, v uint8) {
+	switch n & 0x07 {
+	case 0x00:
+		cpu.BC.Hi = v
+	case 0x01:
+		cpu.BC.Lo = v
+	case 0x02:
+		cpu.DE.Hi = v
+	case 0x03:
+		cpu.DE.Lo = v
+	case 0x04:
+		cpu.IY = uint16(v)<<8 | cpu.IY&0x00ff
+	case 0x05:
+		cpu.IY = uint16(v) | cpu.IY&0xff00
+	case 0x07:
+		cpu.AF.Hi = v
+	default:
+		cpu.failf("setRY invalid register: %02x", n)
+	}
+}
+
 var undoc = []*OPCode{
 	{
 		N: "INC IXH",
@@ -216,6 +302,32 @@ var undoc = []*OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			p := cpu.HL.U16()
 			cpu.Memory.Set(p, cpu.sl1U8(cpu.Memory.Get(p)))
+		},
+	},
+
+	{
+		N: "LD rx1, rx2",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x40, 0x3f, vReg88},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			v := cpu.getRX(codes[1])
+			cpu.setRX(codes[1]>>3, v)
+		},
+	},
+
+	{
+		N: "LD ry1, ry2",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x40, 0x3f, vReg88},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			v := cpu.getRY(codes[1])
+			cpu.setRY(codes[1]>>3, v)
 		},
 	},
 }

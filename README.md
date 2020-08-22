@@ -61,8 +61,7 @@ Z80 instruction set exerciser, passed tests:
 * [x] ld8ix3  - `ld a,(<ix,iy>+1) (128 cycles)`
 * [x] ld8ixy  - `ld <ixh,ixl,iyh,iyl>,nn (32 cycles)`
 * [x] ld8rr   - `ld <b,c,d,e,h,l,a>,<b,c,d,e,h,l,a> (3456 cycles)`
-* [ ] ld8rrx  - `ld <b,c,d,e,ixy,a>,<b,c,d,e,ixy,a> (6912 cycles)` DECODE
-    * `DD40` undefined/unknown code
+* [x] ld8rrx  - `ld <b,c,d,e,ixy,a>,<b,c,d,e,ixy,a> (6912 cycles)`
 * [x] lda     - `ld a,(nnnn) / ld (nnnn),a (44 cycles)`
 * [x] ldd1    - `ldd<r> (1) (44 cycles)`
 * [x] ldd2    - `ldd<r> (2) (44 cycles)`
