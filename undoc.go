@@ -7,7 +7,7 @@ var undoc = []*OPCode{
 			{0xdd, 0x00, nil},
 			{0x24, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.incU8(uint8(cpu.IX >> 8))
 			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
@@ -20,7 +20,7 @@ var undoc = []*OPCode{
 			{0xdd, 0x00, nil},
 			{0x25, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.decU8(uint8(cpu.IX >> 8))
 			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
@@ -33,7 +33,7 @@ var undoc = []*OPCode{
 			{0xdd, 0x00, nil},
 			{0x2c, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.incU8(uint8(cpu.IX))
 			cpu.IX = uint16(v) | cpu.IX&0xff00
@@ -46,7 +46,7 @@ var undoc = []*OPCode{
 			{0xdd, 0x00, nil},
 			{0x2d, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.decU8(uint8(cpu.IX))
 			cpu.IX = uint16(v) | cpu.IX&0xff00
@@ -59,7 +59,7 @@ var undoc = []*OPCode{
 			{0xfd, 0x00, nil},
 			{0x24, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.incU8(uint8(cpu.IY >> 8))
 			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
@@ -72,7 +72,7 @@ var undoc = []*OPCode{
 			{0xfd, 0x00, nil},
 			{0x25, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.decU8(uint8(cpu.IY >> 8))
 			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
@@ -85,7 +85,7 @@ var undoc = []*OPCode{
 			{0xfd, 0x00, nil},
 			{0x2c, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.incU8(uint8(cpu.IY))
 			cpu.IY = uint16(v) | cpu.IY&0xff00
@@ -98,9 +98,65 @@ var undoc = []*OPCode{
 			{0xfd, 0x00, nil},
 			{0x2d, 0x00, nil},
 		},
-		T: []int{4, 6},
+		T: []int{4, 6}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.decU8(uint8(cpu.IY))
+			cpu.IY = uint16(v) | cpu.IY&0xff00
+		},
+	},
+
+	{
+		N: "LD IXH, n",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x26, 0x00, nil},
+			{0x00, 0xff, nil},
+		},
+		T: []int{4, 3},
+		F: func(cpu *CPU, codes []uint8) {
+			v := codes[2]
+			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
+		},
+	},
+
+	{
+		N: "LD IXL, n",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x2e, 0x00, nil},
+			{0x00, 0xff, nil},
+		},
+		T: []int{4, 3},
+		F: func(cpu *CPU, codes []uint8) {
+			v := codes[2]
+			cpu.IX = uint16(v) | cpu.IX&0xff00
+		},
+	},
+
+	{
+		N: "LD IYH, n",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x26, 0x00, nil},
+			{0x00, 0xff, nil},
+		},
+		T: []int{4, 3},
+		F: func(cpu *CPU, codes []uint8) {
+			v := codes[2]
+			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
+		},
+	},
+
+	{
+		N: "LD IYL, n",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x2e, 0x00, nil},
+			{0x00, 0xff, nil},
+		},
+		T: []int{4, 3},
+		F: func(cpu *CPU, codes []uint8) {
+			v := codes[2]
 			cpu.IY = uint16(v) | cpu.IY&0xff00
 		},
 	},
