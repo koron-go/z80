@@ -62,8 +62,7 @@ var ctrl = []*OPCode{
 			cpu.flagUpdate(FlagOp{}.
 				Put(S, v&0x80 != 0).
 				Put(Z, v == 0).
-				// FIXME: check and fix H flag behavior.
-				Put(H, false).
+				Put(H, a&0x0f != 0).
 				Put(PV, a == 0x80).
 				Set(N).
 				Put(C, a != 0))

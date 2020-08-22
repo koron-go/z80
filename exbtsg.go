@@ -220,7 +220,7 @@ var exbtsg = []*OPCode{
 				Put(H, a&0x0f < x&0x0f).
 				Put(PV, bc != 0).
 				Set(N))
-			if bc != 0 {
+			if bc != 0 && v != 0 {
 				cpu.PC -= 2
 			}
 		},
@@ -272,7 +272,7 @@ var exbtsg = []*OPCode{
 				Put(H, a&0x0f < x&0x0f).
 				Put(PV, bc != 0).
 				Set(N))
-			if bc != 0 {
+			if bc != 0 && v != 0 {
 				cpu.PC -= 2
 			}
 		},

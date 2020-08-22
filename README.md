@@ -21,8 +21,8 @@ Z80 instruction set exerciser, passed tests:
 * [ ] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)` CRC
 * [x] bitx    - `bit n,(<ix,iy>+1) (2048 cycles)`
 * [x] bitz80  - `bit n,<b,c,d,e,h,l,(hl),a> (49,152 cycles)`
-* [ ] cpd1    - `cpd<r> (1) (6144 cycles)` CRC
-* [ ] cpi1    - `cpi<r> (1) (6144 cycles)` CRC
+* [x] cpd1    - `cpd<r> (1) (6144 cycles)`
+* [x] cpi1    - `cpi<r> (1) (6144 cycles)`
 * [x] daaop   - `<daa,cpl,scf,ccf> (65,536 cycles)`
 * [x] inca    - `<inc,dec> a (3072 cycles)`
 * [x] incb    - `<inc,dec> b (3072 cycles)`
@@ -68,7 +68,7 @@ Z80 instruction set exerciser, passed tests:
 * [x] ldd2    - `ldd<r> (2) (44 cycles)`
 * [x] ldi1    - `ldi<r> (1) (44 cycles)`
 * [x] ldi2    - `ldi<r> (2) (44 cycles)`
-* [ ] negop   - `neg (16,384 cycles)` CRC
+* [x] negop   - `neg (16,384 cycles)`
 * [x] rldop   - `<rld,rrd> (7168 cycles)`
 * [x] rot8080 - `<rlca,rrca,rla,rra> (6144 cycles)`
 * [x] rotxy   - `shift/rotate (<ix,iy>+1) (416 cycles)`
