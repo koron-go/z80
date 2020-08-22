@@ -54,6 +54,7 @@ var arith8 = []*OPCode{
 			a := cpu.AF.Hi
 			p := addrOff(cpu.IX, codes[2])
 			x := cpu.Memory.Get(p)
+			//fmt.Printf("a=%02x p=%04x x=%02x ix=%04x\n", a, p, x, cpu.IX)
 			cpu.AF.Hi = cpu.addU8(a, x)
 		},
 	},

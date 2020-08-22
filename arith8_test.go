@@ -465,3 +465,91 @@ func TestArith8_alu8i_CPan(t *testing.T) {
 		}
 	}
 }
+
+func tADDAIXd(t *testing.T, av, dv uint8, ix uint16, mem MapMemory) {
+	mem.Put(0, 0xdd, 0x86, dv)
+	preGPR := testInitGPR
+	preGPR.AF.Hi = av
+	xv := mem.Get(ix + uint16(int16(int8(dv))))
+	r := av + xv
+	hc := av&0x0f+xv&0x0f > 0x0f
+	pv := isOverflowS8(int32(int8(av)) + int32(int8(xv)))
+	fo := FlagOp{}.
+		Put(S, r&0x80 != 0). // S is set if result is negative
+		Put(Z, r&0xff == 0). // Z is set if result is 0
+		Put(H, hc).          // H is set if carry for bit3
+		Put(PV, pv).         // PV is set if overflow (-128~+127)
+		Reset(N).            // N is reset
+		Put(C, av > ^xv)     // C is set if carry from bit 7
+	postGPR := preGPR
+	postGPR.AF = Register{Hi: r, Lo: fo.Or}
+	tSteps(t,
+		fmt.Sprintf("ADD A, (IX+d) (A=%02[1]x d=%02[2]x IX=%04[3]x (IX)=%02[4]x)", av, dv, ix, xv),
+		States{
+			GPR: preGPR,
+			SPR: SPR{IX: ix},
+		}, mem, 1,
+		States{
+			GPR: postGPR,
+			SPR: SPR{IX: ix, PC: 0x0003, IR: Register{Lo: 0x01}},
+		}, mem, maskDefault)
+}
+
+func TestArith8_ADDAIXd(t *testing.T) {
+	t.Parallel()
+	var base uint16 = 0x4000
+	mem := MapMemory{}
+	for i := 0; i < 256; i++ {
+		mem.Set(base+uint16(i), uint8(0x80+i))
+	}
+	ix := base + 0x80
+	for av := 0; av <= 0xff; av++ {
+		for dv := 0; dv <= 0xff; dv++ {
+			tADDAIXd(t, uint8(av), uint8(dv), ix, mem)
+		}
+	}
+}
+
+func tADDAIYd(t *testing.T, av, dv uint8, iy uint16, mem MapMemory) {
+	mem.Put(0, 0xfd, 0x86, dv)
+	preGPR := testInitGPR
+	preGPR.AF.Hi = av
+	yv := mem.Get(iy + uint16(int16(int8(dv))))
+	r := av + yv
+	hc := av&0x0f+yv&0x0f > 0x0f
+	pv := isOverflowS8(int32(int8(av)) + int32(int8(yv)))
+	fo := FlagOp{}.
+		Put(S, r&0x80 != 0). // S is set if result is negative
+		Put(Z, r&0xff == 0). // Z is set if result is 0
+		Put(H, hc).          // H is set if carry for bit3
+		Put(PV, pv).         // PV is set if overflow (-128~+127)
+		Reset(N).            // N is reset
+		Put(C, av > ^yv)     // C is set if carry from bit 7
+	postGPR := preGPR
+	postGPR.AF = Register{Hi: r, Lo: fo.Or}
+	tSteps(t,
+		fmt.Sprintf("ADD A, (IY+d) (A=%02[1]x d=%02[2]x IY=%04[3]x (IY)=%02[4]x)", av, dv, iy, yv),
+		States{
+			GPR: preGPR,
+			SPR: SPR{IY: iy},
+		}, mem, 1,
+		States{
+			GPR: postGPR,
+			SPR: SPR{IY: iy, PC: 0x0003, IR: Register{Lo: 0x01}},
+		}, mem, maskDefault)
+}
+
+func TestArith8_ADDAIYd(t *testing.T) {
+	t.Parallel()
+	var base uint16 = 0x4000
+	mem := MapMemory{}
+	for i := 0; i < 256; i++ {
+		mem.Set(base+uint16(i), uint8(0x80+i))
+	}
+	iy := base + 0x80
+	for av := 0; av <= 0xff; av++ {
+		for dv := 0; dv <= 0xff; dv++ {
+			tADDAIYd(t, uint8(av), uint8(dv), iy, mem)
+		}
+	}
+}
