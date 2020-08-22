@@ -69,8 +69,8 @@ Z80 instruction set exerciser, passed tests:
 * [ ] negop   - `neg (16,384 cycles)` CRC
 * [x] rldop   - `<rld,rrd> (7168 cycles)`
 * [x] rot8080 - `<rlca,rrca,rla,rra> (6144 cycles)`
-* [ ] rotxy   - `shift/rotate (<ix,iy>+1) (416 cycles)` DECODE
-* [ ] rotz80  - `shift/rotate <b,c,d,e,h,l,(hl),a> (6784 cycles)` DECODE
+* [x] rotxy   - `shift/rotate (<ix,iy>+1) (416 cycles)`
+* [x] rotz80  - `shift/rotate <b,c,d,e,h,l,(hl),a> (6784 cycles)`
 * [x] srz80   - `<set,res> n,<b,c,d,e,h,l,(hl),a> (7936 cycles)`
 * [x] srzx    - `<set,res> n,(<ix,iy>+1) (1792 cycles)`
 * [x] st8ix1  - `ld (<ix,iy>+1),<b,c,d,e> (1024 cycles)`

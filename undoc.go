@@ -112,7 +112,7 @@ var undoc = []*OPCode{
 			{0x26, 0x00, nil},
 			{0x00, 0xff, nil},
 		},
-		T: []int{4, 3},
+		T: []int{4, 3}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := codes[2]
 			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
@@ -126,7 +126,7 @@ var undoc = []*OPCode{
 			{0x2e, 0x00, nil},
 			{0x00, 0xff, nil},
 		},
-		T: []int{4, 3},
+		T: []int{4, 3}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := codes[2]
 			cpu.IX = uint16(v) | cpu.IX&0xff00
@@ -140,7 +140,7 @@ var undoc = []*OPCode{
 			{0x26, 0x00, nil},
 			{0x00, 0xff, nil},
 		},
-		T: []int{4, 3},
+		T: []int{4, 3}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := codes[2]
 			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
@@ -154,10 +154,68 @@ var undoc = []*OPCode{
 			{0x2e, 0x00, nil},
 			{0x00, 0xff, nil},
 		},
-		T: []int{4, 3},
+		T: []int{4, 3}, // not verified
 		F: func(cpu *CPU, codes []uint8) {
 			v := codes[2]
 			cpu.IY = uint16(v) | cpu.IY&0xff00
+		},
+	},
+
+	{
+		N: "SL1 (IX+d)",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0xcb, 0x00, nil},
+			{0x00, 0xff, nil},
+			{0x36, 0x00, nil},
+		},
+		T: []int{4, 4, 3, 5, 4, 3}, // not verified
+		F: func(cpu *CPU, codes []uint8) {
+			p := addrOff(cpu.IX, codes[2])
+			v := cpu.sl1U8(cpu.Memory.Get(p))
+			cpu.Memory.Set(p, v)
+		},
+	},
+
+	{
+		N: "SL1 (IY+d)",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0xcb, 0x00, nil},
+			{0x00, 0xff, nil},
+			{0x36, 0x00, nil},
+		},
+		T: []int{4, 4, 3, 5, 4, 3}, // not verified
+		F: func(cpu *CPU, codes []uint8) {
+			p := addrOff(cpu.IY, codes[2])
+			v := cpu.sl1U8(cpu.Memory.Get(p))
+			cpu.Memory.Set(p, v)
+		},
+	},
+
+	{
+		N: "SL1 r",
+		C: []Code{
+			{0xcb, 0x00, nil},
+			{0x30, 0x07, vReg8},
+		},
+		T: []int{4, 4},
+		F: func(cpu *CPU, codes []uint8) {
+			r := cpu.regP(codes[1])
+			*r = cpu.sl1U8(*r)
+		},
+	},
+
+	{
+		N: "SL1 (HL)",
+		C: []Code{
+			{0xcb, 0x00, nil},
+			{0x36, 0x00, nil},
+		},
+		T: []int{4, 4, 4, 3},
+		F: func(cpu *CPU, codes []uint8) {
+			p := cpu.HL.U16()
+			cpu.Memory.Set(p, cpu.sl1U8(cpu.Memory.Get(p)))
 		},
 	},
 }

@@ -241,6 +241,18 @@ func (cpu *CPU) slaU8(a uint8) uint8 {
 	return a2
 }
 
+func (cpu *CPU) sl1U8(a uint8) uint8 {
+	a2 := a<<1 + 1
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N).
+		Put(C, a&0x80 != 0))
+	return a2
+}
+
 func (cpu *CPU) sraU8(a uint8) uint8 {
 	a2 := a&0x80 | a>>1
 	cpu.flagUpdate(FlagOp{}.
