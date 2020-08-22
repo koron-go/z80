@@ -137,18 +137,17 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 }
 
 func (cpu *CPU) adcU16(a, b uint16) uint16 {
-	a16 := uint32(a)
-	b16 := uint32(a)
+	a32 := uint32(a)
+	b32 := uint32(b)
+	var c32 uint32
 	if cpu.flag(C) {
-		b16++
+		c32 = 1
 	}
-	v := a16 + b16
+	v := a32 + b32 + c32
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x8000 != 0).
 		Put(Z, v&0xffff == 0).
-		// TODO: verify H behavior.
-		Put(H, a&0x0fff+b&0x0fff > 0x0fff).
-		// TODO: verify PV behavior.
+		Put(H, a32&0x0fff+b32&0x0fff+c32 > 0x0fff).
 		Put(PV, a&0x8000 == b&0x8000 && a&0x8000 != uint16(v&0x8000)).
 		Reset(N).
 		Put(C, v > 0xffff))
@@ -156,21 +155,22 @@ func (cpu *CPU) adcU16(a, b uint16) uint16 {
 }
 
 func (cpu *CPU) sbcU16(a, b uint16) uint16 {
-	a16 := int32(a)
-	b16 := int32(a)
+	a32 := uint32(a)
+	b32 := uint32(b)
+	var c32 uint32
 	if cpu.flag(C) {
-		b16++
+		c32 = 1
 	}
-	v := a16 - b16
+	v := a32 - b32 - c32
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x8000 != 0).
 		Put(Z, v&0xffff == 0).
 		// TODO: verify H behavior.
-		Put(H, a&0x0fff < b&0x0fff).
+		Put(H, a32&0x0fff < (b32+c32)&0x0fff).
 		// TODO: verify PV behavior.
-		Put(PV, a&0x8000 == b&0x8000 && a&0x8000 != uint16(v&0x8000)).
-		Reset(N).
-		Put(C, v < 0x0000))
+		Put(PV, a&0x8000 != b&0x8000 && a&0x8000 != uint16(v&0x8000)).
+		Set(N).
+		Put(C, v > 0xffff))
 	return uint16(v)
 }
 

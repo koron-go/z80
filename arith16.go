@@ -24,7 +24,7 @@ var arith16 = []*OPCode{
 		T: []int{4, 4, 4, 3},
 		F: func(cpu *CPU, codes []uint8) {
 			a := cpu.HL.U16()
-			x := cpu.reg16ss(codes[0] >> 4).U16()
+			x := cpu.reg16ss(codes[1] >> 4).U16()
 			cpu.HL.SetU16(cpu.adcU16(a, x))
 		},
 	},
@@ -38,7 +38,7 @@ var arith16 = []*OPCode{
 		T: []int{4, 4, 4, 3},
 		F: func(cpu *CPU, codes []uint8) {
 			a := cpu.HL.U16()
-			x := cpu.reg16ss(codes[0] >> 4).U16()
+			x := cpu.reg16ss(codes[1] >> 4).U16()
 			cpu.HL.SetU16(cpu.sbcU16(a, x))
 		},
 	},
@@ -52,7 +52,7 @@ var arith16 = []*OPCode{
 		T: []int{4, 4, 4, 3},
 		F: func(cpu *CPU, codes []uint8) {
 			a := cpu.IX
-			x := cpu.reg16pp(codes[0] >> 4)
+			x := cpu.reg16pp(codes[1] >> 4)
 			cpu.IX = cpu.addU16(a, x)
 		},
 	},
@@ -66,7 +66,7 @@ var arith16 = []*OPCode{
 		T: []int{4, 4, 4, 3},
 		F: func(cpu *CPU, codes []uint8) {
 			a := cpu.IY
-			x := cpu.reg16rr(codes[0] >> 4)
+			x := cpu.reg16rr(codes[1] >> 4)
 			cpu.IY = cpu.addU16(a, x)
 		},
 	},
