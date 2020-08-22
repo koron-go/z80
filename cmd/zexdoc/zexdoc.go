@@ -38,24 +38,24 @@ var biosFF03 = []byte{
 	0x76,
 }
 
-type IO struct {
+type zexIO struct {
 	out  io.Writer
 	warn *log.Logger
 }
 
-func newIO() *IO {
-	return &IO{
+func newIO() *zexIO {
+	return &zexIO{
 		out:  os.Stdout,
 		warn: log.New(os.Stderr, "[WARN]", 0),
 	}
 }
 
-func (io *IO) In(addr uint8) uint8 {
+func (io *zexIO) In(addr uint8) uint8 {
 	io.warn.Printf("not impl. I/O In addr=0x%02x", addr)
 	return 0
 }
 
-func (io *IO) Out(addr uint8, value uint8) {
+func (io *zexIO) Out(addr uint8, value uint8) {
 	if addr != 0 {
 		io.warn.Printf("not impl. I/O Out addr=0x%02x value=0x%02x", addr, value)
 		return
