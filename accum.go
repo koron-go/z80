@@ -17,17 +17,15 @@ func (cpu *CPU) addU8(a, b uint8) uint8 {
 }
 
 func (cpu *CPU) adcU8(a, b uint8) uint8 {
-	a16 := uint16(a)
-	b16 := uint16(b)
+	var c uint8
 	if cpu.flag(C) {
-		b16++
+		c = 1
 	}
-	v := a16 + b16
+	v := uint16(a) + uint16(b) + uint16(c)
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
-		Put(H, a16&0x0f+b16&0x0f > 0x0f).
-		// TODO: verify PV behavior.
+		Put(H, a&0x0f+b&0x0f+c > 0x0f).
 		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
 		Reset(N).
 		Put(C, v > 0xff))
@@ -40,27 +38,23 @@ func (cpu *CPU) subU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
 		Put(H, a&0x0f < b&0x0f).
-		// TODO: verify PV behavior.
-		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
+		Put(PV, a&0x80 != b&0x80 && a&0x80 != uint8(v&0x80)).
 		Set(N).
 		Put(C, v > 0xff))
 	return uint8(v)
 }
 
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
-	a16 := uint16(a)
-	b16 := uint16(b)
+	var c uint8
 	if cpu.flag(C) {
-		b16++
+		c = 1
 	}
-	v := a16 - b16
+	v := uint16(a) - uint16(b) - uint16(c)
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
-		// TODO: verify H behavior.
-		Put(H, a16&0x0f < b16&0x0f).
-		// TODO: verify PV behavior.
-		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
+		Put(H, a&0x0f < (b+c)&0x0f).
+		Put(PV, a&0x80 != b&0x80 && a&0x80 != uint8(v&0x80)).
 		Set(N).
 		Put(C, v > 0xff))
 	return uint8(v)
@@ -72,7 +66,7 @@ func (cpu *CPU) andU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v == 0).
 		Set(H).
-		// TODO: verify PV behavior.
+		// TODO: verify PV behavior. compare with zexdoc
 		Put(PV, bits.OnesCount8(v)%2 == 0).
 		Reset(N).
 		Reset(C))
@@ -85,7 +79,7 @@ func (cpu *CPU) orU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v == 0).
 		Reset(H).
-		// TODO: verify PV behavior.
+		// TODO: verify PV behavior. compare with zexdoc
 		Put(PV, bits.OnesCount8(v)%2 == 0).
 		Reset(N).
 		Reset(C))
@@ -98,7 +92,7 @@ func (cpu *CPU) xorU8(a, b uint8) uint8 {
 		Put(S, v&0x80 != 0).
 		Put(Z, v == 0).
 		Reset(H).
-		// TODO: verify PV behavior.
+		// TODO: verify PV behavior. compare with zexdoc
 		Put(PV, bits.OnesCount8(v)%2 == 0).
 		Reset(N).
 		Reset(C))
@@ -137,17 +131,15 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 }
 
 func (cpu *CPU) adcU16(a, b uint16) uint16 {
-	a32 := uint32(a)
-	b32 := uint32(b)
-	var c32 uint32
+	var c uint16
 	if cpu.flag(C) {
-		c32 = 1
+		c = 1
 	}
-	v := a32 + b32 + c32
+	v := uint32(a) + uint32(b) + uint32(c)
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x8000 != 0).
 		Put(Z, v&0xffff == 0).
-		Put(H, a32&0x0fff+b32&0x0fff+c32 > 0x0fff).
+		Put(H, a&0x0fff+b&0x0fff+c > 0x0fff).
 		Put(PV, a&0x8000 == b&0x8000 && a&0x8000 != uint16(v&0x8000)).
 		Reset(N).
 		Put(C, v > 0xffff))
@@ -167,7 +159,6 @@ func (cpu *CPU) sbcU16(a, b uint16) uint16 {
 		Put(Z, v&0xffff == 0).
 		// TODO: verify H behavior.
 		Put(H, a32&0x0fff < (b32+c32)&0x0fff).
-		// TODO: verify PV behavior.
 		Put(PV, a&0x8000 != b&0x8000 && a&0x8000 != uint16(v&0x8000)).
 		Set(N).
 		Put(C, v > 0xffff))

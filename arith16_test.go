@@ -9,6 +9,11 @@ var rArith16_ss = []tReg{
 	{"BC", 0}, {"DE", 1}, {"HL", 2}, {"SP", 3},
 }
 
+// isOverflowS16 checks overflow as signed 8 bits variable.
+func isOverflowS16(v int32) bool {
+	return v > 32767 || v < -32768
+}
+
 func tADChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 	hl32, ss32 := uint32(hl), uint32(ss)
 	var c32 uint32
@@ -52,7 +57,7 @@ func tADChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 	if hl32&0xfff+ss32&0xfff+c32 > 0xfff {
 		flags |= 0x10 // H: is set if carry from bit 3
 	}
-	if v := int32(int16(hl32)) + int32(int16(ss32)) + int32(int16(c32)); v > 32767 || v < -32768 {
+	if isOverflowS16(int32(int16(hl)) + int32(int16(ss)) + int32(c32)) {
 		flags |= 0x04 // PV is set if overflow (-32768~+32767)
 	}
 	// N is reset
@@ -74,7 +79,7 @@ func tADChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 		States{GPR: postGPR, SPR: postSPR}, mem, maskDefault)
 }
 
-func TestAdd16_ADChlss(t *testing.T) {
+func TestAirth16_adc16_ADChlss(t *testing.T) {
 	t.Parallel()
 	for _, r := range rArith16_ss {
 		for _, hl := range u16casesSummary {
@@ -134,7 +139,7 @@ func tSBChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 	if hl32&0xfff < (ss32+c32)&0xfff {
 		flags |= 0x10 // H: is set if carry from bit 3
 	}
-	if v := int32(int16(hl32)) - int32(int16(ss32)) - int32(int16(c32)); v > 32767 || v < -32768 {
+	if isOverflowS16(int32(int16(hl)) - int32(int16(ss)) - int32(c32)) {
 		flags |= 0x04 // PV is set if overflow (-32768~+32767)
 	}
 	flags |= 0x02 // N is set
@@ -156,9 +161,8 @@ func tSBChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 		States{GPR: postGPR, SPR: postSPR}, mem, maskDefault)
 }
 
-func TestSub16_SBChlss(t *testing.T) {
+func TestArith16_adc16_SBChlss(t *testing.T) {
 	t.Parallel()
-
 	for _, r := range rArith16_ss {
 		for _, hl := range u16casesSummary {
 			if r.Label == "HL" {
