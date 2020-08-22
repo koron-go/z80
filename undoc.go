@@ -15,7 +15,7 @@ var undoc = []*OPCode{
 	},
 
 	{
-		N: "INC IXH",
+		N: "DEC IXH",
 		C: []Code{
 			{0xdd, 0x00, nil},
 			{0x25, 0x00, nil},
@@ -24,6 +24,32 @@ var undoc = []*OPCode{
 		F: func(cpu *CPU, codes []uint8) {
 			v := cpu.decU8(uint8(cpu.IX >> 8))
 			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
+		},
+	},
+
+	{
+		N: "INC IXL",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x2c, 0x00, nil},
+		},
+		T: []int{4, 6},
+		F: func(cpu *CPU, codes []uint8) {
+			v := cpu.incU8(uint8(cpu.IX))
+			cpu.IX = uint16(v) | cpu.IX&0xff00
+		},
+	},
+
+	{
+		N: "DEC IXL",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x2d, 0x00, nil},
+		},
+		T: []int{4, 6},
+		F: func(cpu *CPU, codes []uint8) {
+			v := cpu.decU8(uint8(cpu.IX))
+			cpu.IX = uint16(v) | cpu.IX&0xff00
 		},
 	},
 }

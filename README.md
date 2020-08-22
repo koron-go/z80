@@ -39,7 +39,7 @@ Z80 instruction set exerciser, passed tests:
 * [x] incsp   - `<inc,dec> sp (1536 cycles)`
 * [x] incx    - `<inc,dec> (<ix,iy>+1) (6144 cycles)`
 * [x] incxh   - `<inc,dec> ixh (3072 cycles)` DECODE
-* [ ] incxl   - `<inc,dec> ixl (3072 cycles)` DECODE
+* [x] incxl   - `<inc,dec> ixl (3072 cycles)` DECODE
 * [ ] incyh   - `<inc,dec> iyh (3072 cycles)` DECODE
 * [ ] incyl   - `<inc,dec> iyl (3072 cycles)` DECODE
 * [x] ld161   - `ld <bc,de>,(nnnn) (32 cycles)`
