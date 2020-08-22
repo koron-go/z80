@@ -114,7 +114,6 @@ tests:
 	dw	add16x
 	dw	add16y
 	dw	alu8i
-	; verified to pass above tests
 	dw	alu8r
 	dw	alu8rx
 	dw	alu8x
