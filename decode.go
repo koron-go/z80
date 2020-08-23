@@ -153,8 +153,10 @@ func DumpDecodeLayer(w io.Writer) error {
 	return e.Encode(defaultDecodeLayer().mapTo())
 }
 
-func decode(l *decodeLayer, buf []byte, f fetcher) (*OPCode, []uint8, error) {
+func (cpu *CPU) decode(f fetcher) (*OPCode, []uint8, error) {
 	var op *OPCode
+	buf := cpu.decodeBuf[:0]
+	l := cpu.decodeLayer
 	for l != nil {
 		b, err := f.fetch()
 		if err != nil {

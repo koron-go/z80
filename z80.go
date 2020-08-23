@@ -96,7 +96,7 @@ type CPU struct {
 
 	onceInit    sync.Once
 	decodeLayer *decodeLayer
-	decodeBuf   []byte
+	decodeBuf   []uint8
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -301,7 +301,7 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 func (cpu *CPU) init() {
 	cpu.onceInit.Do(func() {
 		cpu.decodeLayer = defaultDecodeLayer()
-		cpu.decodeBuf = make([]byte, 8)
+		cpu.decodeBuf = make([]uint8, 8)
 	})
 }
 
@@ -337,7 +337,7 @@ func (cpu *CPU) step(f fetcher, enableInt bool) error {
 	afterEI := false
 	if !cpu.HALT {
 		// fetch an OPCode and increase refresh register.
-		op, buf, err := decode(cpu.decodeLayer, cpu.decodeBuf[:0], f)
+		op, buf, err := cpu.decode(f)
 		if err != nil {
 			label := f.fetchLabel()
 			return fmt.Errorf("decode failed %X at %s: %w", buf, label, err)
@@ -423,8 +423,11 @@ func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {
 		cpu.PC = 0x0038
 		return true, nil
 	case 2:
-		if len(d) < 1 {
-			return false, fmt.Errorf("interruption data should be 1 bytes in IM 2")
+		if n := len(d); n != 1 {
+			cpu.failf("interruption data should be 1 byte in IM 2")
+			if n == 0 {
+				return false, nil
+			}
 		}
 		cpu.HALT = false
 		cpu.SP -= 2
@@ -433,6 +436,10 @@ func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {
 		return true, nil
 	}
 	// interrupt with IM 0
+	if len(d) == 0 {
+		cpu.failf("interruption data should be longer 1 byte in IM 0")
+		return false, nil
+	}
 	cpu.HALT = false
 	ms := memSrc(d)
 	err := cpu.step(&ms, false)
