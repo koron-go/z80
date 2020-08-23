@@ -101,3 +101,11 @@ Z80 instruction set exerciser, passed 64/67 (95.5%) tests:
     * [Z80 instruction set (tables)](http://clrhome.org/table/)
 
 * [WebMSX's Z80 implementation](https://github.com/ppeccin/WebMSX/blob/master/src/main/msx/cpu/CPU.js)
+
+* [ＭＳＸテープイメージ解説書](http://park16.wakwak.com/~msx/imagesei/tape.html)
+
+* [MSX Datapack wiki](http://ngs.no.coocan.jp/doc/wiki.cgi/datapack?page=FrontPage)
+
+* [テクハンwiki](http://ngs.no.coocan.jp/doc/wiki.cgi/TechHan)
+
+* [MSX JAPAN/ファイル形式](https://msxjpn.jimdofree.com/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%BD%A2%E5%BC%8F/)
