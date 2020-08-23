@@ -35,6 +35,12 @@ func (dm DumbMemory) Set(addr uint16, value uint8) {
 	dm[addr] = value
 }
 
+// Put puts "data" block from addr.
+func (dm DumbMemory) Put(addr uint16, data ...uint8) DumbMemory {
+	copy(dm[int(addr):int(addr)+len(data)], data)
+	return dm
+}
+
 var _ Memory = DumbMemory(nil)
 
 // DumbIO provides IO interface as wrapper of []uint8

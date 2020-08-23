@@ -43,7 +43,7 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 func TestDecodeLayer_DD7E00(t *testing.T) {
 	f := memSrc{0xdd, 0x7e, 0x00}
 	l := defaultDecodeLayer()
-	c, _, err := decode(l, &f)
+	c, _, err := decode(l, nil, &f)
 	if err != nil {
 		t.Fatal(err)
 	}

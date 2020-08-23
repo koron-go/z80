@@ -2,19 +2,23 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
+	"runtime/pprof"
 
 	"github.com/koron-go/z80"
 )
 
+var cpuprof string
+
 //go:generate zmac -o zexdoc.cim -o zexdoc.lst zexdoc.asm
 
-func newMemory() z80.MapMemory {
-	m := z80.MapMemory{}
+func newMemory() z80.DumbMemory {
+	m := make(z80.DumbMemory, 65536)
 	m.Put(0x0000, bios0000...)
 	m.Put(0xfe06, biosFE06...)
 	m.Put(0xff03, biosFF03...)
@@ -65,6 +69,8 @@ func (io *zexIO) Out(addr uint8, value uint8) {
 }
 
 func main() {
+	flag.StringVar(&cpuprof, "cpuprof", "", "profile CPU, output filename")
+	flag.Parse()
 	err := runZexdoc()
 	if err != nil {
 		log.Fatal(err)
@@ -85,6 +91,18 @@ func runZexdoc() error {
 		States: stt,
 		Memory: mem,
 		IO:     io,
+	}
+
+	if cpuprof != "" {
+		f, err := os.Create(cpuprof)
+		if err != nil {
+			return fmt.Errorf("could not create CPU profile: %w", err)
+		}
+		defer f.Close()
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return fmt.Errorf("could not start CPU profile: %w", err)
+		}
+		defer pprof.StopCPUProfile()
 	}
 
 	for {

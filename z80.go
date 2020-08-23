@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 )
 
 // Register is 16 bits register.
@@ -93,7 +94,9 @@ type CPU struct {
 	Debug       bool
 	BreakPoints map[uint16]struct{}
 
+	onceInit    sync.Once
 	decodeLayer *decodeLayer
+	decodeBuf   []byte
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -283,51 +286,9 @@ func (cpu *CPU) flagCC(n uint8) bool {
 	}
 }
 
-func (cpu *CPU) decoder() *decodeLayer {
-	if cpu.decodeLayer == nil {
-		return defaultDecodeLayer()
-	}
-	return cpu.decodeLayer
-}
-
 type fetcher interface {
 	fetch() (uint8, error)
 	fetchLabel() string
-}
-
-func decode(l *decodeLayer, f fetcher) (*OPCode, []uint8, error) {
-	var op *OPCode
-	buf := make([]uint8, 0, 8)
-	for l != nil {
-		b, err := f.fetch()
-		if err != nil {
-			return nil, buf, fmt.Errorf("fetch failed: %w", err)
-		}
-		buf = append(buf, b)
-		n := l.get(b)
-		if n == nil {
-			break
-		}
-		if n.opcode != nil {
-			op = n.opcode
-			for len(buf) < len(op.C) {
-				b, err := f.fetch()
-				if err != nil {
-					return nil, buf, fmt.Errorf("fetch remains failed: %w", err)
-				}
-				buf = append(buf, b)
-			}
-			break
-		}
-		l = n.next
-	}
-	if op == nil {
-		return nil, buf, ErrInvalidCodes
-	}
-	if op.F == nil {
-		return nil, buf, fmt.Errorf("OPCode:%s %w", op.N, ErrNotImplemented)
-	}
-	return op, buf, nil
 }
 
 func (cpu *CPU) exec(op *OPCode, args []uint8) {
@@ -337,15 +298,23 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 	op.F(cpu, args)
 }
 
+func (cpu *CPU) init() {
+	cpu.onceInit.Do(func() {
+		cpu.decodeLayer = defaultDecodeLayer()
+		cpu.decodeBuf = make([]byte, 8)
+	})
+}
+
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
+	cpu.init()
 	for !cpu.HALT {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
 		default:
 		}
-		err := cpu.Step()
+		err := cpu.step(cpu, true)
 		if err != nil {
 			return err
 		}
@@ -360,6 +329,7 @@ func (cpu *CPU) Run(ctx context.Context) error {
 
 // Step executes an instruction.
 func (cpu *CPU) Step() error {
+	cpu.init()
 	return cpu.step(cpu, true)
 }
 
@@ -367,15 +337,18 @@ func (cpu *CPU) step(f fetcher, enableInt bool) error {
 	afterEI := false
 	if !cpu.HALT {
 		// fetch an OPCode and increase refresh register.
-		label := f.fetchLabel()
-		op, buf, err := decode(cpu.decoder(), f)
+		op, buf, err := decode(cpu.decodeLayer, cpu.decodeBuf[:0], f)
 		if err != nil {
+			label := f.fetchLabel()
 			return fmt.Errorf("decode failed %X at %s: %w", buf, label, err)
 		}
 		rr := cpu.IR.Lo
 		cpu.IR.Lo = rr&0x80 | (rr+1)&0x7f
 		// execute an OPCode.
-		cpu.debugf("execute OPCode:%s with %X at %s", op.N, buf, label)
+		if cpu.Debug {
+			label := f.fetchLabel()
+			cpu.debugf("execute OPCode:%s with %X at %s", op.N, buf, label)
+		}
 		cpu.exec(op, buf)
 		switch op {
 		case opHALT:
