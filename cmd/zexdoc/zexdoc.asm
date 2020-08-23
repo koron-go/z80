@@ -101,7 +101,7 @@ loop:	ld	a,(hl)		; end of list ?
 	dec	hl
 	call	stt
 	jp	loop
-	
+
 done:	ld	de,msg2
 	ld	c,9
 	call	bdos
@@ -117,7 +117,7 @@ tests:
 	dw	alu8rx
 	dw	alu8x
 	dw	bitx
-	dw	bitz80
+	dw	bitz80 ; not tested from there upwards
 	dw	cpd1
 	dw	cpi1
 	dw	daaop	; can't use opcode as label
@@ -192,8 +192,14 @@ tstr	macro	insn1,insn2,insn3,insn4,memop,riy,rix,rhl,rde,rbc,flags,acc,rsp,?lab
 	endif
 	endm
 
-tmsg	macro	msg
-	defb	msg, '.', '$'
+tmsg	macro	msg,?lab
+?lab:	db	msg
+	if	$ ge ?lab+31
+	error	'message too long'
+	else
+	ds	?lab+30-$,'.'
+	endif
+	db	'$'
 	endm
 
 ; jgh: ZMAC/MAXAM don't recognise <n,m> syntax for macros, so full parameters given
@@ -604,7 +610,7 @@ ld162:	db	0d7h		; flag mask
 	tstr	0,0,0,0,-1,0,0,0,0,0,0,0,0		; (16 cycles)
 	db	05fh,097h,024h,087h			; expected crc
 	tmsg	'ld hl,(nnnn)..................'
-	
+
 ; ld sp,(nnnn) (16 cycles)
 ld163:	db	0d7h		; flag mask
 	tstr	0edh,07bh,msbtlo,msbthi,08dfch,057d7h,02161h,0ca18h,0c185h,027dah,083h,01eh,0f460h
@@ -620,7 +626,7 @@ ld164:	db	0d7h		; flag mask
 	tstr	0,0,0,0,-1,0,0,0,0,0,0,0,0		; (16 cycles)
 	db	085h,08bh,0f1h,06dh			; expected crc
 	tmsg	'ld <ix,iy>,(nnnn).............'
-	
+
 ; ld (nnnn),<bc,de> (64 cycles)
 ld165:	db	0d7h		; flag mask
 	tstr	0edh,043h,msbtlo,msbthi,01f98h,0844dh,0e8ach,0c9edh,0c95dh,08f61h,080h,03fh,0c7bfh
@@ -1040,7 +1046,7 @@ ncb1:	ld	a,b
 	ret	z
 	ld	a,1
 	ret
-	
+
 ; get next shifter bit in low bit of a
 shfbit:	ds	1
 shfbyt:	ds	2
@@ -1066,7 +1072,7 @@ nsb1:	ld	a,b
 	ret	z
 	ld	a,1
 	ret
-	
+
 
 ; clear memory at hl, bc bytes
 clrmem:	push	af
@@ -1159,7 +1165,7 @@ cntend:	pop	bc
 cntlp1:	inc	hl
 	inc	de
 	jp	cntlp
-	
+
 
 ; multi-byte shifter
 shift:	push	bc
@@ -1215,7 +1221,7 @@ test:	push	af
 	ld	b,16
 	ld	hl,msbt
 	call	hexstr
-      endif	
+      endif
 	di			; disable interrupts
 	ld	(spsav),sp	; save stack pointer
 	ld	sp,msbt+2	; point to test-case machine state
@@ -1313,7 +1319,7 @@ phex2:	push	af
 	rrca
 	call	phex1
 	pop	af
-; fall through	
+; fall through
 
 ; display low nibble in a
 phex1:	push	af
@@ -1346,11 +1352,11 @@ bdos	push	af
 	ret
 
 msg1:	db	'Z80doc instruction exerciser',10,13,'$'
-msg2:	db	'Tests complete'
-crlf:	db	10,13,'$'
+msg2:	db	'Tests complete',10,13,'$'
 okmsg:	db	'  OK',10,13,'$'
 ermsg1:	db	'  ERROR **** crc expected:$'
 ermsg2:	db	' found:$'
+crlf:	db	10,13,'$'
 
 ; compare crc
 ; hl points to value to compare to crcval
