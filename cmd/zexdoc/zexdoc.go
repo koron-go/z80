@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -98,8 +98,8 @@ func runZexdoc() error {
 		}
 		break
 	}
-	if cpu.PC == 0xff04 {
-		return errors.New("halted on 0xff03+1")
+	if cpu.PC != 0xff04 {
+		return fmt.Errorf("halted on unexpected PC: %04x", cpu.PC)
 	}
 	return nil
 }

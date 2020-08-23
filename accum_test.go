@@ -111,7 +111,7 @@ func TestAccum_sbcU8(t *testing.T) {
 				name := fmt.Sprintf("sbcU8(%02x, %02x, C=%t)", a, b, carry)
 				c := carry2n(carry)
 				r := a - b - c
-				hc := a&0x0f < (b+c)&0x0f
+				hc := a&0x0f < b&0x0f+c
 				pv := isOverflowS8(int32(int8(a)) - int32(int8(b)) - int32(c))
 				fo := FlagOp{}.
 					Put(S, r&0x80 != 0). // S is set if result is negative
@@ -305,7 +305,7 @@ func tSBCu16(t *testing.T, a, b uint16, c bool) {
 	if sum&0xffff == 0 {
 		flags |= 0x40 // Z is set if result is 0
 	}
-	if a32&0xfff < (b32+c32)&0xfff {
+	if a32&0xfff < b32&0xfff+c32 {
 		flags |= 0x10 // H: is set if carry from bit 3
 	}
 	if v := int32(int16(a32)) - int32(int16(b32)) - int32(int16(c32)); v > 32767 || v < -32768 {

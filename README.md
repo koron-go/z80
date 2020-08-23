@@ -15,10 +15,10 @@ Z80 instruction set exerciser, passed 64/67 (95.5%) tests:
 * [x] add16x  - `add ix,<bc,de,ix,sp> (19,456 cycles)`
 * [x] add16y  - `add iy,<bc,de,iy,sp> (19,456 cycles)`
 * [x] alu8i   - `aluop a,nn (28,672 cycles)`
-* [ ] alu8r   - `aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)` CRC
+* [x] alu8r   - `aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)` CRC
 * [ ] alu8rx  - `aluop a,<ixh,ixl,iyh,iyl> (376,832 cycles)` DECODE
     * ADD/ADC/SUB/SBC/AND/XOR/OR/CP IXH/IXL/IYH/IYL
-* [ ] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)` CRC
+* [x] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)` CRC
 * [x] bitx    - `bit n,(<ix,iy>+1) (2048 cycles)`
 * [x] bitz80  - `bit n,<b,c,d,e,h,l,(hl),a> (49,152 cycles)`
 * [x] cpd1    - `cpd<r> (1) (6144 cycles)`
@@ -109,3 +109,5 @@ Z80 instruction set exerciser, passed 64/67 (95.5%) tests:
 * [テクハンwiki](http://ngs.no.coocan.jp/doc/wiki.cgi/TechHan)
 
 * [MSX JAPAN/ファイル形式](https://msxjpn.jimdofree.com/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%BD%A2%E5%BC%8F/)
+
+* [Yet Another Z80 Emulator by AG](http://www.mathematik.uni-ulm.de/users/ag/yaze-ag/)

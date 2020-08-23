@@ -136,7 +136,7 @@ func tSBChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 	if sum&0xffff == 0 {
 		flags |= 0x40 // Z is set if result is 0
 	}
-	if hl32&0xfff < (ss32+c32)&0xfff {
+	if hl32&0xfff < ss32&0xfff+c32 {
 		flags |= 0x10 // H: is set if carry from bit 3
 	}
 	if isOverflowS16(int32(int16(hl)) - int32(int16(ss)) - int32(c32)) {

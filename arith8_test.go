@@ -255,7 +255,7 @@ func tSBCan(t *testing.T, av uint8, nv uint8, c bool) {
 	if sum&0xff == 0 {
 		flags |= 0x40 // Z is set if result is 0
 	}
-	if av&0xf < (nv+cv)&0xf {
+	if av&0xf < nv&0xf+cv {
 		flags |= 0x10 // H: is set if borrow from bit 4
 	}
 	if isOverflowS8(int32(int8(av)) - int32(int8(nv)) - int32(cv)) {

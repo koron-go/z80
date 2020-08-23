@@ -105,8 +105,7 @@ loop:	ld	a,(hl)		; end of list ?
 done:	ld	de,msg2
 	ld	c,9
 	call	bdos
-	;jp	0		; warm boot
-	halt
+	jp	0		; warm boot
 
 tests:
 	dw	adc16
@@ -263,6 +262,76 @@ alu8x:	db	0d7h		; flag mask
 	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
 	db	0e8h,049h,067h,06eh			; expected crc
 	tmsg	'aluop a,(<ix,iy>+1)...........'
+
+alu8x0:	db	0d7h		; flag mask
+	tstr	0ddh,086h,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	0f8h,0f0h,0cdh,0d8h			; expected crc
+	tmsg	'add a,(<ix,iy>+1).............'
+
+alu8x1:	db	0d7h		; flag mask
+	tstr	0ddh,08eh,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	0beh,0b9h,028h,0afh			; expected crc
+	tmsg	'adc a,(<ix,iy>+1).............'
+
+alu8x2:	db	0d7h		; flag mask
+	tstr	0ddh,096h,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	04eh,04bh,0c0h,091h			; expected crc
+	tmsg	'sub a,(<ix,iy>+1).............'
+
+alu8x3:	db	0d7h		; flag mask
+	tstr	0ddh,09eh,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	0b0h,016h,002h,02dh			; expected crc
+	tmsg	'sbc a,(<ix,iy>+1).............'
+
+alu8x4:	db	0d7h		; flag mask
+	tstr	0ddh,0a6h,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	0a1h,0a0h,034h,054h			; expected crc
+	tmsg	'and a,(<ix,iy>+1).............'
+
+alu8x5:	db	0d7h		; flag mask
+	tstr	0ddh,0aeh,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	096h,08ch,040h,08fh			; expected crc
+	tmsg	'xor a,(<ix,iy>+1).............'
+
+alu8x6:	db	0d7h		; flag mask
+	tstr	0ddh,0b6h,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	0aeh,07ch,0a5h,0d6h			; expected crc
+	tmsg	'or a,(<ix,iy>+1)..............'
+
+alu8x7:	db	0d7h		; flag mask
+	tstr	0ddh,0beh,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	020h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (2,048 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	007h,0bbh,0dah,0e2h			; expected crc
+	tmsg	'cp (<ix,iy>+1)................'
+
+alu8x3a:	db	0d7h		; flag mask
+	tstr	0ddh,09eh,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	000h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	041h,0b6h,005h,03fh			; expected crc
+	tmsg	'sbc a,(<ix>+1)................'
+
+alu8x3b:	db	0d7h		; flag mask
+	tstr	0fdh,09eh,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah
+	tstr	000h,000h,0,0,0,1,1,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,0,0,0d7h,0,0		; (14 cycles)
+	db	0d1h,034h,01ah,0d2h			; expected crc
+	tmsg	'sbc a,(<iy>+1)................'
 
 ; bit n,(<ix,iy>+1) (2048 cycles)
 bitx:	db	053h		; flag mask

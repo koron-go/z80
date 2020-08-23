@@ -53,10 +53,10 @@ func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x80 != 0).
 		Put(Z, v&0xff == 0).
-		Put(H, a&0x0f < (b+c)&0x0f).
+		Put(H, a&0x0f < b&0x0f+c).
 		Put(PV, a&0x80 != b&0x80 && a&0x80 != uint8(v&0x80)).
 		Set(N).
-		Put(C, v > 0xff))
+		Put(C, uint16(a) < uint16(b)+uint16(c)))
 	return uint8(v)
 }
 
@@ -154,7 +154,7 @@ func (cpu *CPU) sbcU16(a, b uint16) uint16 {
 	cpu.flagUpdate(FlagOp{}.
 		Put(S, v&0x8000 != 0).
 		Put(Z, v&0xffff == 0).
-		Put(H, a32&0x0fff < (b32+c32)&0x0fff).
+		Put(H, a32&0x0fff < b32&0x0fff+c32).
 		Put(PV, a&0x8000 != b&0x8000 && a&0x8000 != uint16(v&0x8000)).
 		Set(N).
 		Put(C, v > 0xffff))
