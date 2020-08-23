@@ -8,21 +8,6 @@ import (
 	"sync"
 )
 
-var allOPCodes = [][]*OPCode{
-	load8,
-	load16,
-	exbtsg,
-	arith8,
-	ctrl,
-	arith16,
-	rotateshift,
-	bitop,
-	jump,
-	callret,
-	inout,
-	undoc,
-}
-
 type decodeLayer struct {
 	nodes   map[uint8]*decodeNode
 	any     bool

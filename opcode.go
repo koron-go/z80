@@ -108,3 +108,18 @@ func toU16(l, h uint8) uint16 {
 func fromU16(v uint16) (l, h uint8) {
 	return uint8(v & 0xff), uint8(v >> 8)
 }
+
+var allOPCodes = [][]*OPCode{
+	load8,
+	load16,
+	exbtsg,
+	arith8,
+	ctrl,
+	arith16,
+	rotateshift,
+	bitop,
+	jump,
+	callret,
+	inout,
+	undoc,
+}
