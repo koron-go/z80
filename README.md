@@ -8,7 +8,12 @@ Z80 emulation in Go.
 
 ## Progress
 
-Z80 instruction set exerciser (documented), passed 67/67 (100%) tests:
+Z80 instruction set exerciser (documented), passed all 67/67 (100%) tests.
+
+You can try it with...
+```console
+$ make zexdoc
+```
 
 * [x] adc16   - `<adc,sbc> hl,<bc,de,hl,sp> (38,912 cycles)`
 * [x] add16   - `add hl,<bc,de,hl,sp> (19,456 cycles)`
@@ -99,7 +104,12 @@ Z80 instruction set exerciser (documented), passed 67/67 (100%) tests:
 
     * [Z80 instruction set (tables)](http://clrhome.org/table/)
 
-* [WebMSX's Z80 implementation](https://github.com/ppeccin/WebMSX/blob/master/src/main/msx/cpu/CPU.js)
+* [WebMSX](https://webmsx.org/)
+
+    * [Z80 implementation](https://github.com/ppeccin/WebMSX/blob/master/src/main/msx/cpu/CPU.js)
+    * [Media Loading](https://github.com/ppeccin/WebMSX/blob/master/README.md#media-loading)
+
+* [fMSX](https://fms.komkon.org/fMSX/)
 
 * [ＭＳＸテープイメージ解説書](http://park16.wakwak.com/~msx/imagesei/tape.html)
 
