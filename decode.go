@@ -9,7 +9,7 @@ import (
 )
 
 type decodeLayer struct {
-	nodes   map[uint8]*decodeNode
+	nodes   []*decodeNode
 	any     bool
 	anyNode *decodeNode
 }
@@ -26,7 +26,7 @@ func defaultDecodeLayer() *decodeLayer {
 
 func newDecodeLayer(level int, opcodes ...[]*OPCode) *decodeLayer {
 	l := &decodeLayer{
-		nodes: map[uint8]*decodeNode{},
+		nodes: make([]*decodeNode, 256),
 		any:   true,
 	}
 	for _, cc := range opcodes {
@@ -72,8 +72,8 @@ func (l *decodeLayer) put(level int, opcode *OPCode) {
 		if !c.match(d) {
 			continue
 		}
-		n, ok := l.nodes[d]
-		if !ok || s > n.score {
+		n := l.nodes[d]
+		if n == nil || s > n.score {
 			n = &decodeNode{score: s}
 			l.nodes[d] = n
 		}
@@ -85,11 +85,7 @@ func (l *decodeLayer) get(d uint8) *decodeNode {
 	if l.anyNode != nil {
 		return l.anyNode
 	}
-	n, ok := l.nodes[d]
-	if !ok {
-		return nil
-	}
-	return n
+	return l.nodes[d]
 }
 
 func (l *decodeLayer) mapTo() map[string]interface{} {
@@ -117,6 +113,9 @@ func (l *decodeLayer) forNodes(f func(*decodeNode)) {
 	}
 	if l.nodes != nil {
 		for _, n := range l.nodes {
+			if n == nil {
+				continue
+			}
 			f(n)
 			if n.next != nil {
 				n.next.forNodes(f)
