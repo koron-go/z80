@@ -255,6 +255,70 @@ alu8rx:	db	0d7h		; flag mask
 	db	0a4h,002h,06dh,05ah			; expected crc
 	tmsg	'aluop a,<ixh,ixl,iyh,iyl>.....'
 
+alu8rx0:
+	db	0d7h		; flag mask
+	tstr	0ddh,084h,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	07ch,03ch,0cah,09fh			; expected crc
+	tmsg	'ADD a,<ixh,ixl,iyh,iyl>......'
+
+alu8rx1:
+	db	0d7h		; flag mask
+	tstr	0ddh,08ch,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	016h,0e7h,0b6h,0e2h			; expected crc
+	tmsg	'ADC a,<ixh,ixl,iyh,iyl>......'
+
+alu8rx2:
+	db	0d7h		; flag mask
+	tstr	0ddh,094h,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	01dh,00fh,08ch,00dh			; expected crc
+	tmsg	'SUB a,<ixh,ixl,iyh,iyl>......'
+
+alu8rx3:
+	db	0d7h		; flag mask
+	tstr	0ddh,09ch,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	060h,0f2h,014h,0dch			; expected crc
+	tmsg	'SBC a,<ixh,ixl,iyh,iyl>......'
+
+alu8rx4:
+	db	0d7h		; flag mask
+	tstr	0ddh,0a4h,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	0bah,0e3h,092h,0ebh			; expected crc
+	tmsg	'AND a,<ixh,ixl,iyh,iyl>......'
+
+alu8rx5:
+	db	0d7h		; flag mask
+	tstr	0ddh,0ach,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	0b0h,023h,047h,0bbh			; expected crc
+	tmsg	'XOR a,<ixh,ixl,iyh,iyl>......'
+
+alu8rx6:
+	db	0d7h		; flag mask
+	tstr	0ddh,0b4h,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	0f7h,017h,0ffh,0bfh			; expected crc
+	tmsg	'OR a,<ixh,ixl,iyh,iyl>.......'
+
+alu8rx7:
+	db	0d7h		; flag mask
+	tstr	0ddh,0bch,0,0,0d6f7h,0c76eh,0accfh,02847h,022ddh,0c035h,0c5h,038h,0234bh
+	tstr	020h,001h,0,0,0,0,0,0,0,0,0,-1,0	; (1,024 cycles)
+	tstr	0,0,0,0,0ffh,0,0,0,-1,-1,0d7h,0,0	; (46 cycles)
+	db	0feh,013h,081h,0cdh			; expected crc
+	tmsg	'CP a,<ixh,ixl,iyh,iyl>.......'
+
 ; aluop a,(<ix,iy>+1) (229,376 cycles)
 alu8x:	db	0d7h		; flag mask
 	tstr	0ddh,086h,1,0,090b7h,msbt-1,msbt-1,032fdh,0406eh,0c1dch,045h,06eh,0e5fah

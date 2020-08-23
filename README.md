@@ -8,17 +8,16 @@ Z80 emulation in Go.
 
 ## Progress
 
-Z80 instruction set exerciser, passed 64/67 (95.5%) tests: 
+Z80 instruction set exerciser (documented), passed 67/67 (100%) tests:
 
 * [x] adc16   - `<adc,sbc> hl,<bc,de,hl,sp> (38,912 cycles)`
 * [x] add16   - `add hl,<bc,de,hl,sp> (19,456 cycles)`
 * [x] add16x  - `add ix,<bc,de,ix,sp> (19,456 cycles)`
 * [x] add16y  - `add iy,<bc,de,iy,sp> (19,456 cycles)`
 * [x] alu8i   - `aluop a,nn (28,672 cycles)`
-* [x] alu8r   - `aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)` CRC
-* [ ] alu8rx  - `aluop a,<ixh,ixl,iyh,iyl> (376,832 cycles)` DECODE
-    * ADD/ADC/SUB/SBC/AND/XOR/OR/CP IXH/IXL/IYH/IYL
-* [x] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)` CRC
+* [x] alu8r   - `aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)`
+* [x] alu8rx  - `aluop a,<ixh,ixl,iyh,iyl> (376,832 cycles)`
+* [x] alu8x   - `aluop a,(<ix,iy>+1) (229,376 cycles)`
 * [x] bitx    - `bit n,(<ix,iy>+1) (2048 cycles)`
 * [x] bitz80  - `bit n,<b,c,d,e,h,l,(hl),a> (49,152 cycles)`
 * [x] cpd1    - `cpd<r> (1) (6144 cycles)`

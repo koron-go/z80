@@ -330,4 +330,228 @@ var undoc = []*OPCode{
 			cpu.setRY(codes[1]>>3, v)
 		},
 	},
+
+	{
+		N: "ADD A, rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x80, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.addU8(a, x)
+		},
+	},
+
+	{
+		N: "ADD A, ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x80, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.addU8(a, y)
+		},
+	},
+
+	{
+		N: "ADC A, rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x88, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.adcU8(a, x)
+		},
+	},
+
+	{
+		N: "ADC A, ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x88, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.adcU8(a, y)
+		},
+	},
+
+	{
+		N: "SUB A, rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x90, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.subU8(a, x)
+		},
+	},
+
+	{
+		N: "SUB A, ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x90, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.subU8(a, y)
+		},
+	},
+
+	{
+		N: "SBC A, rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0x98, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.sbcU8(a, x)
+		},
+	},
+
+	{
+		N: "SBC A, ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0x98, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.sbcU8(a, y)
+		},
+	},
+
+	{
+		N: "AND rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0xa0, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.andU8(a, x)
+		},
+	},
+
+	{
+		N: "AND ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0xa0, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.andU8(a, y)
+		},
+	},
+
+	{
+		N: "XOR rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0xa8, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.xorU8(a, x)
+		},
+	},
+
+	{
+		N: "XOR ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0xa8, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.xorU8(a, y)
+		},
+	},
+
+	{
+		N: "OR rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0xb0, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.AF.Hi = cpu.orU8(a, x)
+		},
+	},
+
+	{
+		N: "OR ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0xb0, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.AF.Hi = cpu.orU8(a, y)
+		},
+	},
+
+	{
+		N: "CP rx",
+		C: []Code{
+			{0xdd, 0x00, nil},
+			{0xb8, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			x := cpu.getRX(codes[1])
+			cpu.subU8(a, x)
+		},
+	},
+
+	{
+		N: "CP ry",
+		C: []Code{
+			{0xfd, 0x00, nil},
+			{0xb8, 0x07, vReg8},
+		},
+		T: []int{4},
+		F: func(cpu *CPU, codes []uint8) {
+			a := cpu.AF.Hi
+			y := cpu.getRY(codes[1])
+			cpu.subU8(a, y)
+		},
+	},
 }
