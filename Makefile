@@ -41,4 +41,9 @@ clean:
 zexdoc:
 	$(MAKE) -C cmd/zexdoc run
 
+switch.go: op_*.go gen_switch.go ./cmd/gen_switch/*.go
+	rm -f switch.go switch.go.new
+	go run ./cmd/gen_switch | goimports > switch.go.new
+	mv switch.go.new switch.go
+
 # based on: github.com/koron-go/_skeleton/Makefile
