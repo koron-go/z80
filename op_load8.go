@@ -8,9 +8,7 @@ var load8 = []*OPCode{
 			{0x40, 0x3f, vReg88},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			*cpu.regP(codes[0] >> 3) = *cpu.regP(codes[0])
-		},
+		F: opLDr1r2,
 	},
 
 	{
@@ -20,10 +18,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[0] >> 3)
-			*r = codes[1]
-		},
+		F: opLDrn,
 	},
 
 	{
@@ -32,10 +27,7 @@ var load8 = []*OPCode{
 			{0x46, 0x38, vReg8_3},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[0] >> 3)
-			*r = cpu.Memory.Get(cpu.HL.U16())
-		},
+		F: opLDrHLP,
 	},
 
 	{
@@ -46,11 +38,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1] >> 3)
-			p := addrOff(cpu.IX, codes[2])
-			*r = cpu.Memory.Get(p)
-		},
+		F: opLDrIXdP,
 	},
 
 	{
@@ -61,11 +49,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1] >> 3)
-			p := addrOff(cpu.IY, codes[2])
-			*r = cpu.Memory.Get(p)
-		},
+		F: opLDrIYdP,
 	},
 
 	{
@@ -74,10 +58,7 @@ var load8 = []*OPCode{
 			{0x70, 0x07, vReg8},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[0])
-			cpu.Memory.Set(cpu.HL.U16(), *r)
-		},
+		F: opLDHLPr,
 	},
 
 	{
@@ -88,11 +69,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, *r)
-		},
+		F: opLDIXdPr,
 	},
 
 	{
@@ -103,11 +80,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, *r)
-		},
+		F: opLDIYdPr,
 	},
 
 	{
@@ -117,10 +90,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, codes[1])
-		},
+		F: opLDHLPn,
 	},
 
 	{
@@ -132,10 +102,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, codes[3])
-		},
+		F: opLDIXdPn,
 	},
 
 	{
@@ -147,10 +114,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, codes[3])
-		},
+		F: opLDIYdPn,
 	},
 
 	{
@@ -159,10 +123,7 @@ var load8 = []*OPCode{
 			{0x0a, 0x00, nil},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.BC.U16()
-			cpu.AF.Hi = cpu.Memory.Get(p)
-		},
+		F: opLDABCP,
 	},
 
 	{
@@ -171,10 +132,7 @@ var load8 = []*OPCode{
 			{0x1a, 0x00, nil},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.DE.U16()
-			cpu.AF.Hi = cpu.Memory.Get(p)
-		},
+		F: opLDADEP,
 	},
 
 	{
@@ -185,10 +143,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := toU16(codes[1], codes[2])
-			cpu.AF.Hi = cpu.Memory.Get(p)
-		},
+		F: opLDAnnP,
 	},
 
 	{
@@ -197,10 +152,7 @@ var load8 = []*OPCode{
 			{0x02, 0x00, nil},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.BC.U16()
-			cpu.Memory.Set(p, cpu.AF.Hi)
-		},
+		F: opLDBCPA,
 	},
 
 	{
@@ -209,10 +161,7 @@ var load8 = []*OPCode{
 			{0x12, 0x00, nil},
 		},
 		T: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.DE.U16()
-			cpu.Memory.Set(p, cpu.AF.Hi)
-		},
+		F: opLDDEPA,
 	},
 
 	{
@@ -223,10 +172,7 @@ var load8 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := toU16(codes[1], codes[2])
-			cpu.Memory.Set(p, cpu.AF.Hi)
-		},
+		F: opLDnnPA,
 	},
 
 	{
@@ -236,27 +182,7 @@ var load8 = []*OPCode{
 			{0x57, 0x00, nil},
 		},
 		T: []int{4, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			d := cpu.IR.Hi
-			cpu.AF.Hi = d
-			// update F by d
-			// - S is set if the I Register is negative; otherwise, it is
-			//   reset.
-			// - Z is set if the I Register is 0; otherwise, it is reset.
-			// - H is reset.
-			// - P/V contains contents of IFF2.
-			// - N is reset.
-			// - C is not affected.
-			// - If an interrupt occurs during execution of this instruction,
-			//   the Parity flag contains a 0.
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, d&0x80 != 0).
-				Put(Z, d == 0).
-				Reset(H).
-				Put(PV, cpu.IFF2).
-				Reset(N).
-				Keep(C))
-		},
+		F: opLDAI,
 	},
 
 	{
@@ -266,26 +192,7 @@ var load8 = []*OPCode{
 			{0x5f, 0x00, nil},
 		},
 		T: []int{4, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			d := cpu.IR.Lo
-			cpu.AF.Hi = d
-			// update F by d
-			// - S is set if, R-Register is negative; otherwise, it is reset.
-			// - Z is set if the R Register is 0; otherwise, it is reset.
-			// - H is reset.
-			// - P/V contains contents of IFF2.
-			// - N is reset.
-			// - C is not affected.
-			// - If an interrupt occurs during execution of this instruction,
-			//	 the parity flag contains a 0.
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, d&0x80 != 0).
-				Put(Z, d == 0).
-				Reset(H).
-				Put(PV, cpu.IFF2).
-				Reset(N).
-				Keep(C))
-		},
+		F: opLDAR,
 	},
 
 	{
@@ -295,9 +202,7 @@ var load8 = []*OPCode{
 			{0x47, 0x00, nil},
 		},
 		T: []int{4, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IR.Hi = cpu.AF.Hi
-		},
+		F: opLDIA,
 	},
 
 	{
@@ -307,8 +212,145 @@ var load8 = []*OPCode{
 			{0x4f, 0x00, nil},
 		},
 		T: []int{4, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IR.Lo = cpu.AF.Hi
-		},
+		F: opLDRA,
 	},
+}
+
+func opLDr1r2(cpu *CPU, codes []uint8) {
+	*cpu.regP(codes[0] >> 3) = *cpu.regP(codes[0])
+}
+
+func opLDrn(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[0] >> 3)
+	*r = codes[1]
+}
+
+func opLDrHLP(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[0] >> 3)
+	*r = cpu.Memory.Get(cpu.HL.U16())
+}
+
+func opLDrIXdP(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1] >> 3)
+	p := addrOff(cpu.IX, codes[2])
+	*r = cpu.Memory.Get(p)
+}
+
+func opLDrIYdP(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1] >> 3)
+	p := addrOff(cpu.IY, codes[2])
+	*r = cpu.Memory.Get(p)
+}
+
+func opLDHLPr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[0])
+	cpu.Memory.Set(cpu.HL.U16(), *r)
+}
+
+func opLDIXdPr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, *r)
+}
+
+func opLDIYdPr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, *r)
+}
+
+func opLDHLPn(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, codes[1])
+}
+
+func opLDIXdPn(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, codes[3])
+}
+
+func opLDIYdPn(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, codes[3])
+}
+
+func opLDABCP(cpu *CPU, codes []uint8) {
+	p := cpu.BC.U16()
+	cpu.AF.Hi = cpu.Memory.Get(p)
+}
+
+func opLDADEP(cpu *CPU, codes []uint8) {
+	p := cpu.DE.U16()
+	cpu.AF.Hi = cpu.Memory.Get(p)
+}
+
+func opLDAnnP(cpu *CPU, codes []uint8) {
+	p := toU16(codes[1], codes[2])
+	cpu.AF.Hi = cpu.Memory.Get(p)
+}
+
+func opLDBCPA(cpu *CPU, codes []uint8) {
+	p := cpu.BC.U16()
+	cpu.Memory.Set(p, cpu.AF.Hi)
+}
+
+func opLDDEPA(cpu *CPU, codes []uint8) {
+	p := cpu.DE.U16()
+	cpu.Memory.Set(p, cpu.AF.Hi)
+}
+
+func opLDnnPA(cpu *CPU, codes []uint8) {
+	p := toU16(codes[1], codes[2])
+	cpu.Memory.Set(p, cpu.AF.Hi)
+}
+
+func opLDAI(cpu *CPU, codes []uint8) {
+	d := cpu.IR.Hi
+	cpu.AF.Hi = d
+	// update F by d
+	// - S is set if the I Register is negative; otherwise, it is
+	//   reset.
+	// - Z is set if the I Register is 0; otherwise, it is reset.
+	// - H is reset.
+	// - P/V contains contents of IFF2.
+	// - N is reset.
+	// - C is not affected.
+	// - If an interrupt occurs during execution of this instruction,
+	//   the Parity flag contains a 0.
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, d&0x80 != 0).
+		Put(Z, d == 0).
+		Reset(H).
+		Put(PV, cpu.IFF2).
+		Reset(N).
+		Keep(C))
+}
+
+func opLDAR(cpu *CPU, codes []uint8) {
+	d := cpu.IR.Lo
+	cpu.AF.Hi = d
+	// update F by d
+	// - S is set if, R-Register is negative; otherwise, it is reset.
+	// - Z is set if the R Register is 0; otherwise, it is reset.
+	// - H is reset.
+	// - P/V contains contents of IFF2.
+	// - N is reset.
+	// - C is not affected.
+	// - If an interrupt occurs during execution of this instruction,
+	//	 the parity flag contains a 0.
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, d&0x80 != 0).
+		Put(Z, d == 0).
+		Reset(H).
+		Put(PV, cpu.IFF2).
+		Reset(N).
+		Keep(C))
+}
+
+func opLDIA(cpu *CPU, codes []uint8) {
+	cpu.IR.Hi = cpu.AF.Hi
+}
+
+func opLDRA(cpu *CPU, codes []uint8) {
+	cpu.IR.Lo = cpu.AF.Hi
 }

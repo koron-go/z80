@@ -94,10 +94,7 @@ var undoc = []*OPCode{
 			{0x24, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.incU8(uint8(cpu.IX >> 8))
-			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
-		},
+		F: opINCIXH,
 	},
 
 	{
@@ -107,10 +104,7 @@ var undoc = []*OPCode{
 			{0x25, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.decU8(uint8(cpu.IX >> 8))
-			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
-		},
+		F: opDECIXH,
 	},
 
 	{
@@ -120,10 +114,7 @@ var undoc = []*OPCode{
 			{0x2c, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.incU8(uint8(cpu.IX))
-			cpu.IX = uint16(v) | cpu.IX&0xff00
-		},
+		F: opINCIXL,
 	},
 
 	{
@@ -133,10 +124,7 @@ var undoc = []*OPCode{
 			{0x2d, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.decU8(uint8(cpu.IX))
-			cpu.IX = uint16(v) | cpu.IX&0xff00
-		},
+		F: opDECIXL,
 	},
 
 	{
@@ -146,10 +134,7 @@ var undoc = []*OPCode{
 			{0x24, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.incU8(uint8(cpu.IY >> 8))
-			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
-		},
+		F: opINCIYH,
 	},
 
 	{
@@ -159,10 +144,7 @@ var undoc = []*OPCode{
 			{0x25, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.decU8(uint8(cpu.IY >> 8))
-			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
-		},
+		F: opDECIYH,
 	},
 
 	{
@@ -172,10 +154,7 @@ var undoc = []*OPCode{
 			{0x2c, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.incU8(uint8(cpu.IY))
-			cpu.IY = uint16(v) | cpu.IY&0xff00
-		},
+		F: opINCIYL,
 	},
 
 	{
@@ -185,10 +164,7 @@ var undoc = []*OPCode{
 			{0x2d, 0x00, nil},
 		},
 		T: []int{4, 6}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.decU8(uint8(cpu.IY))
-			cpu.IY = uint16(v) | cpu.IY&0xff00
-		},
+		F: opDECIYL,
 	},
 
 	{
@@ -199,10 +175,7 @@ var undoc = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := codes[2]
-			cpu.IX = uint16(v)<<8 | cpu.IX&0xff
-		},
+		F: opLDIXHn,
 	},
 
 	{
@@ -213,10 +186,7 @@ var undoc = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := codes[2]
-			cpu.IX = uint16(v) | cpu.IX&0xff00
-		},
+		F: opLDIXLn,
 	},
 
 	{
@@ -227,10 +197,7 @@ var undoc = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := codes[2]
-			cpu.IY = uint16(v)<<8 | cpu.IY&0xff
-		},
+		F: opLDIYHn,
 	},
 
 	{
@@ -241,10 +208,7 @@ var undoc = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			v := codes[2]
-			cpu.IY = uint16(v) | cpu.IY&0xff00
-		},
+		F: opLDIYLn,
 	},
 
 	{
@@ -256,11 +220,7 @@ var undoc = []*OPCode{
 			{0x36, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			v := cpu.sl1U8(cpu.Memory.Get(p))
-			cpu.Memory.Set(p, v)
-		},
+		F: opSL1IXdP,
 	},
 
 	{
@@ -272,11 +232,7 @@ var undoc = []*OPCode{
 			{0x36, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3}, // not verified
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			v := cpu.sl1U8(cpu.Memory.Get(p))
-			cpu.Memory.Set(p, v)
-		},
+		F: opSL1IYdP,
 	},
 
 	{
@@ -286,10 +242,7 @@ var undoc = []*OPCode{
 			{0x30, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.sl1U8(*r)
-		},
+		F: opSL1r,
 	},
 
 	{
@@ -299,10 +252,7 @@ var undoc = []*OPCode{
 			{0x36, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.sl1U8(cpu.Memory.Get(p)))
-		},
+		F: opSL1HLP,
 	},
 
 	{
@@ -312,10 +262,7 @@ var undoc = []*OPCode{
 			{0x40, 0x3f, vReg88},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.getRX(codes[1])
-			cpu.setRX(codes[1]>>3, v)
-		},
+		F: opLDrx1rx2,
 	},
 
 	{
@@ -325,10 +272,7 @@ var undoc = []*OPCode{
 			{0x40, 0x3f, vReg88},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.getRY(codes[1])
-			cpu.setRY(codes[1]>>3, v)
-		},
+		F: opLDry1ry2,
 	},
 
 	{
@@ -338,11 +282,7 @@ var undoc = []*OPCode{
 			{0x80, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.addU8(a, x)
-		},
+		F: opADDArx,
 	},
 
 	{
@@ -352,11 +292,7 @@ var undoc = []*OPCode{
 			{0x80, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.addU8(a, y)
-		},
+		F: opADDAry,
 	},
 
 	{
@@ -366,11 +302,7 @@ var undoc = []*OPCode{
 			{0x88, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.adcU8(a, x)
-		},
+		F: opADCArx,
 	},
 
 	{
@@ -380,11 +312,7 @@ var undoc = []*OPCode{
 			{0x88, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.adcU8(a, y)
-		},
+		F: opADCAry,
 	},
 
 	{
@@ -394,11 +322,7 @@ var undoc = []*OPCode{
 			{0x90, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.subU8(a, x)
-		},
+		F: opSUBArx,
 	},
 
 	{
@@ -408,11 +332,7 @@ var undoc = []*OPCode{
 			{0x90, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.subU8(a, y)
-		},
+		F: opSUBAry,
 	},
 
 	{
@@ -422,11 +342,7 @@ var undoc = []*OPCode{
 			{0x98, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.sbcU8(a, x)
-		},
+		F: opSBCArx,
 	},
 
 	{
@@ -436,11 +352,7 @@ var undoc = []*OPCode{
 			{0x98, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.sbcU8(a, y)
-		},
+		F: opSBCAry,
 	},
 
 	{
@@ -450,11 +362,7 @@ var undoc = []*OPCode{
 			{0xa0, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.andU8(a, x)
-		},
+		F: opANDrx,
 	},
 
 	{
@@ -464,11 +372,7 @@ var undoc = []*OPCode{
 			{0xa0, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.andU8(a, y)
-		},
+		F: opANDry,
 	},
 
 	{
@@ -478,11 +382,7 @@ var undoc = []*OPCode{
 			{0xa8, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.xorU8(a, x)
-		},
+		F: opXORrx,
 	},
 
 	{
@@ -492,11 +392,7 @@ var undoc = []*OPCode{
 			{0xa8, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.xorU8(a, y)
-		},
+		F: opXORry,
 	},
 
 	{
@@ -506,11 +402,7 @@ var undoc = []*OPCode{
 			{0xb0, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.AF.Hi = cpu.orU8(a, x)
-		},
+		F: opORrx,
 	},
 
 	{
@@ -520,11 +412,7 @@ var undoc = []*OPCode{
 			{0xb0, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.AF.Hi = cpu.orU8(a, y)
-		},
+		F: opORry,
 	},
 
 	{
@@ -534,11 +422,7 @@ var undoc = []*OPCode{
 			{0xb8, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			x := cpu.getRX(codes[1])
-			cpu.subU8(a, x)
-		},
+		F: opCPrx,
 	},
 
 	{
@@ -548,10 +432,194 @@ var undoc = []*OPCode{
 			{0xb8, 0x07, vReg8},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			y := cpu.getRY(codes[1])
-			cpu.subU8(a, y)
-		},
+		F: opCPry,
 	},
+}
+
+func opINCIXH(cpu *CPU, codes []uint8) {
+	v := cpu.incU8(uint8(cpu.IX >> 8))
+	cpu.IX = uint16(v)<<8 | cpu.IX&0xff
+}
+
+func opDECIXH(cpu *CPU, codes []uint8) {
+	v := cpu.decU8(uint8(cpu.IX >> 8))
+	cpu.IX = uint16(v)<<8 | cpu.IX&0xff
+}
+
+func opINCIXL(cpu *CPU, codes []uint8) {
+	v := cpu.incU8(uint8(cpu.IX))
+	cpu.IX = uint16(v) | cpu.IX&0xff00
+}
+
+func opDECIXL(cpu *CPU, codes []uint8) {
+	v := cpu.decU8(uint8(cpu.IX))
+	cpu.IX = uint16(v) | cpu.IX&0xff00
+}
+
+func opINCIYH(cpu *CPU, codes []uint8) {
+	v := cpu.incU8(uint8(cpu.IY >> 8))
+	cpu.IY = uint16(v)<<8 | cpu.IY&0xff
+}
+
+func opDECIYH(cpu *CPU, codes []uint8) {
+	v := cpu.decU8(uint8(cpu.IY >> 8))
+	cpu.IY = uint16(v)<<8 | cpu.IY&0xff
+}
+
+func opINCIYL(cpu *CPU, codes []uint8) {
+	v := cpu.incU8(uint8(cpu.IY))
+	cpu.IY = uint16(v) | cpu.IY&0xff00
+}
+
+func opDECIYL(cpu *CPU, codes []uint8) {
+	v := cpu.decU8(uint8(cpu.IY))
+	cpu.IY = uint16(v) | cpu.IY&0xff00
+}
+
+func opLDIXHn(cpu *CPU, codes []uint8) {
+	v := codes[2]
+	cpu.IX = uint16(v)<<8 | cpu.IX&0xff
+}
+
+func opLDIXLn(cpu *CPU, codes []uint8) {
+	v := codes[2]
+	cpu.IX = uint16(v) | cpu.IX&0xff00
+}
+
+func opLDIYHn(cpu *CPU, codes []uint8) {
+	v := codes[2]
+	cpu.IY = uint16(v)<<8 | cpu.IY&0xff
+}
+
+func opLDIYLn(cpu *CPU, codes []uint8) {
+	v := codes[2]
+	cpu.IY = uint16(v) | cpu.IY&0xff00
+}
+
+func opSL1IXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	v := cpu.sl1U8(cpu.Memory.Get(p))
+	cpu.Memory.Set(p, v)
+}
+
+func opSL1IYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	v := cpu.sl1U8(cpu.Memory.Get(p))
+	cpu.Memory.Set(p, v)
+}
+
+func opSL1r(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.sl1U8(*r)
+}
+
+func opSL1HLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.sl1U8(cpu.Memory.Get(p)))
+}
+
+func opLDrx1rx2(cpu *CPU, codes []uint8) {
+	v := cpu.getRX(codes[1])
+	cpu.setRX(codes[1]>>3, v)
+}
+
+func opLDry1ry2(cpu *CPU, codes []uint8) {
+	v := cpu.getRY(codes[1])
+	cpu.setRY(codes[1]>>3, v)
+}
+
+func opADDArx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.addU8(a, x)
+}
+
+func opADDAry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.addU8(a, y)
+}
+
+func opADCArx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.adcU8(a, x)
+}
+
+func opADCAry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.adcU8(a, y)
+}
+
+func opSUBArx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.subU8(a, x)
+}
+
+func opSUBAry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.subU8(a, y)
+}
+
+func opSBCArx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.sbcU8(a, x)
+}
+
+func opSBCAry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.sbcU8(a, y)
+}
+
+func opANDrx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.andU8(a, x)
+}
+
+func opANDry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.andU8(a, y)
+}
+
+func opXORrx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.xorU8(a, x)
+}
+
+func opXORry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.xorU8(a, y)
+}
+
+func opORrx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.AF.Hi = cpu.orU8(a, x)
+}
+
+func opORry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.AF.Hi = cpu.orU8(a, y)
+}
+
+func opCPrx(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	x := cpu.getRX(codes[1])
+	cpu.subU8(a, x)
+}
+
+func opCPry(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	y := cpu.getRY(codes[1])
+	cpu.subU8(a, y)
 }

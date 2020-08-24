@@ -10,11 +10,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			dd := cpu.reg16dd(codes[0] >> 4)
-			nn := toU16(codes[1], codes[2])
-			dd.SetU16(nn)
-		},
+		F: opLDddnn,
 	},
 
 	{
@@ -26,10 +22,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[2], codes[3])
-			cpu.IX = nn
-		},
+		F: opLDIXnn,
 	},
 
 	{
@@ -41,10 +34,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[2], codes[3])
-			cpu.IY = nn
-		},
+		F: opLDIYnn,
 	},
 
 	{
@@ -55,10 +45,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[1], codes[2])
-			cpu.HL.SetU16(cpu.readU16(nn))
-		},
+		F: opLDHLnnP,
 	},
 
 	{
@@ -70,11 +57,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			dd := cpu.reg16dd(codes[1] >> 4)
-			nn := toU16(codes[2], codes[3])
-			dd.SetU16(cpu.readU16(nn))
-		},
+		F: opLDddnnP,
 	},
 
 	{
@@ -86,10 +69,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[2], codes[3])
-			cpu.IX = cpu.readU16(nn)
-		},
+		F: opLDIXnnP,
 	},
 
 	{
@@ -101,10 +81,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[2], codes[3])
-			cpu.IY = cpu.readU16(nn)
-		},
+		F: opLDIYnnP,
 	},
 
 	{
@@ -115,10 +92,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[1], codes[2])
-			cpu.writeU16(nn, cpu.HL.U16())
-		},
+		F: opLDnnPHL,
 	},
 
 	{
@@ -130,11 +104,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			dd := cpu.reg16dd(codes[1] >> 4)
-			nn := toU16(codes[2], codes[3])
-			cpu.writeU16(nn, dd.U16())
-		},
+		F: opLDnnPdd,
 	},
 
 	{
@@ -146,10 +116,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[2], codes[3])
-			cpu.writeU16(nn, cpu.IX)
-		},
+		F: opLDnnPIX,
 	},
 
 	{
@@ -161,10 +128,7 @@ var load16 = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 4, 3, 3, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			nn := toU16(codes[2], codes[3])
-			cpu.writeU16(nn, cpu.IY)
-		},
+		F: opLDnnPIY,
 	},
 
 	{
@@ -173,9 +137,7 @@ var load16 = []*OPCode{
 			{0xf9, 0x00, nil},
 		},
 		T: []int{6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP = cpu.HL.U16()
-		},
+		F: opLDSPHL,
 	},
 
 	{
@@ -185,9 +147,7 @@ var load16 = []*OPCode{
 			{0xf9, 0x00, nil},
 		},
 		T: []int{4, 6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP = cpu.IX
-		},
+		F: opLDSPIX,
 	},
 
 	{
@@ -197,9 +157,7 @@ var load16 = []*OPCode{
 			{0xf9, 0x00, nil},
 		},
 		T: []int{4, 6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP = cpu.IY
-		},
+		F: opLDSPIY,
 	},
 
 	{
@@ -208,11 +166,7 @@ var load16 = []*OPCode{
 			{0xc5, 0x30, nil},
 		},
 		T: []int{5, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			qq := cpu.reg16qq(codes[0] >> 4)
-			cpu.SP -= 2
-			cpu.writeU16(cpu.SP, qq.U16())
-		},
+		F: opPUSHqq,
 	},
 
 	{
@@ -222,10 +176,7 @@ var load16 = []*OPCode{
 			{0xe5, 0x00, nil},
 		},
 		T: []int{4, 5, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP -= 2
-			cpu.writeU16(cpu.SP, cpu.IX)
-		},
+		F: opPUSHIX,
 	},
 
 	{
@@ -235,10 +186,7 @@ var load16 = []*OPCode{
 			{0xe5, 0x00, nil},
 		},
 		T: []int{4, 5, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP -= 2
-			cpu.writeU16(cpu.SP, cpu.IY)
-		},
+		F: opPUSHIY,
 	},
 
 	{
@@ -247,11 +195,7 @@ var load16 = []*OPCode{
 			{0xc1, 0x30, nil},
 		},
 		T: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			qq := cpu.reg16qq(codes[0] >> 4)
-			qq.SetU16(cpu.readU16(cpu.SP))
-			cpu.SP += 2
-		},
+		F: opPOPqq,
 	},
 
 	{
@@ -261,10 +205,7 @@ var load16 = []*OPCode{
 			{0xe1, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IX = cpu.readU16(cpu.SP)
-			cpu.SP += 2
-		},
+		F: opPOPIX,
 	},
 
 	{
@@ -274,9 +215,108 @@ var load16 = []*OPCode{
 			{0xe1, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IY = cpu.readU16(cpu.SP)
-			cpu.SP += 2
-		},
+		F: opPOPIY,
 	},
+}
+
+func opLDddnn(cpu *CPU, codes []uint8) {
+	dd := cpu.reg16dd(codes[0] >> 4)
+	nn := toU16(codes[1], codes[2])
+	dd.SetU16(nn)
+}
+
+func opLDIXnn(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[2], codes[3])
+	cpu.IX = nn
+}
+
+func opLDIYnn(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[2], codes[3])
+	cpu.IY = nn
+}
+
+func opLDHLnnP(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[1], codes[2])
+	cpu.HL.SetU16(cpu.readU16(nn))
+}
+
+func opLDddnnP(cpu *CPU, codes []uint8) {
+	dd := cpu.reg16dd(codes[1] >> 4)
+	nn := toU16(codes[2], codes[3])
+	dd.SetU16(cpu.readU16(nn))
+}
+
+func opLDIXnnP(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[2], codes[3])
+	cpu.IX = cpu.readU16(nn)
+}
+
+func opLDIYnnP(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[2], codes[3])
+	cpu.IY = cpu.readU16(nn)
+}
+
+func opLDnnPHL(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[1], codes[2])
+	cpu.writeU16(nn, cpu.HL.U16())
+}
+
+func opLDnnPdd(cpu *CPU, codes []uint8) {
+	dd := cpu.reg16dd(codes[1] >> 4)
+	nn := toU16(codes[2], codes[3])
+	cpu.writeU16(nn, dd.U16())
+}
+
+func opLDnnPIX(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[2], codes[3])
+	cpu.writeU16(nn, cpu.IX)
+}
+
+func opLDnnPIY(cpu *CPU, codes []uint8) {
+	nn := toU16(codes[2], codes[3])
+	cpu.writeU16(nn, cpu.IY)
+}
+
+func opLDSPHL(cpu *CPU, codes []uint8) {
+	cpu.SP = cpu.HL.U16()
+}
+
+func opLDSPIX(cpu *CPU, codes []uint8) {
+	cpu.SP = cpu.IX
+}
+
+func opLDSPIY(cpu *CPU, codes []uint8) {
+	cpu.SP = cpu.IY
+}
+
+func opPUSHqq(cpu *CPU, codes []uint8) {
+	qq := cpu.reg16qq(codes[0] >> 4)
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, qq.U16())
+}
+
+func opPUSHIX(cpu *CPU, codes []uint8) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.IX)
+}
+
+func opPUSHIY(cpu *CPU, codes []uint8) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.IY)
+}
+
+func opPOPqq(cpu *CPU, codes []uint8) {
+	qq := cpu.reg16qq(codes[0] >> 4)
+	qq.SetU16(cpu.readU16(cpu.SP))
+	cpu.SP += 2
+}
+
+func opPOPIX(cpu *CPU, codes []uint8) {
+	cpu.IX = cpu.readU16(cpu.SP)
+	cpu.SP += 2
+}
+
+func opPOPIY(cpu *CPU, codes []uint8) {
+	cpu.IY = cpu.readU16(cpu.SP)
+	cpu.SP += 2
 }

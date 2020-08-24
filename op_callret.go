@@ -7,10 +7,7 @@ var opcRETI = &OPCode{
 		{0x4d, 0x00, nil},
 	},
 	T: []int{4, 4, 3, 3},
-	F: func(cpu *CPU, codes []uint8) {
-		cpu.PC = cpu.readU16(cpu.SP)
-		cpu.SP += 2
-	},
+	F: opRETI,
 }
 
 var opcRETN = &OPCode{
@@ -20,11 +17,7 @@ var opcRETN = &OPCode{
 		{0x45, 0x00, nil},
 	},
 	T: []int{4, 4, 3, 3},
-	F: func(cpu *CPU, codes []uint8) {
-		cpu.PC = cpu.readU16(cpu.SP)
-		cpu.SP += 2
-		cpu.IFF1 = cpu.IFF2
-	},
+	F: opRETN,
 }
 
 var callret = []*OPCode{
@@ -37,11 +30,7 @@ var callret = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP -= 2
-			cpu.writeU16(cpu.SP, cpu.PC)
-			cpu.PC = toU16(codes[1], codes[2])
-		},
+		F: opCALLnn,
 	},
 
 	{
@@ -53,13 +42,7 @@ var callret = []*OPCode{
 		},
 		T:  []int{4, 3, 4, 3, 3},
 		T2: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			if cpu.flagCC(codes[0] >> 3) {
-				cpu.SP -= 2
-				cpu.writeU16(cpu.SP, cpu.PC)
-				cpu.PC = toU16(codes[1], codes[2])
-			}
-		},
+		F: opCALLccnn,
 	},
 
 	{
@@ -68,10 +51,7 @@ var callret = []*OPCode{
 			{0xc9, 0x00, nil},
 		},
 		T: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.PC = cpu.readU16(cpu.SP)
-			cpu.SP += 2
-		},
+		F: opRET,
 	},
 
 	{
@@ -81,12 +61,7 @@ var callret = []*OPCode{
 		},
 		T:  []int{5, 3, 3},
 		T2: []int{5},
-		F: func(cpu *CPU, codes []uint8) {
-			if cpu.flagCC(codes[0] >> 3) {
-				cpu.PC = cpu.readU16(cpu.SP)
-				cpu.SP += 2
-			}
-		},
+		F: opRETcc,
 	},
 
 	opcRETI,
@@ -99,10 +74,49 @@ var callret = []*OPCode{
 			{0xc7, 0x38, vRSTp3_3},
 		},
 		T: []int{5, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.SP -= 2
-			cpu.writeU16(cpu.SP, cpu.PC)
-			cpu.PC = uint16(codes[0] & 0x38)
-		},
+		F: opRSTp,
 	},
+}
+
+func opRETI(cpu *CPU, codes []uint8) {
+	cpu.PC = cpu.readU16(cpu.SP)
+	cpu.SP += 2
+}
+
+func opRETN(cpu *CPU, codes []uint8) {
+	cpu.PC = cpu.readU16(cpu.SP)
+	cpu.SP += 2
+	cpu.IFF1 = cpu.IFF2
+}
+
+func opCALLnn(cpu *CPU, codes []uint8) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = toU16(codes[1], codes[2])
+}
+
+func opCALLccnn(cpu *CPU, codes []uint8) {
+	if cpu.flagCC(codes[0] >> 3) {
+		cpu.SP -= 2
+		cpu.writeU16(cpu.SP, cpu.PC)
+		cpu.PC = toU16(codes[1], codes[2])
+	}
+}
+
+func opRET(cpu *CPU, codes []uint8) {
+	cpu.PC = cpu.readU16(cpu.SP)
+	cpu.SP += 2
+}
+
+func opRETcc(cpu *CPU, codes []uint8) {
+	if cpu.flagCC(codes[0] >> 3) {
+		cpu.PC = cpu.readU16(cpu.SP)
+		cpu.SP += 2
+	}
+}
+
+func opRSTp(cpu *CPU, codes []uint8) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = uint16(codes[0] & 0x38)
 }

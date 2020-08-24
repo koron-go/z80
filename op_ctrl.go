@@ -8,9 +8,7 @@ var opcHALT = &OPCode{
 		{0x76, 0x00, nil},
 	},
 	T: []int{4},
-	F: func(cpu *CPU, codes []uint8) {
-		// nothing todo.
-	},
+	F: opHALT,
 }
 
 var opcEI = &OPCode{
@@ -19,10 +17,7 @@ var opcEI = &OPCode{
 		{0xfb, 0x00, nil},
 	},
 	T: []int{4},
-	F: func(cpu *CPU, codes []uint8) {
-		cpu.IFF1 = true
-		cpu.IFF2 = true
-	},
+	F: opEI,
 }
 
 var ctrl = []*OPCode{
@@ -42,10 +37,7 @@ var ctrl = []*OPCode{
 			{0x2F, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.AF.Hi = ^cpu.AF.Hi
-			cpu.flagUpdate(FlagOp{}.Set(H).Set(N))
-		},
+		F: opCPL,
 	},
 
 	{
@@ -55,18 +47,7 @@ var ctrl = []*OPCode{
 			{0x44, 0x00, nil},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			v := ^a + 1
-			cpu.AF.Hi = v
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, v&0x80 != 0).
-				Put(Z, v == 0).
-				Put(H, a&0x0f != 0).
-				Put(PV, a == 0x80).
-				Set(N).
-				Put(C, a != 0))
-		},
+		F: opNEG,
 	},
 
 	{
@@ -75,10 +56,7 @@ var ctrl = []*OPCode{
 			{0x3f, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			c := cpu.flag(C)
-			cpu.flagUpdate(FlagOp{}.Put(H, c).Reset(N).Put(C, !c))
-		},
+		F: opCCF,
 	},
 
 	{
@@ -87,9 +65,7 @@ var ctrl = []*OPCode{
 			{0x37, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.flagUpdate(FlagOp{}.Reset(H).Reset(N).Set(C))
-		},
+		F: opSCF,
 	},
 
 	{
@@ -98,9 +74,7 @@ var ctrl = []*OPCode{
 			{0x00, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			// do nothing.
-		},
+		F: opNOP,
 	},
 
 	opcHALT,
@@ -111,10 +85,7 @@ var ctrl = []*OPCode{
 			{0xf3, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IFF1 = false
-			cpu.IFF2 = false
-		},
+		F: opDI,
 	},
 
 	opcEI,
@@ -126,9 +97,7 @@ var ctrl = []*OPCode{
 			{0x46, 0x00, nil},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IM = 0
-		},
+		F: opIM0,
 	},
 
 	{
@@ -138,9 +107,7 @@ var ctrl = []*OPCode{
 			{0x56, 0x00, nil},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IM = 1
-		},
+		F: opIM1,
 	},
 
 	{
@@ -150,9 +117,7 @@ var ctrl = []*OPCode{
 			{0x5e, 0x00, nil},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IM = 2
-		},
+		F: opIM2,
 	},
 }
 
@@ -184,4 +149,61 @@ func opDAA(cpu *CPU, codes []uint8) {
 		Keep(N).
 		Put(C, c || cpu.AF.Hi > 0x99))
 	cpu.AF.Hi = r
+}
+
+func opHALT(cpu *CPU, codes []uint8) {
+	// nothing todo.
+}
+
+func opEI(cpu *CPU, codes []uint8) {
+	cpu.IFF1 = true
+	cpu.IFF2 = true
+}
+
+func opCPL(cpu *CPU, codes []uint8) {
+	cpu.AF.Hi = ^cpu.AF.Hi
+	cpu.flagUpdate(FlagOp{}.Set(H).Set(N))
+}
+
+func opNEG(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	v := ^a + 1
+	cpu.AF.Hi = v
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x80 != 0).
+		Put(Z, v == 0).
+		Put(H, a&0x0f != 0).
+		Put(PV, a == 0x80).
+		Set(N).
+		Put(C, a != 0))
+}
+
+func opCCF(cpu *CPU, codes []uint8) {
+	c := cpu.flag(C)
+	cpu.flagUpdate(FlagOp{}.Put(H, c).Reset(N).Put(C, !c))
+}
+
+func opSCF(cpu *CPU, codes []uint8) {
+	cpu.flagUpdate(FlagOp{}.Reset(H).Reset(N).Set(C))
+}
+
+func opNOP(cpu *CPU, codes []uint8) {
+	// do nothing.
+}
+
+func opDI(cpu *CPU, codes []uint8) {
+	cpu.IFF1 = false
+	cpu.IFF2 = false
+}
+
+func opIM0(cpu *CPU, codes []uint8) {
+	cpu.IM = 0
+}
+
+func opIM1(cpu *CPU, codes []uint8) {
+	cpu.IM = 1
+}
+
+func opIM2(cpu *CPU, codes []uint8) {
+	cpu.IM = 2
 }
