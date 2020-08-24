@@ -2,7 +2,7 @@ package z80
 
 import "math/bits"
 
-var opHALT = &OPCode{
+var opcHALT = &OPCode{
 	N: "HALT",
 	C: []Code{
 		{0x76, 0x00, nil},
@@ -13,7 +13,7 @@ var opHALT = &OPCode{
 	},
 }
 
-var opEI = &OPCode{
+var opcEI = &OPCode{
 	N: "EI",
 	C: []Code{
 		{0xfb, 0x00, nil},
@@ -103,7 +103,7 @@ var ctrl = []*OPCode{
 		},
 	},
 
-	opHALT,
+	opcHALT,
 
 	{
 		N: "DI",
@@ -117,7 +117,7 @@ var ctrl = []*OPCode{
 		},
 	},
 
-	opEI,
+	opcEI,
 
 	{
 		N: "IM 0",

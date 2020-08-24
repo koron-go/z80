@@ -351,15 +351,15 @@ func (cpu *CPU) step(f fetcher, enableInt bool) error {
 		}
 		cpu.exec(op, buf)
 		switch op {
-		case opHALT:
+		case opcHALT:
 			cpu.HALT = true
-		case opEI:
+		case opcEI:
 			afterEI = true
-		case opRETI:
+		case opcRETI:
 			if cpu.INT != nil {
 				cpu.INT.ReturnINT()
 			}
-		case opRETN:
+		case opcRETN:
 			cpu.InNMI = false
 		}
 	}

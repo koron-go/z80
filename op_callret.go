@@ -1,6 +1,6 @@
 package z80
 
-var opRETI = &OPCode{
+var opcRETI = &OPCode{
 	N: "RETI",
 	C: []Code{
 		{0xed, 0x00, nil},
@@ -13,7 +13,7 @@ var opRETI = &OPCode{
 	},
 }
 
-var opRETN = &OPCode{
+var opcRETN = &OPCode{
 	N: "RETN",
 	C: []Code{
 		{0xed, 0x00, nil},
@@ -89,9 +89,9 @@ var callret = []*OPCode{
 		},
 	},
 
-	opRETI,
+	opcRETI,
 
-	opRETN,
+	opcRETN,
 
 	{
 		N: "RST p",
