@@ -158,10 +158,7 @@ func (cpu *CPU) decode(f fetcher) (*OPCode, []uint8, error) {
 	buf := cpu.decodeBuf[:0]
 	l := cpu.decodeLayer
 	for l != nil {
-		b, err := f.fetch()
-		if err != nil {
-			return nil, buf, fmt.Errorf("fetch failed: %w", err)
-		}
+		b := f.fetch()
 		buf = append(buf, b)
 		n := l.get(b)
 		if n == nil {
@@ -170,10 +167,7 @@ func (cpu *CPU) decode(f fetcher) (*OPCode, []uint8, error) {
 		if n.opcode != nil {
 			op = n.opcode
 			for len(buf) < len(op.C) {
-				b, err := f.fetch()
-				if err != nil {
-					return nil, buf, fmt.Errorf("fetch remains failed: %w", err)
-				}
+				b := f.fetch()
 				buf = append(buf, b)
 			}
 			break

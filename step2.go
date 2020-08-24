@@ -9,6 +9,8 @@ func (cpu *CPU) step2(f fetcher, enableInt bool) error {
 		rr := cpu.IR.Lo
 		cpu.IR.Lo = rr&0x80 | (rr+1)&0x7f
 		// decode and execute with big switch
+		cpu.decodeBuf[0] = 0
+		cpu.decodeBuf[1] = 0
 		err := decodeExec(cpu, f)
 		if err != nil {
 			return fmt.Errorf("decode failed: %w", err)
@@ -27,9 +29,7 @@ func (cpu *CPU) step2(f fetcher, enableInt bool) error {
 			case 0x45: // RETN
 				cpu.InNMI = false
 			}
-			cpu.decodeBuf[1] = 0
 		}
-		cpu.decodeBuf[0] = 0
 	}
 	// try interruptions.
 	if enableInt {

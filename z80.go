@@ -123,10 +123,10 @@ func (cpu *CPU) writeU16(addr uint16, v uint16) {
 	cpu.Memory.Set(addr+1, h)
 }
 
-func (cpu *CPU) fetch() (uint8, error) {
+func (cpu *CPU) fetch() uint8 {
 	v := cpu.Memory.Get(cpu.PC)
 	cpu.PC++
-	return v, nil
+	return v
 }
 
 func (cpu *CPU) fetchLabel() string {
@@ -287,11 +287,6 @@ func (cpu *CPU) flagCC(n uint8) bool {
 	}
 }
 
-type fetcher interface {
-	fetch() (uint8, error)
-	fetchLabel() string
-}
-
 func (cpu *CPU) exec(op *OPCode, args []uint8) {
 	for i, c := range op.C {
 		args[i] &= c.M
@@ -389,21 +384,6 @@ func (cpu *CPU) step1(f fetcher, enableInt bool) error {
 		}
 	}
 	return nil
-}
-
-type memSrc []uint8
-
-func (m *memSrc) fetch() (uint8, error) {
-	if len(*m) == 0 {
-		return 0, ErrTooShortIM0
-	}
-	var b uint8
-	b, *m = (*m)[0], (*m)[1:]
-	return b, nil
-}
-
-func (m *memSrc) fetchLabel() string {
-	return "IM0"
 }
 
 func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {

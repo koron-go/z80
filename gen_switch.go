@@ -13,7 +13,6 @@ func GenerateSwitchDecoder(w io.Writer) error {
 	_, err := bw.WriteString(`package z80
 
 func decodeExec(cpu *CPU, f fetcher) error {
-	var err error
 	var b uint8
 	buf := cpu.decodeBuf[:0]`)
 	if err != nil {
@@ -34,10 +33,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 
 func writeLayerCode(w *bufio.Writer, l *decodeLayer, nr int) error {
 	_, err := w.WriteString(`
-b, err = f.fetch()
-if err != nil {
-	return err
-}
+b = f.fetch()
 buf = append(buf, b)`)
 	if err != nil {
 		return err
@@ -75,10 +71,7 @@ buf = append(buf, b)`)
 		if d := len(op.C) - nr; d > 0 {
 			for i := 0; i < d; i++ {
 				_, err := w.WriteString(`
-b, err = f.fetch()
-if err != nil {
-	return err
-}
+b = f.fetch()
 buf = append(buf, b)`)
 				if err != nil {
 					return err
@@ -86,7 +79,7 @@ buf = append(buf, b)`)
 			}
 		}
 		name := opname.Mangle(op.N)
-		_, err = fmt.Fprintf(w, "\n%s(cpu, buf)\nreturn nil", name)
+		_, err = fmt.Fprintf(w, "\n%s(cpu, buf)", name)
 		if err != nil {
 			return err
 		}

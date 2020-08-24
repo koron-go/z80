@@ -43,6 +43,7 @@ zexdoc:
 
 switch.go: op_*.go gen_switch.go ./cmd/gen_switch/*.go
 	rm -f switch.go switch.go.new
+	cp switch.go.dummy switch.go
 	go run ./cmd/gen_switch | goimports > switch.go.new
 	mv switch.go.new switch.go
 
