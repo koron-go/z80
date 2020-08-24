@@ -108,19 +108,19 @@ done:	ld	de,msg2
 	jp	0		; warm boot
 
 tests:
-	;dw	adc16
+	dw	adc16
 	dw	add16
 	dw	add16x
-	;dw	add16y
+	dw	add16y
 	dw	alu8i
-	;dw	alu8r
-	;dw	alu8rx
-	;dw	alu8x
+	dw	alu8r
+	dw	alu8rx
+	dw	alu8x
 	dw	bitx
-	;dw	bitz80 ; not tested from there upwards
+	dw	bitz80 ; not tested from there upwards
 	dw	cpd1
 	dw	cpi1
-	;dw	daaop	; can't use opcode as label
+	dw	daaop	; can't use opcode as label
 	dw	inca
 	dw	incb
 	dw	incbc

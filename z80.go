@@ -334,6 +334,10 @@ func (cpu *CPU) Step() error {
 }
 
 func (cpu *CPU) step(f fetcher, enableInt bool) error {
+	return cpu.step2(f, enableInt)
+}
+
+func (cpu *CPU) step1(f fetcher, enableInt bool) error {
 	afterEI := false
 	if !cpu.HALT {
 		// fetch an OPCode and increase refresh register.
