@@ -7,7 +7,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"sync"
 	"sync/atomic"
 )
 
@@ -95,8 +94,7 @@ type CPU struct {
 	Debug       bool
 	BreakPoints map[uint16]struct{}
 
-	onceInit  sync.Once
-	decodeBuf []uint8
+	decodeBuf [4]uint8
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -293,16 +291,8 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 	op.F(cpu, args)
 }
 
-func (cpu *CPU) init() {
-	cpu.onceInit.Do(func() {
-		cpu.decodeBuf = make([]uint8, 8)
-	})
-}
-
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
-	cpu.init()
-
 	var ctxErr error
 	var canceled int32
 	ctx2, cancel := context.WithCancel(ctx)
@@ -332,7 +322,6 @@ func (cpu *CPU) Run(ctx context.Context) error {
 
 // Step executes an instruction.
 func (cpu *CPU) Step() error {
-	cpu.init()
 	return cpu.step(cpu, true)
 }
 

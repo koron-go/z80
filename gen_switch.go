@@ -15,7 +15,7 @@ func GenerateSwitchDecoder(w io.Writer) error {
 
 func decodeExec(cpu *CPU, f fetcher) error {
 	var b uint8
-	buf := cpu.decodeBuf[:0]`)
+	buf := cpu.decodeBuf[:4]`)
 	if err != nil {
 		return err
 	}
@@ -39,16 +39,16 @@ type nextItem struct {
 
 func writeLayerCode(w *bufio.Writer, l *decodeLayer, nr int) error {
 	if l.anyNode != nil {
-		w.WriteString("\nbuf = append(buf, f.fetch())")
+		fmt.Fprintf(w, "\nbuf[%d] = f.fetch()", nr)
 		if l.anyNode.next == nil {
 			return fmt.Errorf("invalid any node: %+v", l.anyNode)
 		}
 		return writeLayerCode(w, l.anyNode.next, nr+1)
 	}
 
-	w.WriteString(`
+	fmt.Fprintf(w, `
 b = f.fetch()
-buf = append(buf, b)`)
+buf[%d] = b`, nr)
 	nr++
 	w.WriteString("\nswitch b {")
 
@@ -92,12 +92,11 @@ buf = append(buf, b)`)
 		}
 		if d := len(op.C) - nr; d > 0 {
 			for i := 0; i < d; i++ {
-				w.WriteString(`
-buf = append(buf, f.fetch())`)
+				fmt.Fprintf(w, "\nbuf[%d] = f.fetch()", nr+i)
 			}
 		}
 		name := opname.Mangle(op.N)
-		fmt.Fprintf(w, "\n%s(cpu, buf)\nreturn nil", name)
+		fmt.Fprintf(w, "\n%s(cpu, buf[:%d])\nreturn nil", name, len(op.C))
 	}
 
 	for _, n := range nexts {
