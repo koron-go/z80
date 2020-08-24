@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"sync/atomic"
 )
 
 // Register is 16 bits register.
@@ -308,11 +309,20 @@ func (cpu *CPU) init() {
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
 	cpu.init()
+
+	var ctxErr error
+	var canceled int32
+	ctx2, cancel := context.WithCancel(ctx)
+	defer cancel()
+	go func() {
+		<-ctx2.Done()
+		ctxErr = ctx.Err()
+		atomic.StoreInt32(&canceled, 1)
+	}()
+
 	for !cpu.HALT {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
+		if atomic.LoadInt32(&canceled) != 0 {
+			return ctxErr
 		}
 		err := cpu.step(cpu, true)
 		if err != nil {
