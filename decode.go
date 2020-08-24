@@ -152,33 +152,3 @@ func DumpDecodeLayer(w io.Writer) error {
 	e.SetIndent("", "  ")
 	return e.Encode(defaultDecodeLayer().mapTo())
 }
-
-func (cpu *CPU) decode(f fetcher) (*OPCode, []uint8, error) {
-	var op *OPCode
-	buf := cpu.decodeBuf[:0]
-	l := cpu.decodeLayer
-	for l != nil {
-		b := f.fetch()
-		buf = append(buf, b)
-		n := l.get(b)
-		if n == nil {
-			break
-		}
-		if n.opcode != nil {
-			op = n.opcode
-			for len(buf) < len(op.C) {
-				b := f.fetch()
-				buf = append(buf, b)
-			}
-			break
-		}
-		l = n.next
-	}
-	if op == nil {
-		return nil, buf, ErrInvalidCodes
-	}
-	if op.F == nil {
-		return nil, buf, fmt.Errorf("OPCode:%s %w", op.N, ErrNotImplemented)
-	}
-	return op, buf, nil
-}

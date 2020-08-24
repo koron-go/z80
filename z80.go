@@ -95,9 +95,8 @@ type CPU struct {
 	Debug       bool
 	BreakPoints map[uint16]struct{}
 
-	onceInit    sync.Once
-	decodeLayer *decodeLayer
-	decodeBuf   []uint8
+	onceInit  sync.Once
+	decodeBuf []uint8
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -296,7 +295,6 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 
 func (cpu *CPU) init() {
 	cpu.onceInit.Do(func() {
-		cpu.decodeLayer = defaultDecodeLayer()
 		cpu.decodeBuf = make([]uint8, 8)
 	})
 }
