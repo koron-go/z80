@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/koron-go/z80"
+	"github.com/koron-go/z80/internal/opcode"
 )
 
 func main() {
-	err := z80.DumpDecodeLayer(os.Stdout)
+	err := opcode.DumpDecodeLayer(os.Stdout)
 	if err != nil {
 		log.Fatal(err)
 	}

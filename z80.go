@@ -284,13 +284,6 @@ func (cpu *CPU) flagCC(n uint8) bool {
 	}
 }
 
-func (cpu *CPU) exec(op *OPCode, args []uint8) {
-	for i, c := range op.C {
-		args[i] &= c.M
-	}
-	op.F(cpu, args)
-}
-
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
 	var ctxErr error

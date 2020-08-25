@@ -2,6 +2,8 @@ package z80
 
 import "fmt"
 
+//go:generate go run ./cmd/gen_switch/ -name switch.go
+
 func (cpu *CPU) step(f fetcher, enableInt bool) error {
 	afterEI := false
 	if !cpu.HALT {

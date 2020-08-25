@@ -1,4 +1,4 @@
-package z80
+package opcode
 
 import "fmt"
 
@@ -79,9 +79,6 @@ type OPCode struct {
 
 	// T2 is T cycle for the special conditions.
 	T2 []int
-
-	// F is the function of opcode.
-	F func(*CPU, []uint8)
 }
 
 func (op *OPCode) String() string {
@@ -96,20 +93,8 @@ func (op *OPCode) mapTo() map[string]interface{} {
 	return m
 }
 
-// addrOff apply offset to address.
-func addrOff(addr uint16, off uint8) uint16 {
-	return addr + uint16(int16(int8(off)))
-}
-
-func toU16(l, h uint8) uint16 {
-	return (uint16(h) << 8) | uint16(l)
-}
-
-func fromU16(v uint16) (l, h uint8) {
-	return uint8(v & 0xff), uint8(v >> 8)
-}
-
-var allOPCodes = [][]*OPCode{
+// AllOPCodes includes all operations of Z80.
+var AllOPCodes = [][]*OPCode{
 	load8,
 	load16,
 	exbtsg,

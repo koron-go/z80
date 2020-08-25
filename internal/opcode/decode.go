@@ -1,4 +1,4 @@
-package z80
+package opcode
 
 import (
 	"encoding/json"
@@ -19,7 +19,7 @@ var decoderOnce sync.Once
 
 func defaultDecodeLayer() *decodeLayer {
 	decoderOnce.Do(func() {
-		defaultDecoder = newDecodeLayer(0, allOPCodes...)
+		defaultDecoder = newDecodeLayer(0, AllOPCodes...)
 	})
 	return defaultDecoder
 }

@@ -1,4 +1,4 @@
-package z80
+package opcode
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 	l := defaultDecodeLayer()
 
 	m := map[string]int{}
-	for _, cc := range allOPCodes {
+	for _, cc := range AllOPCodes {
 		for _, c := range cc {
 			k := c.String()
 			if _, ok := m[k]; ok {
