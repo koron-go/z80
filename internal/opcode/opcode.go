@@ -1,3 +1,6 @@
+/*
+Package opcode provides/defines Z80's instruction set and its operation codes.
+*/
 package opcode
 
 import "fmt"

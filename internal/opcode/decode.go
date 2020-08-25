@@ -81,13 +81,6 @@ func (l *decodeLayer) put(level int, opcode *OPCode) {
 	}
 }
 
-func (l *decodeLayer) get(d uint8) *decodeNode {
-	if l.anyNode != nil {
-		return l.anyNode
-	}
-	return l.nodes[d]
-}
-
 func (l *decodeLayer) mapTo() map[string]interface{} {
 	m := map[string]interface{}{}
 	if l.anyNode != nil {

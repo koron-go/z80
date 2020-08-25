@@ -1,3 +1,6 @@
+/*
+Package opname provides argorithms for name of Z80 operations.
+*/
 package opname
 
 import "strings"
