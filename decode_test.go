@@ -39,15 +39,3 @@ func TestDecodeLayer_CheckAllOPCodes(t *testing.T) {
 		t.Errorf("unseen OPCode: %s", c)
 	}
 }
-
-func TestDecodeLayer_DD7E00(t *testing.T) {
-	f := memSrc{0xdd, 0x7e, 0x00}
-	l := defaultDecodeLayer()
-	c, _, err := decode(l, nil, &f)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if c.N != "LD r, (IX+d)" {
-		t.Fatalf("unexpected opcode: %s", c.N)
-	}
-}

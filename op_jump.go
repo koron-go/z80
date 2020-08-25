@@ -10,9 +10,7 @@ var jump = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.PC = toU16(codes[1], codes[2])
-		},
+		F: opJPnn,
 	},
 
 	{
@@ -24,11 +22,7 @@ var jump = []*OPCode{
 		},
 		T:  []int{4, 3, 4, 3, 3},
 		T2: []int{4, 3, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			if cpu.flagCC(codes[0] >> 3) {
-				cpu.PC = toU16(codes[1], codes[2])
-			}
-		},
+		F: opJPccnn,
 	},
 
 	{
@@ -38,9 +32,7 @@ var jump = []*OPCode{
 			{0x00, 0xff, nil},
 		},
 		T: []int{4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.PC = addrOff(cpu.PC, codes[1])
-		},
+		F: opJRe,
 	},
 
 	{
@@ -51,11 +43,7 @@ var jump = []*OPCode{
 		},
 		T:  []int{4, 3, 5},
 		T2: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			if cpu.flag(C) {
-				cpu.PC = addrOff(cpu.PC, codes[1])
-			}
-		},
+		F: opJRCe,
 	},
 
 	{
@@ -66,11 +54,7 @@ var jump = []*OPCode{
 		},
 		T:  []int{4, 3, 5},
 		T2: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			if !cpu.flag(C) {
-				cpu.PC = addrOff(cpu.PC, codes[1])
-			}
-		},
+		F: opJRNCe,
 	},
 
 	{
@@ -81,11 +65,7 @@ var jump = []*OPCode{
 		},
 		T:  []int{4, 3, 5},
 		T2: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			if cpu.flag(Z) {
-				cpu.PC = addrOff(cpu.PC, codes[1])
-			}
-		},
+		F: opJRZe,
 	},
 
 	{
@@ -96,11 +76,7 @@ var jump = []*OPCode{
 		},
 		T:  []int{4, 3, 5},
 		T2: []int{4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			if !cpu.flag(Z) {
-				cpu.PC = addrOff(cpu.PC, codes[1])
-			}
-		},
+		F: opJRNZe,
 	},
 
 	{
@@ -109,10 +85,7 @@ var jump = []*OPCode{
 			{0xe9, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.PC = p
-		},
+		F: opJPHLP,
 	},
 
 	{
@@ -122,10 +95,7 @@ var jump = []*OPCode{
 			{0xe9, 0x00, nil},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.IX
-			cpu.PC = p
-		},
+		F: opJPIXP,
 	},
 
 	{
@@ -135,10 +105,7 @@ var jump = []*OPCode{
 			{0xe9, 0x00, nil},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.IY
-			cpu.PC = p
-		},
+		F: opJPIYP,
 	},
 
 	{
@@ -149,11 +116,66 @@ var jump = []*OPCode{
 		},
 		T:  []int{5, 3, 5},
 		T2: []int{5, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.BC.Hi--
-			if cpu.BC.Hi != 0 {
-				cpu.PC = addrOff(cpu.PC, codes[1])
-			}
-		},
+		F: opDJNZe,
 	},
+}
+
+func opJPnn(cpu *CPU, codes []uint8) {
+	cpu.PC = toU16(codes[1], codes[2])
+}
+
+func opJPccnn(cpu *CPU, codes []uint8) {
+	if cpu.flagCC(codes[0] >> 3) {
+		cpu.PC = toU16(codes[1], codes[2])
+	}
+}
+
+func opJRe(cpu *CPU, codes []uint8) {
+	cpu.PC = addrOff(cpu.PC, codes[1])
+}
+
+func opJRCe(cpu *CPU, codes []uint8) {
+	if cpu.flag(C) {
+		cpu.PC = addrOff(cpu.PC, codes[1])
+	}
+}
+
+func opJRNCe(cpu *CPU, codes []uint8) {
+	if !cpu.flag(C) {
+		cpu.PC = addrOff(cpu.PC, codes[1])
+	}
+}
+
+func opJRZe(cpu *CPU, codes []uint8) {
+	if cpu.flag(Z) {
+		cpu.PC = addrOff(cpu.PC, codes[1])
+	}
+}
+
+func opJRNZe(cpu *CPU, codes []uint8) {
+	if !cpu.flag(Z) {
+		cpu.PC = addrOff(cpu.PC, codes[1])
+	}
+}
+
+func opJPHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.PC = p
+}
+
+func opJPIXP(cpu *CPU, codes []uint8) {
+	p := cpu.IX
+	cpu.PC = p
+}
+
+func opJPIYP(cpu *CPU, codes []uint8) {
+	p := cpu.IY
+	cpu.PC = p
+}
+
+func opDJNZe(cpu *CPU, codes []uint8) {
+	cpu.BC.Hi--
+	if cpu.BC.Hi != 0 {
+		cpu.PC = addrOff(cpu.PC, codes[1])
+	}
 }

@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"sync"
+	"sync/atomic"
 )
 
 // Register is 16 bits register.
@@ -94,9 +94,7 @@ type CPU struct {
 	Debug       bool
 	BreakPoints map[uint16]struct{}
 
-	onceInit    sync.Once
-	decodeLayer *decodeLayer
-	decodeBuf   []byte
+	decodeBuf [4]uint8
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -122,10 +120,10 @@ func (cpu *CPU) writeU16(addr uint16, v uint16) {
 	cpu.Memory.Set(addr+1, h)
 }
 
-func (cpu *CPU) fetch() (uint8, error) {
+func (cpu *CPU) fetch() uint8 {
 	v := cpu.Memory.Get(cpu.PC)
 	cpu.PC++
-	return v, nil
+	return v
 }
 
 func (cpu *CPU) fetchLabel() string {
@@ -286,11 +284,6 @@ func (cpu *CPU) flagCC(n uint8) bool {
 	}
 }
 
-type fetcher interface {
-	fetch() (uint8, error)
-	fetchLabel() string
-}
-
 func (cpu *CPU) exec(op *OPCode, args []uint8) {
 	for i, c := range op.C {
 		args[i] &= c.M
@@ -298,21 +291,21 @@ func (cpu *CPU) exec(op *OPCode, args []uint8) {
 	op.F(cpu, args)
 }
 
-func (cpu *CPU) init() {
-	cpu.onceInit.Do(func() {
-		cpu.decodeLayer = defaultDecodeLayer()
-		cpu.decodeBuf = make([]byte, 8)
-	})
-}
-
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
-	cpu.init()
+	var ctxErr error
+	var canceled int32
+	ctx2, cancel := context.WithCancel(ctx)
+	defer cancel()
+	go func() {
+		<-ctx2.Done()
+		ctxErr = ctx.Err()
+		atomic.StoreInt32(&canceled, 1)
+	}()
+
 	for !cpu.HALT {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
+		if atomic.LoadInt32(&canceled) != 0 {
+			return ctxErr
 		}
 		err := cpu.step(cpu, true)
 		if err != nil {
@@ -329,67 +322,7 @@ func (cpu *CPU) Run(ctx context.Context) error {
 
 // Step executes an instruction.
 func (cpu *CPU) Step() error {
-	cpu.init()
 	return cpu.step(cpu, true)
-}
-
-func (cpu *CPU) step(f fetcher, enableInt bool) error {
-	afterEI := false
-	if !cpu.HALT {
-		// fetch an OPCode and increase refresh register.
-		op, buf, err := decode(cpu.decodeLayer, cpu.decodeBuf[:0], f)
-		if err != nil {
-			label := f.fetchLabel()
-			return fmt.Errorf("decode failed %X at %s: %w", buf, label, err)
-		}
-		rr := cpu.IR.Lo
-		cpu.IR.Lo = rr&0x80 | (rr+1)&0x7f
-		// execute an OPCode.
-		if cpu.Debug {
-			label := f.fetchLabel()
-			cpu.debugf("execute OPCode:%s with %X at %s", op.N, buf, label)
-		}
-		cpu.exec(op, buf)
-		switch op {
-		case opHALT:
-			cpu.HALT = true
-		case opEI:
-			afterEI = true
-		case opRETI:
-			if cpu.INT != nil {
-				cpu.INT.ReturnINT()
-			}
-		case opRETN:
-			cpu.InNMI = false
-		}
-	}
-	// try interruptions.
-	if enableInt {
-		oldPC := cpu.PC
-		ok, err := cpu.tryInterrupt(afterEI)
-		if err != nil {
-			return err
-		}
-		if ok && cpu.IMon != nil {
-			cpu.IMon.OnInterrupt(cpu.InNMI, oldPC, cpu.PC)
-		}
-	}
-	return nil
-}
-
-type memSrc []uint8
-
-func (m *memSrc) fetch() (uint8, error) {
-	if len(*m) == 0 {
-		return 0, ErrTooShortIM0
-	}
-	var b uint8
-	b, *m = (*m)[0], (*m)[1:]
-	return b, nil
-}
-
-func (m *memSrc) fetchLabel() string {
-	return "IM0"
 }
 
 func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {
@@ -423,8 +356,11 @@ func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {
 		cpu.PC = 0x0038
 		return true, nil
 	case 2:
-		if len(d) < 1 {
-			return false, fmt.Errorf("interruption data should be 1 bytes in IM 2")
+		if n := len(d); n != 1 {
+			cpu.failf("interruption data should be 1 byte in IM 2")
+			if n == 0 {
+				return false, nil
+			}
 		}
 		cpu.HALT = false
 		cpu.SP -= 2
@@ -433,6 +369,10 @@ func (cpu *CPU) tryInterrupt(suppressINT bool) (bool, error) {
 		return true, nil
 	}
 	// interrupt with IM 0
+	if len(d) == 0 {
+		cpu.failf("interruption data should be longer 1 byte in IM 0")
+		return false, nil
+	}
 	cpu.HALT = false
 	ms := memSrc(d)
 	err := cpu.step(&ms, false)

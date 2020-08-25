@@ -10,15 +10,7 @@ var rotateshift = []*OPCode{
 			{0x07, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			a2 := a<<1 | a>>7
-			cpu.AF.Hi = a2
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Reset(N).
-				Put(C, a&0x80 != 0))
-		},
+		F: opRLCA,
 	},
 
 	{
@@ -27,18 +19,7 @@ var rotateshift = []*OPCode{
 			{0x17, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			a2 := a << 1
-			if cpu.flag(C) {
-				a2 |= 0x01
-			}
-			cpu.AF.Hi = a2
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Reset(N).
-				Put(C, a&0x80 != 0))
-		},
+		F: opRLA,
 	},
 
 	{
@@ -47,15 +28,7 @@ var rotateshift = []*OPCode{
 			{0x0f, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			a2 := a>>1 | a<<7
-			cpu.AF.Hi = a2
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Reset(N).
-				Put(C, a&0x01 != 0))
-		},
+		F: opRRCA,
 	},
 
 	{
@@ -64,18 +37,7 @@ var rotateshift = []*OPCode{
 			{0x1f, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			a2 := a >> 1
-			if cpu.flag(C) {
-				a2 |= 0x80
-			}
-			cpu.AF.Hi = a2
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Reset(N).
-				Put(C, a&0x01 != 0))
-		},
+		F: opRRA,
 	},
 
 	{
@@ -85,10 +47,7 @@ var rotateshift = []*OPCode{
 			{0x00, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.rlcU8(*r)
-		},
+		F: opRLCr,
 	},
 
 	{
@@ -98,10 +57,7 @@ var rotateshift = []*OPCode{
 			{0x06, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
-		},
+		F: opRLCHLP,
 	},
 
 	{
@@ -113,10 +69,7 @@ var rotateshift = []*OPCode{
 			{0x06, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
-		},
+		F: opRLCIXdP,
 	},
 
 	{
@@ -128,10 +81,7 @@ var rotateshift = []*OPCode{
 			{0x06, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
-		},
+		F: opRLCIYdP,
 	},
 
 	{
@@ -141,10 +91,7 @@ var rotateshift = []*OPCode{
 			{0x10, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.rlU8(*r)
-		},
+		F: opRLr,
 	},
 
 	{
@@ -154,10 +101,7 @@ var rotateshift = []*OPCode{
 			{0x16, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
-		},
+		F: opRLHLP,
 	},
 
 	{
@@ -169,10 +113,7 @@ var rotateshift = []*OPCode{
 			{0x16, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
-		},
+		F: opRLIXdP,
 	},
 
 	{
@@ -184,10 +125,7 @@ var rotateshift = []*OPCode{
 			{0x16, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
-		},
+		F: opRLIYdP,
 	},
 
 	{
@@ -197,10 +135,7 @@ var rotateshift = []*OPCode{
 			{0x08, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.rrcU8(*r)
-		},
+		F: opRRCr,
 	},
 
 	{
@@ -210,10 +145,7 @@ var rotateshift = []*OPCode{
 			{0x0e, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
-		},
+		F: opRRCHLP,
 	},
 
 	{
@@ -225,10 +157,7 @@ var rotateshift = []*OPCode{
 			{0x0e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
-		},
+		F: opRRCIXdP,
 	},
 
 	{
@@ -240,10 +169,7 @@ var rotateshift = []*OPCode{
 			{0x0e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
-		},
+		F: opRRCIYdP,
 	},
 
 	{
@@ -253,10 +179,7 @@ var rotateshift = []*OPCode{
 			{0x18, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.rrU8(*r)
-		},
+		F: opRRr,
 	},
 
 	{
@@ -266,10 +189,7 @@ var rotateshift = []*OPCode{
 			{0x1e, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
-		},
+		F: opRRHLP,
 	},
 
 	{
@@ -281,10 +201,7 @@ var rotateshift = []*OPCode{
 			{0x1e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
-		},
+		F: opRRIXdP,
 	},
 
 	{
@@ -296,10 +213,7 @@ var rotateshift = []*OPCode{
 			{0x1e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
-		},
+		F: opRRIYdP,
 	},
 
 	{
@@ -309,10 +223,7 @@ var rotateshift = []*OPCode{
 			{0x20, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.slaU8(*r)
-		},
+		F: opSLAr,
 	},
 
 	{
@@ -322,10 +233,7 @@ var rotateshift = []*OPCode{
 			{0x26, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
-		},
+		F: opSLAHLP,
 	},
 
 	{
@@ -337,10 +245,7 @@ var rotateshift = []*OPCode{
 			{0x26, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
-		},
+		F: opSLAIXdP,
 	},
 
 	{
@@ -352,10 +257,7 @@ var rotateshift = []*OPCode{
 			{0x26, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
-		},
+		F: opSLAIYdP,
 	},
 
 	{
@@ -365,10 +267,7 @@ var rotateshift = []*OPCode{
 			{0x28, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.sraU8(*r)
-		},
+		F: opSRAr,
 	},
 
 	{
@@ -378,10 +277,7 @@ var rotateshift = []*OPCode{
 			{0x2e, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
-		},
+		F: opSRAHLP,
 	},
 
 	{
@@ -393,10 +289,7 @@ var rotateshift = []*OPCode{
 			{0x2e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
-		},
+		F: opSRAIXdP,
 	},
 
 	{
@@ -408,10 +301,7 @@ var rotateshift = []*OPCode{
 			{0x2e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
-		},
+		F: opSRAIYdP,
 	},
 
 	{
@@ -421,10 +311,7 @@ var rotateshift = []*OPCode{
 			{0x38, 0x07, vReg8},
 		},
 		T: []int{4, 4},
-		F: func(cpu *CPU, codes []uint8) {
-			r := cpu.regP(codes[1])
-			*r = cpu.srlU8(*r)
-		},
+		F: opSRLr,
 	},
 
 	{
@@ -434,10 +321,7 @@ var rotateshift = []*OPCode{
 			{0x3e, 0x00, nil},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
-		},
+		F: opSRLHLP,
 	},
 
 	{
@@ -449,10 +333,7 @@ var rotateshift = []*OPCode{
 			{0x3e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IX, codes[2])
-			cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
-		},
+		F: opSRLIXdP,
 	},
 
 	{
@@ -464,10 +345,7 @@ var rotateshift = []*OPCode{
 			{0x3e, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := addrOff(cpu.IY, codes[2])
-			cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
-		},
+		F: opSRLIYdP,
 	},
 
 	{
@@ -477,21 +355,7 @@ var rotateshift = []*OPCode{
 			{0x6f, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			a := cpu.AF.Hi
-			b := cpu.Memory.Get(p)
-			a2 := a&0xf0 | b>>4
-			b2 := b<<4 | a&0x0f
-			cpu.Memory.Set(p, b2)
-			cpu.AF.Hi = a2
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, a2&0x80 != 0).
-				Put(Z, a2 == 0).
-				Reset(H).
-				Put(PV, bits.OnesCount8(a2)%2 == 0).
-				Reset(N))
-		},
+		F: opRLD,
 	},
 
 	{
@@ -501,20 +365,224 @@ var rotateshift = []*OPCode{
 			{0x67, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			p := cpu.HL.U16()
-			a := cpu.AF.Hi
-			b := cpu.Memory.Get(p)
-			a2 := a&0xf0 | b&0x0f
-			b2 := a<<4 | b>>4
-			cpu.Memory.Set(p, b2)
-			cpu.AF.Hi = a2
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, a2&0x80 != 0).
-				Put(Z, a2 == 0).
-				Reset(H).
-				Put(PV, bits.OnesCount8(a2)%2 == 0).
-				Reset(N))
-		},
+		F: opRRD,
 	},
+}
+
+func opRLCA(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	a2 := a<<1 | a>>7
+	cpu.AF.Hi = a2
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Reset(N).
+		Put(C, a&0x80 != 0))
+}
+
+func opRLA(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	a2 := a << 1
+	if cpu.flag(C) {
+		a2 |= 0x01
+	}
+	cpu.AF.Hi = a2
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Reset(N).
+		Put(C, a&0x80 != 0))
+}
+
+func opRRCA(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	a2 := a>>1 | a<<7
+	cpu.AF.Hi = a2
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Reset(N).
+		Put(C, a&0x01 != 0))
+}
+
+func opRRA(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	a2 := a >> 1
+	if cpu.flag(C) {
+		a2 |= 0x80
+	}
+	cpu.AF.Hi = a2
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Reset(N).
+		Put(C, a&0x01 != 0))
+}
+
+func opRLCr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.rlcU8(*r)
+}
+
+func opRLCHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
+}
+
+func opRLCIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
+}
+
+func opRLCIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
+}
+
+func opRLr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.rlU8(*r)
+}
+
+func opRLHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
+}
+
+func opRLIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
+}
+
+func opRLIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
+}
+
+func opRRCr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.rrcU8(*r)
+}
+
+func opRRCHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
+}
+
+func opRRCIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
+}
+
+func opRRCIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
+}
+
+func opRRr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.rrU8(*r)
+}
+
+func opRRHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
+}
+
+func opRRIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
+}
+
+func opRRIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
+}
+
+func opSLAr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.slaU8(*r)
+}
+
+func opSLAHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
+}
+
+func opSLAIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
+}
+
+func opSLAIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
+}
+
+func opSRAr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.sraU8(*r)
+}
+
+func opSRAHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
+}
+
+func opSRAIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
+}
+
+func opSRAIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
+}
+
+func opSRLr(cpu *CPU, codes []uint8) {
+	r := cpu.regP(codes[1])
+	*r = cpu.srlU8(*r)
+}
+
+func opSRLHLP(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
+}
+
+func opSRLIXdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IX, codes[2])
+	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
+}
+
+func opSRLIYdP(cpu *CPU, codes []uint8) {
+	p := addrOff(cpu.IY, codes[2])
+	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
+}
+
+func opRLD(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	a := cpu.AF.Hi
+	b := cpu.Memory.Get(p)
+	a2 := a&0xf0 | b>>4
+	b2 := b<<4 | a&0x0f
+	cpu.Memory.Set(p, b2)
+	cpu.AF.Hi = a2
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N))
+}
+
+func opRRD(cpu *CPU, codes []uint8) {
+	p := cpu.HL.U16()
+	a := cpu.AF.Hi
+	b := cpu.Memory.Get(p)
+	a2 := a&0xf0 | b&0x0f
+	b2 := a<<4 | b>>4
+	cpu.Memory.Set(p, b2)
+	cpu.AF.Hi = a2
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, a2&0x80 != 0).
+		Put(Z, a2 == 0).
+		Reset(H).
+		Put(PV, bits.OnesCount8(a2)%2 == 0).
+		Reset(N))
 }

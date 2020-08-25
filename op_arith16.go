@@ -8,11 +8,7 @@ var arith16 = []*OPCode{
 			{0x09, 0x30, vReg16_4},
 		},
 		T: []int{4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.HL.U16()
-			x := cpu.reg16ss(codes[0] >> 4).U16()
-			cpu.HL.SetU16(cpu.addU16(a, x))
-		},
+		F: opADDHLss,
 	},
 
 	{
@@ -22,11 +18,7 @@ var arith16 = []*OPCode{
 			{0x4a, 0x30, vReg16_4},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.HL.U16()
-			x := cpu.reg16ss(codes[1] >> 4).U16()
-			cpu.HL.SetU16(cpu.adcU16(a, x))
-		},
+		F: opADCHLss,
 	},
 
 	{
@@ -36,11 +28,7 @@ var arith16 = []*OPCode{
 			{0x42, 0x30, vReg16_4},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.HL.U16()
-			x := cpu.reg16ss(codes[1] >> 4).U16()
-			cpu.HL.SetU16(cpu.sbcU16(a, x))
-		},
+		F: opSBCHLss,
 	},
 
 	{
@@ -50,11 +38,7 @@ var arith16 = []*OPCode{
 			{0x09, 0x30, vReg16_4},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.IX
-			x := cpu.reg16pp(codes[1] >> 4)
-			cpu.IX = cpu.addU16(a, x)
-		},
+		F: opADDIXpp,
 	},
 
 	{
@@ -64,11 +48,7 @@ var arith16 = []*OPCode{
 			{0x09, 0x30, vReg16_4},
 		},
 		T: []int{4, 4, 4, 3},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.IY
-			x := cpu.reg16rr(codes[1] >> 4)
-			cpu.IY = cpu.addU16(a, x)
-		},
+		F: opADDIYrr,
 	},
 
 	{
@@ -77,10 +57,7 @@ var arith16 = []*OPCode{
 			{0x03, 0x30, vReg16_4},
 		},
 		T: []int{6},
-		F: func(cpu *CPU, codes []uint8) {
-			ss := cpu.reg16ss(codes[0] >> 4)
-			ss.SetU16(cpu.incU16(ss.U16()))
-		},
+		F: opINCss,
 	},
 
 	{
@@ -90,9 +67,7 @@ var arith16 = []*OPCode{
 			{0x23, 0x00, nil},
 		},
 		T: []int{4, 6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IX = cpu.incU16(cpu.IX)
-		},
+		F: opINCIX,
 	},
 
 	{
@@ -102,9 +77,7 @@ var arith16 = []*OPCode{
 			{0x23, 0x00, nil},
 		},
 		T: []int{4, 6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IY = cpu.incU16(cpu.IY)
-		},
+		F: opINCIY,
 	},
 
 	{
@@ -113,10 +86,7 @@ var arith16 = []*OPCode{
 			{0x0b, 0x30, vReg16_4},
 		},
 		T: []int{6},
-		F: func(cpu *CPU, codes []uint8) {
-			ss := cpu.reg16ss(codes[0] >> 4)
-			ss.SetU16(cpu.decU16(ss.U16()))
-		},
+		F: opDECss,
 	},
 
 	{
@@ -126,9 +96,7 @@ var arith16 = []*OPCode{
 			{0x2b, 0x00, nil},
 		},
 		T: []int{4, 6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IX = cpu.decU16(cpu.IX)
-		},
+		F: opDECIX,
 	},
 
 	{
@@ -138,8 +106,62 @@ var arith16 = []*OPCode{
 			{0x2b, 0x00, nil},
 		},
 		T: []int{4, 6},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.IY = cpu.decU16(cpu.IY)
-		},
+		F: opDECIY,
 	},
+}
+
+func opADDHLss(cpu *CPU, codes []uint8) {
+	a := cpu.HL.U16()
+	x := cpu.reg16ss(codes[0] >> 4).U16()
+	cpu.HL.SetU16(cpu.addU16(a, x))
+}
+
+func opADCHLss(cpu *CPU, codes []uint8) {
+	a := cpu.HL.U16()
+	x := cpu.reg16ss(codes[1] >> 4).U16()
+	cpu.HL.SetU16(cpu.adcU16(a, x))
+}
+
+func opSBCHLss(cpu *CPU, codes []uint8) {
+	a := cpu.HL.U16()
+	x := cpu.reg16ss(codes[1] >> 4).U16()
+	cpu.HL.SetU16(cpu.sbcU16(a, x))
+}
+
+func opADDIXpp(cpu *CPU, codes []uint8) {
+	a := cpu.IX
+	x := cpu.reg16pp(codes[1] >> 4)
+	cpu.IX = cpu.addU16(a, x)
+}
+
+func opADDIYrr(cpu *CPU, codes []uint8) {
+	a := cpu.IY
+	x := cpu.reg16rr(codes[1] >> 4)
+	cpu.IY = cpu.addU16(a, x)
+}
+
+func opINCss(cpu *CPU, codes []uint8) {
+	ss := cpu.reg16ss(codes[0] >> 4)
+	ss.SetU16(cpu.incU16(ss.U16()))
+}
+
+func opINCIX(cpu *CPU, codes []uint8) {
+	cpu.IX = cpu.incU16(cpu.IX)
+}
+
+func opINCIY(cpu *CPU, codes []uint8) {
+	cpu.IY = cpu.incU16(cpu.IY)
+}
+
+func opDECss(cpu *CPU, codes []uint8) {
+	ss := cpu.reg16ss(codes[0] >> 4)
+	ss.SetU16(cpu.decU16(ss.U16()))
+}
+
+func opDECIX(cpu *CPU, codes []uint8) {
+	cpu.IX = cpu.decU16(cpu.IX)
+}
+
+func opDECIY(cpu *CPU, codes []uint8) {
+	cpu.IY = cpu.decU16(cpu.IY)
 }

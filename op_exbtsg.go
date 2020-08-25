@@ -8,9 +8,7 @@ var exbtsg = []*OPCode{
 			{0xeb, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.HL, cpu.DE = cpu.DE, cpu.HL
-		},
+		F: opEXDEHL,
 	},
 
 	{
@@ -19,9 +17,7 @@ var exbtsg = []*OPCode{
 			{0x08, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.AF, cpu.Alternate.AF = cpu.Alternate.AF, cpu.AF
-		},
+		F: opEXAFAF,
 	},
 
 	{
@@ -30,11 +26,7 @@ var exbtsg = []*OPCode{
 			{0xd9, 0x00, nil},
 		},
 		T: []int{4},
-		F: func(cpu *CPU, codes []uint8) {
-			cpu.BC, cpu.Alternate.BC = cpu.Alternate.BC, cpu.BC
-			cpu.DE, cpu.Alternate.DE = cpu.Alternate.DE, cpu.DE
-			cpu.HL, cpu.Alternate.HL = cpu.Alternate.HL, cpu.HL
-		},
+		F: opEXX,
 	},
 
 	{
@@ -43,11 +35,7 @@ var exbtsg = []*OPCode{
 			{0xe3, 0x00, nil},
 		},
 		T: []int{4, 3, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.readU16(cpu.SP)
-			cpu.writeU16(cpu.SP, cpu.HL.U16())
-			cpu.HL.SetU16(v)
-		},
+		F: opEXSPPHL,
 	},
 
 	{
@@ -57,11 +45,7 @@ var exbtsg = []*OPCode{
 			{0xe3, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.readU16(cpu.SP)
-			cpu.writeU16(cpu.SP, cpu.IX)
-			cpu.IX = v
-		},
+		F: opEXSPPIX,
 	},
 
 	{
@@ -71,11 +55,7 @@ var exbtsg = []*OPCode{
 			{0xe3, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			v := cpu.readU16(cpu.SP)
-			cpu.writeU16(cpu.SP, cpu.IY)
-			cpu.IY = v
-		},
+		F: opEXSPPIY,
 	},
 
 	{
@@ -85,19 +65,7 @@ var exbtsg = []*OPCode{
 			{0xa0, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			de := cpu.DE.U16()
-			hl := cpu.HL.U16()
-			cpu.Memory.Set(de, cpu.Memory.Get(hl))
-			cpu.DE.SetU16(de + 1)
-			cpu.HL.SetU16(hl + 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Put(PV, bc != 0).
-				Reset(N))
-		},
+		F: opLDI,
 	},
 
 	{
@@ -108,22 +76,7 @@ var exbtsg = []*OPCode{
 		},
 		T:  []int{4, 4, 3, 5, 5},
 		T2: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			de := cpu.DE.U16()
-			hl := cpu.HL.U16()
-			cpu.Memory.Set(de, cpu.Memory.Get(hl))
-			cpu.DE.SetU16(de + 1)
-			cpu.HL.SetU16(hl + 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Put(PV, bc != 0).
-				Reset(N))
-			if bc != 0 {
-				cpu.PC -= 2
-			}
-		},
+		F: opLDIR,
 	},
 
 	{
@@ -133,19 +86,7 @@ var exbtsg = []*OPCode{
 			{0xa8, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			de := cpu.DE.U16()
-			hl := cpu.HL.U16()
-			cpu.Memory.Set(de, cpu.Memory.Get(hl))
-			cpu.DE.SetU16(de - 1)
-			cpu.HL.SetU16(hl - 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Put(PV, bc != 0).
-				Reset(N))
-		},
+		F: opLDD,
 	},
 
 	{
@@ -156,22 +97,7 @@ var exbtsg = []*OPCode{
 		},
 		T:  []int{4, 4, 3, 5, 5},
 		T2: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			de := cpu.DE.U16()
-			hl := cpu.HL.U16()
-			cpu.Memory.Set(de, cpu.Memory.Get(hl))
-			cpu.DE.SetU16(de - 1)
-			cpu.HL.SetU16(hl - 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Reset(H).
-				Put(PV, bc != 0).
-				Reset(N))
-			if bc != 0 {
-				cpu.PC -= 2
-			}
-		},
+		F: opLDDR,
 	},
 
 	{
@@ -181,21 +107,7 @@ var exbtsg = []*OPCode{
 			{0xa1, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			hl := cpu.HL.U16()
-			x := cpu.Memory.Get(hl)
-			v := a - x
-			cpu.HL.SetU16(hl + 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, v&0x80 != 0).
-				Put(Z, v == 0).
-				Put(H, a&0x0f < x&0x0f).
-				Put(PV, bc != 0).
-				Set(N))
-		},
+		F: opCPI,
 	},
 
 	{
@@ -206,24 +118,7 @@ var exbtsg = []*OPCode{
 		},
 		T:  []int{4, 4, 3, 5, 5},
 		T2: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			hl := cpu.HL.U16()
-			x := cpu.Memory.Get(hl)
-			v := a - x
-			cpu.HL.SetU16(hl + 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, v&0x80 != 0).
-				Put(Z, v == 0).
-				Put(H, a&0x0f < x&0x0f).
-				Put(PV, bc != 0).
-				Set(N))
-			if bc != 0 && v != 0 {
-				cpu.PC -= 2
-			}
-		},
+		F: opCPIR,
 	},
 
 	{
@@ -233,21 +128,7 @@ var exbtsg = []*OPCode{
 			{0xa9, 0x00, nil},
 		},
 		T: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			hl := cpu.HL.U16()
-			x := cpu.Memory.Get(hl)
-			v := a - x
-			cpu.HL.SetU16(hl - 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, v&0x80 != 0).
-				Put(Z, v == 0).
-				Put(H, a&0x0f < x&0x0f).
-				Put(PV, bc != 0).
-				Set(N))
-		},
+		F: opCPD,
 	},
 
 	{
@@ -258,23 +139,170 @@ var exbtsg = []*OPCode{
 		},
 		T:  []int{4, 4, 3, 5, 5},
 		T2: []int{4, 4, 3, 5},
-		F: func(cpu *CPU, codes []uint8) {
-			a := cpu.AF.Hi
-			hl := cpu.HL.U16()
-			x := cpu.Memory.Get(hl)
-			v := a - x
-			cpu.HL.SetU16(hl - 1)
-			bc := cpu.BC.U16() - 1
-			cpu.BC.SetU16(bc)
-			cpu.flagUpdate(FlagOp{}.
-				Put(S, v&0x80 != 0).
-				Put(Z, v == 0).
-				Put(H, a&0x0f < x&0x0f).
-				Put(PV, bc != 0).
-				Set(N))
-			if bc != 0 && v != 0 {
-				cpu.PC -= 2
-			}
-		},
+		F: opCPDR,
 	},
+}
+
+func opEXDEHL(cpu *CPU, codes []uint8) {
+	cpu.HL, cpu.DE = cpu.DE, cpu.HL
+}
+
+func opEXAFAF(cpu *CPU, codes []uint8) {
+	cpu.AF, cpu.Alternate.AF = cpu.Alternate.AF, cpu.AF
+}
+
+func opEXX(cpu *CPU, codes []uint8) {
+	cpu.BC, cpu.Alternate.BC = cpu.Alternate.BC, cpu.BC
+	cpu.DE, cpu.Alternate.DE = cpu.Alternate.DE, cpu.DE
+	cpu.HL, cpu.Alternate.HL = cpu.Alternate.HL, cpu.HL
+}
+
+func opEXSPPHL(cpu *CPU, codes []uint8) {
+	v := cpu.readU16(cpu.SP)
+	cpu.writeU16(cpu.SP, cpu.HL.U16())
+	cpu.HL.SetU16(v)
+}
+
+func opEXSPPIX(cpu *CPU, codes []uint8) {
+	v := cpu.readU16(cpu.SP)
+	cpu.writeU16(cpu.SP, cpu.IX)
+	cpu.IX = v
+}
+
+func opEXSPPIY(cpu *CPU, codes []uint8) {
+	v := cpu.readU16(cpu.SP)
+	cpu.writeU16(cpu.SP, cpu.IY)
+	cpu.IY = v
+}
+
+func opLDI(cpu *CPU, codes []uint8) {
+	de := cpu.DE.U16()
+	hl := cpu.HL.U16()
+	cpu.Memory.Set(de, cpu.Memory.Get(hl))
+	cpu.DE.SetU16(de + 1)
+	cpu.HL.SetU16(hl + 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Put(PV, bc != 0).
+		Reset(N))
+}
+
+func opLDIR(cpu *CPU, codes []uint8) {
+	de := cpu.DE.U16()
+	hl := cpu.HL.U16()
+	cpu.Memory.Set(de, cpu.Memory.Get(hl))
+	cpu.DE.SetU16(de + 1)
+	cpu.HL.SetU16(hl + 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Put(PV, bc != 0).
+		Reset(N))
+	if bc != 0 {
+		cpu.PC -= 2
+	}
+}
+
+func opLDD(cpu *CPU, codes []uint8) {
+	de := cpu.DE.U16()
+	hl := cpu.HL.U16()
+	cpu.Memory.Set(de, cpu.Memory.Get(hl))
+	cpu.DE.SetU16(de - 1)
+	cpu.HL.SetU16(hl - 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Put(PV, bc != 0).
+		Reset(N))
+}
+
+func opLDDR(cpu *CPU, codes []uint8) {
+	de := cpu.DE.U16()
+	hl := cpu.HL.U16()
+	cpu.Memory.Set(de, cpu.Memory.Get(hl))
+	cpu.DE.SetU16(de - 1)
+	cpu.HL.SetU16(hl - 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Reset(H).
+		Put(PV, bc != 0).
+		Reset(N))
+	if bc != 0 {
+		cpu.PC -= 2
+	}
+}
+
+func opCPI(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	hl := cpu.HL.U16()
+	x := cpu.Memory.Get(hl)
+	v := a - x
+	cpu.HL.SetU16(hl + 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x80 != 0).
+		Put(Z, v == 0).
+		Put(H, a&0x0f < x&0x0f).
+		Put(PV, bc != 0).
+		Set(N))
+}
+
+func opCPIR(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	hl := cpu.HL.U16()
+	x := cpu.Memory.Get(hl)
+	v := a - x
+	cpu.HL.SetU16(hl + 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x80 != 0).
+		Put(Z, v == 0).
+		Put(H, a&0x0f < x&0x0f).
+		Put(PV, bc != 0).
+		Set(N))
+	if bc != 0 && v != 0 {
+		cpu.PC -= 2
+	}
+}
+
+func opCPD(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	hl := cpu.HL.U16()
+	x := cpu.Memory.Get(hl)
+	v := a - x
+	cpu.HL.SetU16(hl - 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x80 != 0).
+		Put(Z, v == 0).
+		Put(H, a&0x0f < x&0x0f).
+		Put(PV, bc != 0).
+		Set(N))
+}
+
+func opCPDR(cpu *CPU, codes []uint8) {
+	a := cpu.AF.Hi
+	hl := cpu.HL.U16()
+	x := cpu.Memory.Get(hl)
+	v := a - x
+	cpu.HL.SetU16(hl - 1)
+	bc := cpu.BC.U16() - 1
+	cpu.BC.SetU16(bc)
+	cpu.flagUpdate(FlagOp{}.
+		Put(S, v&0x80 != 0).
+		Put(Z, v == 0).
+		Put(H, a&0x0f < x&0x0f).
+		Put(PV, bc != 0).
+		Set(N))
+	if bc != 0 && v != 0 {
+		cpu.PC -= 2
+	}
 }
