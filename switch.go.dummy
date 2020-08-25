@@ -1,5 +1,0 @@
-package z80
-
-func decodeExec(cpu *CPU, f fetcher) error {
-	return nil
-}

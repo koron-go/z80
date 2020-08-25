@@ -6,7 +6,6 @@ package z80
 import (
 	"context"
 	"fmt"
-	"log"
 	"sync/atomic"
 )
 
@@ -95,17 +94,6 @@ type CPU struct {
 	BreakPoints map[uint16]struct{}
 
 	decodeBuf [4]uint8
-}
-
-func (cpu *CPU) failf(msg string, args ...interface{}) {
-	log.Printf("Z80 failed: "+msg, args...)
-}
-
-func (cpu *CPU) debugf(msg string, args ...interface{}) {
-	if !cpu.Debug {
-		return
-	}
-	log.Printf("Z80 debug: "+msg, args...)
 }
 
 func (cpu *CPU) readU16(addr uint16) uint16 {
@@ -282,13 +270,6 @@ func (cpu *CPU) flagCC(n uint8) bool {
 		cpu.failf("invalid flagCC: %02x", n)
 		return false
 	}
-}
-
-func (cpu *CPU) exec(op *OPCode, args []uint8) {
-	for i, c := range op.C {
-		args[i] &= c.M
-	}
-	op.F(cpu, args)
 }
 
 // Run executes instructions till HALT or error.

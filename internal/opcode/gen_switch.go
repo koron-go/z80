@@ -1,4 +1,4 @@
-package z80
+package opcode
 
 import (
 	"bufio"
@@ -8,8 +8,8 @@ import (
 	"github.com/koron-go/z80/internal/opname"
 )
 
-// GenerateSwitchDecoder generate decoder `switch` statements.
-func GenerateSwitchDecoder(w io.Writer) error {
+// WriteSwitchDecoder writes codes for decoder "switch" statements.
+func WriteSwitchDecoder(w io.Writer) error {
 	bw := bufio.NewWriter(w)
 	_, err := bw.WriteString(`package z80
 

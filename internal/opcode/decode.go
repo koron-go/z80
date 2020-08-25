@@ -1,4 +1,4 @@
-package z80
+package opcode
 
 import (
 	"encoding/json"
@@ -19,7 +19,7 @@ var decoderOnce sync.Once
 
 func defaultDecodeLayer() *decodeLayer {
 	decoderOnce.Do(func() {
-		defaultDecoder = newDecodeLayer(0, allOPCodes...)
+		defaultDecoder = newDecodeLayer(0, AllOPCodes...)
 	})
 	return defaultDecoder
 }
@@ -79,13 +79,6 @@ func (l *decodeLayer) put(level int, opcode *OPCode) {
 		}
 		n.codes = append(n.codes, opcode)
 	}
-}
-
-func (l *decodeLayer) get(d uint8) *decodeNode {
-	if l.anyNode != nil {
-		return l.anyNode
-	}
-	return l.nodes[d]
 }
 
 func (l *decodeLayer) mapTo() map[string]interface{} {
