@@ -1,9 +1,5 @@
 package z80
 
-import (
-	"math/bits"
-)
-
 func (cpu *CPU) addU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	r := a16 + b16
@@ -158,13 +154,7 @@ func (cpu *CPU) decU16(a uint16) uint16 {
 
 func (cpu *CPU) rlcU8(a uint8) uint8 {
 	r := a<<1 | a>>7
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x80 != 0))
+	cpu.updateFlagBitop(r, a>>7)
 	return r
 }
 
@@ -173,25 +163,13 @@ func (cpu *CPU) rlU8(a uint8) uint8 {
 	if cpu.flag(C) {
 		r |= 0x01
 	}
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x80 != 0))
+	cpu.updateFlagBitop(r, a>>7)
 	return r
 }
 
 func (cpu *CPU) rrcU8(a uint8) uint8 {
 	r := a>>1 | a<<7
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x01 != 0))
+	cpu.updateFlagBitop(r, a)
 	return r
 }
 
@@ -200,70 +178,43 @@ func (cpu *CPU) rrU8(a uint8) uint8 {
 	if cpu.flag(C) {
 		r |= 0x80
 	}
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x01 != 0))
+	cpu.updateFlagBitop(r, a)
 	return r
 }
 
 func (cpu *CPU) slaU8(a uint8) uint8 {
 	r := a << 1
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x80 != 0))
+	cpu.updateFlagBitop(r, a>>7)
 	return r
 }
 
 func (cpu *CPU) sl1U8(a uint8) uint8 {
 	r := a<<1 + 1
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x80 != 0))
+	cpu.updateFlagBitop(r, a>>7)
 	return r
 }
 
 func (cpu *CPU) sraU8(a uint8) uint8 {
 	r := a&0x80 | a>>1
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x01 != 0))
+	cpu.updateFlagBitop(r, a)
 	return r
 }
 
 func (cpu *CPU) srlU8(a uint8) uint8 {
 	r := a >> 1
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Reset(N).
-		Put(C, a&0x01 != 0))
+	cpu.updateFlagBitop(r, a)
 	return r
 }
 
 func (cpu *CPU) bitchk8(b, v uint8) {
 	r := v&(0x01<<b) != 0
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, !r).
-		Set(H).
-		Reset(N))
+	var nand uint8 =  maskZ | maskH | maskN
+	var or uint8
+	if !r {
+		or |= maskZ
+	}
+	or |= maskH
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func (cpu *CPU) bitset8(b, v uint8) uint8 {
