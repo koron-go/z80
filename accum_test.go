@@ -384,3 +384,27 @@ func Benchmark_sbcU8(b *testing.B) {
 		cpu.sbcU8(uint8(i>>8), uint8(i))
 	}
 }
+
+func Benchmark_andU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.andU8(uint8(i>>8), uint8(i))
+	}
+}
+
+func Benchmark_orU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.orU8(uint8(i>>8), uint8(i))
+	}
+}
+
+func Benchmark_xorU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.xorU8(uint8(i>>8), uint8(i))
+	}
+}

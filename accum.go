@@ -41,10 +41,10 @@ func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 func (cpu *CPU) andU8(a, b uint8) uint8 {
 	v := a & b
 	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
+		copyBits(v, maskStd).
 		Put(Z, v == 0).
 		Set(H).
-		Put(PV, bits.OnesCount8(v)%2 == 0).
+		copyBits(uint8(bits.OnesCount8(v)%2)-1, maskPV).
 		Reset(N).
 		Reset(C))
 	return uint8(v)
@@ -53,10 +53,10 @@ func (cpu *CPU) andU8(a, b uint8) uint8 {
 func (cpu *CPU) orU8(a, b uint8) uint8 {
 	v := a | b
 	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
+		copyBits(v, maskStd).
 		Put(Z, v == 0).
 		Reset(H).
-		Put(PV, bits.OnesCount8(v)%2 == 0).
+		copyBits(uint8(bits.OnesCount8(v)%2)-1, maskPV).
 		Reset(N).
 		Reset(C))
 	return uint8(v)
@@ -65,10 +65,10 @@ func (cpu *CPU) orU8(a, b uint8) uint8 {
 func (cpu *CPU) xorU8(a, b uint8) uint8 {
 	v := a ^ b
 	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
+		copyBits(v, maskStd).
 		Put(Z, v == 0).
 		Reset(H).
-		Put(PV, bits.OnesCount8(v)%2 == 0).
+		copyBits(uint8(bits.OnesCount8(v)%2)-1, maskPV).
 		Reset(N).
 		Reset(C))
 	return uint8(v)
