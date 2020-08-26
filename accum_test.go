@@ -350,3 +350,37 @@ func TestAccum_sbcU16(t *testing.T) {
 		}
 	}
 }
+
+func Benchmark_addU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.addU8(uint8(i>>8), uint8(i))
+	}
+}
+
+func Benchmark_adcU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.AF.Lo = 0x00
+		cpu.adcU8(uint8(i>>8), uint8(i))
+	}
+}
+
+func Benchmark_subU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.subU8(uint8(i>>8), uint8(i))
+	}
+}
+
+func Benchmark_sbcU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.AF.Lo = 0x01
+		cpu.sbcU8(uint8(i>>8), uint8(i))
+	}
+}

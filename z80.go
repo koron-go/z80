@@ -244,10 +244,6 @@ func (cpu *CPU) flag(n int) bool {
 	return Flag(cpu.AF.Lo, n)
 }
 
-func (cpu *CPU) flagUpdate(fo FlagOp) {
-	fo.ApplyOn(&cpu.AF.Lo)
-}
-
 func (cpu *CPU) flagCC(n uint8) bool {
 	switch n & 0x07 {
 	case 0x00:

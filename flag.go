@@ -1,5 +1,9 @@
 package z80
 
+func (cpu *CPU) flagUpdate(fo FlagOp) {
+	fo.ApplyOn(&cpu.AF.Lo)
+}
+
 const (
 	// C is an index for carry flag.
 	C = 0
@@ -72,4 +76,34 @@ func (fo FlagOp) Put(n int, v bool) FlagOp {
 		return fo.Set(n)
 	}
 	return fo.Reset(n)
+}
+
+const (
+	maskStd = 0xa8
+
+	maskNone = 0x00
+	maskC    = 0x01
+	maskN    = 0x02
+	maskPV   = 0x04
+	maskH    = 0x10
+	maskZ    = 0x40
+	maskS    = 0x80
+
+	maskDefault = 0x28
+)
+
+func (fo FlagOp) copyBits(v, mask uint8) FlagOp {
+	fo.Or |= v & mask
+	fo.Nand |= mask
+	return fo
+}
+
+func (fo FlagOp) evalArith8(r, a, b uint16) FlagOp {
+	c := r ^ a ^ b
+	return fo.
+		copyBits(uint8(r), maskStd).
+		Put(Z, r&0xff == 0).
+		copyBits(uint8(c), maskH).
+		copyBits(uint8((c>>6)^(c>>5)), maskPV).
+		copyBits(uint8(r>>8), maskC)
 }

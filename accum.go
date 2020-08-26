@@ -5,58 +5,36 @@ import (
 )
 
 func (cpu *CPU) addU8(a, b uint8) uint8 {
-	v := uint16(a) + uint16(b)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v&0xff == 0).
-		Put(H, a&0x0f+b&0x0f > 0x0f).
-		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
-		Reset(N).
-		Put(C, v > 0xff))
+	a16, b16 := uint16(a), uint16(b)
+	v := a16 + b16
+	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Reset(N))
 	return uint8(v)
 }
 
 func (cpu *CPU) adcU8(a, b uint8) uint8 {
-	var c uint8
+	a16, b16 := uint16(a), uint16(b)
+	v := a16 + b16
 	if cpu.flag(C) {
-		c = 1
+		v++
 	}
-	v := uint16(a) + uint16(b) + uint16(c)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v&0xff == 0).
-		Put(H, a&0x0f+b&0x0f+c > 0x0f).
-		Put(PV, a&0x80 == b&0x80 && a&0x80 != uint8(v&0x80)).
-		Reset(N).
-		Put(C, v > 0xff))
+	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Reset(N))
 	return uint8(v)
 }
 
 func (cpu *CPU) subU8(a, b uint8) uint8 {
-	v := uint16(a) - uint16(b)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v&0xff == 0).
-		Put(H, a&0x0f < b&0x0f).
-		Put(PV, a&0x80 != b&0x80 && a&0x80 != uint8(v&0x80)).
-		Set(N).
-		Put(C, v > 0xff))
+	a16, b16 := uint16(a), uint16(b)
+	v := a16 - b16
+	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Set(N))
 	return uint8(v)
 }
 
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
-	var c uint8
+	a16, b16 := uint16(a), uint16(b)
+	v := a16 - b16
 	if cpu.flag(C) {
-		c = 1
+		v--
 	}
-	v := uint16(a) - uint16(b) - uint16(c)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v&0xff == 0).
-		Put(H, a&0x0f < b&0x0f+c).
-		Put(PV, a&0x80 != b&0x80 && a&0x80 != uint8(v&0x80)).
-		Set(N).
-		Put(C, uint16(a) < uint16(b)+uint16(c)))
+	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Set(N))
 	return uint8(v)
 }
 
