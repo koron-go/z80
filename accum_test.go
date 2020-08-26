@@ -24,6 +24,15 @@ func tCheckFlags(t *testing.T, name string, cpu *CPU, fo FlagOp) {
 	}
 }
 
+func tCheckFlags2(t *testing.T, name func() string, cpu *CPU, fo FlagOp) {
+	t.Helper()
+	exp := fo.Or & ^uint8(maskDefault)
+	act := cpu.States.GPR.AF.Lo & ^uint8(maskDefault)
+	if act != exp {
+		t.Fatalf("%s: unexpected flags: want=%02x got=%02x", name(), exp, act)
+	}
+}
+
 func TestAccum_addU8(t *testing.T) {
 	t.Parallel()
 	for a := 0; a <= 0xff; a++ {
@@ -287,6 +296,31 @@ func TestAccum_adcU16(t *testing.T) {
 	}
 }
 
+
+func TestAccum_addU16(t *testing.T) {
+	t.Parallel()
+	for _, ua := range u16casesSummary {
+		a := int(ua)
+		for b := 0; b <= 0xffff; b++ {
+			name := func() string {
+				return fmt.Sprintf("addU16(%04x, %04x)", a, b)
+			}
+			r := a + b
+			hc := a&0x0fff+b&0x0fff > 0x0fff
+			fo := FlagOp{}.
+				Put(H, hc).        // H is set if carry for bit11
+				Reset(N).          // N is reset
+				Put(C, r > 0xffff) // C is set if carry from bit 15
+			cpu := &CPU{}
+			act := cpu.addU16(uint16(a), uint16(b))
+			if act != uint16(r) {
+				t.Fatalf("%s: failed: want=%04x got=%04x", name(), uint16(r), act)
+			}
+			tCheckFlags2(t, name, cpu, fo)
+		}
+	}
+}
+
 func tSBCu16(t *testing.T, a, b uint16, c bool) {
 	var c32 uint32
 	var pre States
@@ -422,5 +456,31 @@ func Benchmark_decU8(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		cpu.decU8(uint8(i))
+	}
+}
+
+func Benchmark_addU16(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.addU16(uint16(i>>16), uint16(i))
+	}
+}
+
+func Benchmark_adcU16(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.AF.Lo = 0x01
+		cpu.adcU16(uint16(i>>16), uint16(i))
+	}
+}
+
+func Benchmark_sbcU16(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.AF.Lo = 0x01
+		cpu.sbcU16(uint16(i>>16), uint16(i))
 	}
 }

@@ -94,45 +94,55 @@ func (cpu *CPU) decU8(a uint8) uint8 {
 }
 
 func (cpu *CPU) addU16(a, b uint16) uint16 {
-	r := uint32(a) + uint32(b)
-	cpu.flagUpdate(FlagOp{}.
-		Put(H, a&0x0fff+b&0x0fff > 0x0fff).
-		Reset(N).
-		Put(C, r > 0xffff))
+	a32, b32 := uint32(a), uint32(b)
+	r := a32 + b32
+	c := r ^ a32 ^ b32
+	var nand uint8 = maskH | maskN | maskC
+	var or uint8
+	or |= uint8(c>>8) & maskH
+	or |= uint8(r>>16) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 	return uint16(r)
 }
 
 func (cpu *CPU) adcU16(a, b uint16) uint16 {
-	var c uint16
+	a32, b32 := uint32(a), uint32(b)
+	r := a32 + b32
 	if cpu.flag(C) {
-		c = 1
+		r++
 	}
-	r := uint32(a) + uint32(b) + uint32(c)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x8000 != 0).
-		Put(Z, r&0xffff == 0).
-		Put(H, a&0x0fff+b&0x0fff+c > 0x0fff).
-		Put(PV, a&0x8000 == b&0x8000 && a&0x8000 != uint16(r&0x8000)).
-		Reset(N).
-		Put(C, r > 0xffff))
+	c := r ^ a32 ^ b32
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= uint8(r>>8) & maskStd
+	if uint16(r) == 0 {
+		or |= maskZ
+	}
+	or |= uint8(c>>8) & maskH
+	or |= uint8((c>>14)^(c>>13)) & maskPV
+	or |= uint8(r>>16) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 	return uint16(r)
 }
 
 func (cpu *CPU) sbcU16(a, b uint16) uint16 {
-	a32 := uint32(a)
-	b32 := uint32(b)
-	var c32 uint32
+	a32, b32 := uint32(a), uint32(b)
+	r := a32 - b32
 	if cpu.flag(C) {
-		c32 = 1
+		r--
 	}
-	r := a32 - b32 - c32
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x8000 != 0).
-		Put(Z, r&0xffff == 0).
-		Put(H, a32&0x0fff < b32&0x0fff+c32).
-		Put(PV, a&0x8000 != b&0x8000 && a&0x8000 != uint16(r&0x8000)).
-		Set(N).
-		Put(C, r > 0xffff))
+	c := r ^ a32 ^ b32
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= uint8(r>>8) & maskStd
+	if uint16(r) == 0 {
+		or |= maskZ
+	}
+	or |= uint8(c>>8) & maskH
+	or |= uint8((c>>14)^(c>>13)) & maskPV
+	or |= maskN
+	or |= uint8(r>>16) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 	return uint16(r)
 }
 
