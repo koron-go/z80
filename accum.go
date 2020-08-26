@@ -7,7 +7,7 @@ import (
 func (cpu *CPU) addU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	v := a16 + b16
-	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Reset(N))
+	cpu.updateFlagArith8(v, a16, b16, false)
 	return uint8(v)
 }
 
@@ -17,14 +17,14 @@ func (cpu *CPU) adcU8(a, b uint8) uint8 {
 	if cpu.flag(C) {
 		v++
 	}
-	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Reset(N))
+	cpu.updateFlagArith8(v, a16, b16, false)
 	return uint8(v)
 }
 
 func (cpu *CPU) subU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	v := a16 - b16
-	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Set(N))
+	cpu.updateFlagArith8(v, a16, b16, true)
 	return uint8(v)
 }
 
@@ -34,7 +34,7 @@ func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	if cpu.flag(C) {
 		v--
 	}
-	cpu.flagUpdate(FlagOp{}.evalArith8(v, a16, b16).Set(N))
+	cpu.updateFlagArith8(v, a16, b16, true)
 	return uint8(v)
 }
 
