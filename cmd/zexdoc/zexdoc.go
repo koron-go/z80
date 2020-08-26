@@ -8,12 +8,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"runtime"
 	"runtime/pprof"
 
 	"github.com/koron-go/z80"
 )
 
 var cpuprof string
+var memprof string
 
 //go:generate zmac -o zexdoc.cim -o zexdoc.lst zexdoc.asm
 
@@ -70,6 +72,7 @@ func (io *zexIO) Out(addr uint8, value uint8) {
 
 func main() {
 	flag.StringVar(&cpuprof, "cpuprof", "", "profile CPU, output filename")
+	flag.StringVar(&memprof, "memprof", "", "profile memory, output filename")
 	flag.Parse()
 	err := runZexdoc()
 	if err != nil {
@@ -116,6 +119,19 @@ func runZexdoc() error {
 		}
 		break
 	}
+
+	if memprof != "" {
+		f, err := os.Create(memprof)
+		if err != nil {
+			return fmt.Errorf("could not create memory profile: %w", err)
+		}
+		defer f.Close()
+		runtime.GC()
+		if err := pprof.Lookup("heap").WriteTo(f, 0); err != nil {
+			return fmt.Errorf("could not write memory profile: %w", err)
+		}
+	}
+
 	if cpu.PC != 0xff04 {
 		return fmt.Errorf("halted on unexpected PC: %04x", cpu.PC)
 	}

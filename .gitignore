@@ -1,5 +1,5 @@
 *.lst
-cpu.pprof
+*.pprof
 cpuprof.svg
 tags
 tmp/

@@ -4,7 +4,7 @@ run: zexdoc.cim
 
 .PHONY: profile
 profile: zexdoc.cim
-	go run . -cpuprof cpu.pprof
+	go run . -cpuprof cpu.pprof -memprof mem.pprof
 	go tool pprof -svg ./cpu.pprof > cpuprof.svg
 
 %.cim: %.asm
@@ -13,5 +13,5 @@ profile: zexdoc.cim
 .PHONY: clean
 clean:
 	rm -f zexdoc.lst
-	rm -f cpu.pprof
+	rm -f *.pprof
 	rm -f cpuprof.svg
