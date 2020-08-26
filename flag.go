@@ -136,30 +136,3 @@ const (
 
 	maskDefault = 0x28
 )
-
-func (fo FlagOp) copyBits(v, mask uint8) FlagOp {
-	fo.Nand |= mask
-	fo.Or |= v & mask
-	return fo
-}
-
-func (fo FlagOp) setMask(mask uint8) FlagOp {
-	fo.Nand |= mask
-	fo.Or |= mask
-	return fo
-}
-
-func (fo FlagOp) resetMask(mask uint8) FlagOp {
-	fo.Nand |= mask
-	fo.Or &= ^mask
-	return fo
-}
-
-func (fo FlagOp) evalLogic8(r uint8) FlagOp {
-	return fo.
-		copyBits(r, maskStd).
-		Put(Z, r == 0).
-		copyBits(uint8(bits.OnesCount8(r)%2)-1, maskPV).
-		Reset(N).
-		Reset(C)
-}
