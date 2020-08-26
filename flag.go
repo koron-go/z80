@@ -1,5 +1,50 @@
 package z80
 
+import "math/bits"
+
+func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
+	c := r ^ a ^ b
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= uint8(r) & maskStd
+	if uint8(r) == 0 {
+		or |= maskZ
+	}
+	or |= uint8(c) & maskH
+	or |= uint8((c>>6)^(c>>5)) & maskPV
+	if subtract {
+		or |= maskN
+	}
+	or |= uint8(r>>8) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
+func (cpu *CPU) updateFlagLogic8(r uint8, and bool) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	if and {
+		or |= maskH
+	}
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
+func (cpu *CPU) updateFlagBitop(r uint8, carry uint8) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	or |= carry & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func (cpu *CPU) flagUpdate(fo FlagOp) {
 	fo.ApplyOn(&cpu.AF.Lo)
 }
@@ -93,17 +138,28 @@ const (
 )
 
 func (fo FlagOp) copyBits(v, mask uint8) FlagOp {
-	fo.Or |= v & mask
 	fo.Nand |= mask
+	fo.Or |= v & mask
 	return fo
 }
 
-func (fo FlagOp) evalArith8(r, a, b uint16) FlagOp {
-	c := r ^ a ^ b
+func (fo FlagOp) setMask(mask uint8) FlagOp {
+	fo.Nand |= mask
+	fo.Or |= mask
+	return fo
+}
+
+func (fo FlagOp) resetMask(mask uint8) FlagOp {
+	fo.Nand |= mask
+	fo.Or &= ^mask
+	return fo
+}
+
+func (fo FlagOp) evalLogic8(r uint8) FlagOp {
 	return fo.
-		copyBits(uint8(r), maskStd).
-		Put(Z, r&0xff == 0).
-		copyBits(uint8(c), maskH).
-		copyBits(uint8((c>>6)^(c>>5)), maskPV).
-		copyBits(uint8(r>>8), maskC)
+		copyBits(r, maskStd).
+		Put(Z, r == 0).
+		copyBits(uint8(bits.OnesCount8(r)%2)-1, maskPV).
+		Reset(N).
+		Reset(C)
 }
