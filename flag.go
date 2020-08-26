@@ -19,6 +19,20 @@ func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
+func (cpu *CPU) updateFlagLogic8(r uint8, and bool) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	if and {
+		or |= maskH
+	}
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func (cpu *CPU) flagUpdate(fo FlagOp) {
 	fo.ApplyOn(&cpu.AF.Lo)
 }

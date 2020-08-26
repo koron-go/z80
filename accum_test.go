@@ -408,3 +408,19 @@ func Benchmark_xorU8(b *testing.B) {
 		cpu.xorU8(uint8(i>>8), uint8(i))
 	}
 }
+
+func Benchmark_incU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.incU8(uint8(i))
+	}
+}
+
+func Benchmark_decU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.decU8(uint8(i))
+	}
+}

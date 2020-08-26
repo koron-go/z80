@@ -40,60 +40,57 @@ func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 
 func (cpu *CPU) andU8(a, b uint8) uint8 {
 	v := a & b
-	cpu.flagUpdate(FlagOp{}.
-		copyBits(v, maskStd).
-		Put(Z, v == 0).
-		Set(H).
-		copyBits(uint8(bits.OnesCount8(v)%2)-1, maskPV).
-		Reset(N).
-		Reset(C))
+	cpu.updateFlagLogic8(v, true)
 	return uint8(v)
 }
 
 func (cpu *CPU) orU8(a, b uint8) uint8 {
 	v := a | b
-	cpu.flagUpdate(FlagOp{}.
-		copyBits(v, maskStd).
-		Put(Z, v == 0).
-		Reset(H).
-		copyBits(uint8(bits.OnesCount8(v)%2)-1, maskPV).
-		Reset(N).
-		Reset(C))
+	cpu.updateFlagLogic8(v, false)
 	return uint8(v)
 }
 
 func (cpu *CPU) xorU8(a, b uint8) uint8 {
 	v := a ^ b
-	cpu.flagUpdate(FlagOp{}.
-		copyBits(v, maskStd).
-		Put(Z, v == 0).
-		Reset(H).
-		copyBits(uint8(bits.OnesCount8(v)%2)-1, maskPV).
-		Reset(N).
-		Reset(C))
+	cpu.updateFlagLogic8(v, false)
 	return uint8(v)
 }
 
 func (cpu *CPU) incU8(a uint8) uint8 {
-	v := a + 1
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f+1 > 0x0f).
-		Put(PV, a == 0x7f).
-		Reset(N))
-	return v
+	r := a + 1
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	if r&0x0f == 0 {
+		or |= maskH
+	}
+	if a == 0x7f {
+		or |= maskPV
+	}
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+	return r
 }
 
 func (cpu *CPU) decU8(a uint8) uint8 {
-	v := a - 1
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f < 1).
-		Put(PV, a == 0x80).
-		Set(N))
-	return v
+	r := a - 1
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	if r&0x0f == 0x0f {
+		or |= maskH
+	}
+	if a == 0x80 {
+		or |= maskPV
+	}
+	or |= maskN
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+	return r
 }
 
 func (cpu *CPU) addU16(a, b uint16) uint16 {
