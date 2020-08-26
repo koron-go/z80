@@ -146,12 +146,4 @@ func TestExerciser(t *testing.T) {
 		}
 		tRunMinibios(t, b, "Preliminary tests complete", false)
 	})
-	t.Run("run testdata/zexdoc.cim", func(t *testing.T) {
-		t.Skip("not run")
-		b, err := ioutil.ReadFile("testdata/zexdoc.cim")
-		if err != nil {
-			t.Fatal(err)
-		}
-		tRunMinibios(t, b, "Z80doc instruction exerciser\r\n", false, 0x0122, 0x1431)
-	})
 }
