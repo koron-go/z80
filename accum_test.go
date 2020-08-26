@@ -296,7 +296,6 @@ func TestAccum_adcU16(t *testing.T) {
 	}
 }
 
-
 func TestAccum_addU16(t *testing.T) {
 	t.Parallel()
 	for _, ua := range u16casesSummary {
@@ -482,5 +481,79 @@ func Benchmark_sbcU16(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		cpu.AF.Lo = 0x01
 		cpu.sbcU16(uint16(i>>16), uint16(i))
+	}
+}
+
+func Benchmark_rlcU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.rlcU8(uint8(i))
+	}
+}
+
+func Benchmark_rlU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.AF.Lo = uint8(i >> 8 & 0x01)
+		cpu.rlU8(uint8(i))
+	}
+}
+
+func Benchmark_rrcU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.rrcU8(uint8(i))
+	}
+}
+
+func Benchmark_rrU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.AF.Lo = uint8(i >> 8 & 0x01)
+		cpu.rrU8(uint8(i))
+	}
+}
+
+func Benchmark_slaU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.slaU8(uint8(i))
+	}
+}
+
+func Benchmark_sl1U8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.sl1U8(uint8(i))
+	}
+}
+
+func Benchmark_sraU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.sraU8(uint8(i))
+	}
+}
+
+func Benchmark_srlU8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.srlU8(uint8(i))
+	}
+}
+
+func Benchmark_bitchk8(b *testing.B) {
+	cpu := &CPU{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cpu.bitchk8(uint8(i>>8&0x7), uint8(i))
 	}
 }
