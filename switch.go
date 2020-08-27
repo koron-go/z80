@@ -7,11 +7,28 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0x00:
 		opNOP(cpu, buf[:1])
 		return nil
-	case 0x01, 0x11, 0x21, 0x31:
-		buf[1] = f.fetch()
-		buf[2] = f.fetch()
-		opLDddnn(cpu, buf[:3])
+
+	case 0x01:
+		l := f.fetch()
+		h := f.fetch()
+		xopLDbcnn(cpu, l, h)
 		return nil
+	case 0x11:
+		l := f.fetch()
+		h := f.fetch()
+		xopLDdenn(cpu, l, h)
+		return nil
+	case 0x21:
+		l := f.fetch()
+		h := f.fetch()
+		xopLDhlnn(cpu, l, h)
+		return nil
+	case 0x31:
+		l := f.fetch()
+		h := f.fetch()
+		xopLDspnn(cpu, l, h)
+		return nil
+
 	case 0x02:
 		opLDBCPA(cpu, buf[:1])
 		return nil

@@ -2,25 +2,25 @@ package z80
 
 func xopPOPbc(cpu *CPU) {
 	cpu.BC.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.BC.Hi = cpu.Memory.Get(cpu.SP+1)
+	cpu.BC.Hi = cpu.Memory.Get(cpu.SP + 1)
 	cpu.SP += 2
 }
 
 func xopPOPde(cpu *CPU) {
 	cpu.DE.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.DE.Hi = cpu.Memory.Get(cpu.SP+1)
+	cpu.DE.Hi = cpu.Memory.Get(cpu.SP + 1)
 	cpu.SP += 2
 }
 
 func xopPOPhl(cpu *CPU) {
 	cpu.HL.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.HL.Hi = cpu.Memory.Get(cpu.SP+1)
+	cpu.HL.Hi = cpu.Memory.Get(cpu.SP + 1)
 	cpu.SP += 2
 }
 
 func xopPOPaf(cpu *CPU) {
 	cpu.AF.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.AF.Hi = cpu.Memory.Get(cpu.SP+1)
+	cpu.AF.Hi = cpu.Memory.Get(cpu.SP + 1)
 	cpu.SP += 2
 }
 
@@ -134,4 +134,23 @@ func xopDECl(cpu *CPU) {
 
 func xopDECa(cpu *CPU) {
 	cpu.decP8(&cpu.AF.Hi)
+}
+
+func xopLDbcnn(cpu *CPU, l, h uint8) {
+	cpu.BC.Lo = l
+	cpu.BC.Hi = h
+}
+
+func xopLDdenn(cpu *CPU, l, h uint8) {
+	cpu.DE.Lo = l
+	cpu.DE.Hi = h
+}
+
+func xopLDhlnn(cpu *CPU, l, h uint8) {
+	cpu.HL.Lo = l
+	cpu.HL.Hi = h
+}
+
+func xopLDspnn(cpu *CPU, l, h uint8) {
+	cpu.SP = toU16(l, h)
 }
