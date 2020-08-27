@@ -43,6 +43,7 @@ zexdoc:
 	$(MAKE) -C cmd/zexdoc run
 
 z80.asm:
-	go tool compile -S `go list -f '{{join .GoFiles " "}}'` > $@
+	go tool compile -o z80.o -S `go list -f '{{join .GoFiles " "}}'` > $@
+	rm -f z80.o
 
 # based on: github.com/koron-go/_skeleton/Makefile

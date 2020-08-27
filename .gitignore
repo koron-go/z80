@@ -1,5 +1,6 @@
 *.lst
 *.pprof
+/z80.asm
 cpuprof.svg
 tags
 tmp/

@@ -1351,12 +1351,12 @@ bdos	push	af
 	pop	af
 	ret
 
-msg1:	db	'Z80doc instruction exerciser',10,13,'$'
-msg2:	db	'Tests complete',10,13,'$'
-okmsg:	db	'  OK',10,13,'$'
+msg1:	db	'Z80doc instruction exerciser',13,10,'$'
+msg2:	db	'Tests complete',13,10,'$'
+okmsg:	db	'  OK',13,10,'$'
 ermsg1:	db	'  ERROR **** crc expected:$'
 ermsg2:	db	' found:$'
-crlf:	db	10,13,'$'
+crlf:	db	13,10,'$'
 
 ; compare crc
 ; hl points to value to compare to crcval
