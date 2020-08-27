@@ -70,12 +70,6 @@ func opLDSPIY(cpu *CPU, codes []uint8) {
 	cpu.SP = cpu.IY
 }
 
-func opPUSHqq(cpu *CPU, codes []uint8) {
-	qq := cpu.reg16qq(codes[0] >> 4)
-	cpu.SP -= 2
-	cpu.writeU16(cpu.SP, qq.U16())
-}
-
 func opPUSHIX(cpu *CPU, codes []uint8) {
 	cpu.SP -= 2
 	cpu.writeU16(cpu.SP, cpu.IX)

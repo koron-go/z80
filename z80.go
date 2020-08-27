@@ -219,22 +219,6 @@ func (cpu *CPU) reg16rr(n uint8) uint16 {
 	}
 }
 
-func (cpu *CPU) reg16qq(n uint8) *Register {
-	switch n & 0x03 {
-	case 0x00:
-		return &cpu.BC
-	case 0x01:
-		return &cpu.DE
-	case 0x02:
-		return &cpu.HL
-	case 0x03:
-		return &cpu.AF
-	default:
-		cpu.failf("invalid reg16qq: %02x", n)
-		return nil
-	}
-}
-
 // Flag gets a bit of flag register (F)
 func (cpu *CPU) Flag(n int) bool {
 	return cpu.flag(n)
