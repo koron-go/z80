@@ -189,3 +189,51 @@ func xopXORa(cpu *CPU) {
 	cpu.AF.Hi ^= cpu.AF.Hi
 	cpu.updateFlagLogic8(cpu.AF.Hi, false)
 }
+
+func xopJPnZnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskZ == 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPfZnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskZ != 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPnCnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskC == 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPfCnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskC != 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPnPVnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskPV == 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPfPVnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskPV != 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPnSnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskS == 0 {
+		cpu.PC = toU16(l, h)
+	}
+}
+
+func xopJPfSnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskS != 0 {
+		cpu.PC = toU16(l, h)
+	}
+}

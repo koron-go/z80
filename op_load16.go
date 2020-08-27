@@ -16,9 +16,10 @@ func opLDIYnn(cpu *CPU, codes []uint8) {
 	cpu.IY = nn
 }
 
-func opLDHLnnP(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[1], codes[2])
-	cpu.HL.SetU16(cpu.readU16(nn))
+func oopLDHLnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.HL.Lo = cpu.Memory.Get(nn)
+	cpu.HL.Hi = cpu.Memory.Get(nn + 1)
 }
 
 func opLDddnnP(cpu *CPU, codes []uint8) {

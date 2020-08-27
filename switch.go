@@ -128,11 +128,13 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		buf[1] = f.fetch()
 		opJRZe(cpu, buf[:2])
 		return nil
+
 	case 0x2a:
-		buf[1] = f.fetch()
-		buf[2] = f.fetch()
-		opLDHLnnP(cpu, buf[:3])
+		l := f.fetch()
+		h := f.fetch()
+		oopLDHLnnP(cpu, l, h)
 		return nil
+
 	case 0x2f:
 		opCPL(cpu, buf[:1])
 		return nil
@@ -429,11 +431,48 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xf1:
 		xopPOPaf(cpu)
 		return nil
-	case 0xc2, 0xca, 0xd2, 0xda, 0xe2, 0xea, 0xf2, 0xfa:
-		buf[1] = f.fetch()
-		buf[2] = f.fetch()
-		opJPccnn(cpu, buf[:3])
+
+	case 0xc2:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPnZnn(cpu, l, h)
 		return nil
+	case 0xca:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPfZnn(cpu, l, h)
+		return nil
+	case 0xd2:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPnCnn(cpu, l, h)
+		return nil
+	case 0xda:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPfCnn(cpu, l, h)
+		return nil
+	case 0xe2:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPnPVnn(cpu, l, h)
+		return nil
+	case 0xea:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPfPVnn(cpu, l, h)
+		return nil
+	case 0xf2:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPnSnn(cpu, l, h)
+		return nil
+	case 0xfa:
+		l := f.fetch()
+		h := f.fetch()
+		xopJPfSnn(cpu, l, h)
+		return nil
+
 	case 0xc3:
 		buf[1] = f.fetch()
 		buf[2] = f.fetch()
