@@ -187,8 +187,17 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xc0, 0xc8, 0xd0, 0xd8, 0xe0, 0xe8, 0xf0, 0xf8:
 		opRETcc(cpu, buf[:1])
 		return nil
-	case 0xc1, 0xd1, 0xe1, 0xf1:
-		opPOPqq(cpu, buf[:1])
+	case 0xc1:
+		opPOPbc(cpu, buf[:1])
+		return nil
+	case 0xd1:
+		opPOPde(cpu, buf[:1])
+		return nil
+	case 0xe1:
+		opPOPhl(cpu, buf[:1])
+		return nil
+	case 0xf1:
+		opPOPaf(cpu, buf[:1])
 		return nil
 	case 0xc2, 0xca, 0xd2, 0xda, 0xe2, 0xea, 0xf2, 0xfa:
 		buf[1] = f.fetch()

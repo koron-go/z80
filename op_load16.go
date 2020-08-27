@@ -86,12 +86,6 @@ func opPUSHIY(cpu *CPU, codes []uint8) {
 	cpu.writeU16(cpu.SP, cpu.IY)
 }
 
-func opPOPqq(cpu *CPU, codes []uint8) {
-	qq := cpu.reg16qq(codes[0] >> 4)
-	qq.SetU16(cpu.readU16(cpu.SP))
-	cpu.SP += 2
-}
-
 func opPOPIX(cpu *CPU, codes []uint8) {
 	cpu.IX = cpu.readU16(cpu.SP)
 	cpu.SP += 2
