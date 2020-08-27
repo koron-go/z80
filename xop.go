@@ -154,3 +154,38 @@ func xopLDhlnn(cpu *CPU, l, h uint8) {
 func xopLDspnn(cpu *CPU, l, h uint8) {
 	cpu.SP = toU16(l, h)
 }
+
+func xopXORb(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.BC.Hi
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopXORc(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.BC.Lo
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopXORd(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.DE.Hi
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopXORe(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.DE.Lo
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopXORh(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.HL.Hi
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopXORl(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.HL.Lo
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopXORa(cpu *CPU) {
+	cpu.AF.Hi ^= cpu.AF.Hi
+	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}

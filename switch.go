@@ -376,9 +376,29 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xa6:
 		opANDHLP(cpu, buf[:1])
 		return nil
-	case 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf:
-		opXORr(cpu, buf[:1])
+
+	case 0xa8:
+		xopXORb(cpu)
 		return nil
+	case 0xa9:
+		xopXORc(cpu)
+		return nil
+	case 0xaa:
+		xopXORd(cpu)
+		return nil
+	case 0xab:
+		xopXORe(cpu)
+		return nil
+	case 0xac:
+		xopXORh(cpu)
+		return nil
+	case 0xad:
+		xopXORl(cpu)
+		return nil
+	case 0xaf:
+		xopXORa(cpu)
+		return nil
+
 	case 0xae:
 		opXORHLP(cpu, buf[:1])
 		return nil
