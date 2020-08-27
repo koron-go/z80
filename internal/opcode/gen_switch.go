@@ -14,7 +14,6 @@ func WriteSwitchDecoder(w io.Writer) error {
 	_, err := bw.WriteString(`package z80
 
 func decodeExec(cpu *CPU, f fetcher) error {
-	var b uint8
 	buf := cpu.decodeBuf[:4]`)
 	if err != nil {
 		return err
@@ -47,10 +46,9 @@ func writeLayerCode(w *bufio.Writer, l *decodeLayer, nr int) error {
 	}
 
 	fmt.Fprintf(w, `
-b = f.fetch()
-buf[%d] = b`, nr)
+buf[%d] = f.fetch()`, nr)
+	fmt.Fprintf(w, "\nswitch buf[%d] {", nr)
 	nr++
-	w.WriteString("\nswitch b {")
 
 	var singleOps []*OPCode
 	var codesMap = map[string][]uint8{}

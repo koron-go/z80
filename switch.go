@@ -1,11 +1,9 @@
 package z80
 
 func decodeExec(cpu *CPU, f fetcher) error {
-	var b uint8
 	buf := cpu.decodeBuf[:4]
-	b = f.fetch()
-	buf[0] = b
-	switch b {
+	buf[0] = f.fetch()
+	switch buf[0] {
 	case 0x00:
 		opNOP(cpu, buf[:1])
 		return nil
@@ -283,9 +281,8 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		opCPn(cpu, buf[:2])
 		return nil
 	case 0xcb:
-		b = f.fetch()
-		buf[1] = b
-		switch b {
+		buf[1] = f.fetch()
+		switch buf[1] {
 		case 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x07:
 			opRLCr(cpu, buf[:2])
 			return nil
@@ -356,9 +353,8 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return ErrInvalidCodes
 		}
 	case 0xdd:
-		b = f.fetch()
-		buf[1] = b
-		switch b {
+		buf[1] = f.fetch()
+		switch buf[1] {
 		case 0x09, 0x19, 0x29, 0x39:
 			opADDIXpp(cpu, buf[:2])
 			return nil
@@ -500,9 +496,8 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return nil
 		case 0xcb:
 			buf[2] = f.fetch()
-			b = f.fetch()
-			buf[3] = b
-			switch b {
+			buf[3] = f.fetch()
+			switch buf[3] {
 			case 0x06:
 				opRLCIXdP(cpu, buf[:4])
 				return nil
@@ -543,9 +538,8 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return ErrInvalidCodes
 		}
 	case 0xed:
-		b = f.fetch()
-		buf[1] = b
-		switch b {
+		buf[1] = f.fetch()
+		switch buf[1] {
 		case 0x40, 0x48, 0x50, 0x58, 0x60, 0x68, 0x78:
 			opINrCP(cpu, buf[:2])
 			return nil
@@ -656,9 +650,8 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return ErrInvalidCodes
 		}
 	case 0xfd:
-		b = f.fetch()
-		buf[1] = b
-		switch b {
+		buf[1] = f.fetch()
+		switch buf[1] {
 		case 0x09, 0x19, 0x29, 0x39:
 			opADDIYrr(cpu, buf[:2])
 			return nil
@@ -800,9 +793,8 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return nil
 		case 0xcb:
 			buf[2] = f.fetch()
-			b = f.fetch()
-			buf[3] = b
-			switch b {
+			buf[3] = f.fetch()
+			switch buf[3] {
 			case 0x06:
 				opRLCIYdP(cpu, buf[:4])
 				return nil
