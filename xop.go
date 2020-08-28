@@ -358,7 +358,7 @@ func xopADDHLhl(cpu *CPU) {
 
 func xopADDHLsp(cpu *CPU) {
 	a := cpu.HL.U16()
-	x := cpu.PC
+	x := cpu.SP
 	r := cpu.addU16(a, x)
 	cpu.HL.SetU16(r)
 }
