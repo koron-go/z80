@@ -261,7 +261,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		return nil
 
 	case 0x40:
-		cpu.BC.Hi = cpu.BC.Hi
+		//cpu.BC.Hi = cpu.BC.Hi
 		return nil
 	case 0x41:
 		cpu.BC.Hi = cpu.BC.Lo
@@ -285,7 +285,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		cpu.BC.Lo = cpu.BC.Hi
 		return nil
 	case 0x49:
-		cpu.BC.Lo = cpu.BC.Lo
+		//cpu.BC.Lo = cpu.BC.Lo
 		return nil
 	case 0x4a:
 		cpu.BC.Lo = cpu.DE.Hi
@@ -309,7 +309,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		cpu.DE.Hi = cpu.BC.Lo
 		return nil
 	case 0x52:
-		cpu.DE.Hi = cpu.DE.Hi
+		//cpu.DE.Hi = cpu.DE.Hi
 		return nil
 	case 0x53:
 		cpu.DE.Hi = cpu.DE.Lo
@@ -333,7 +333,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		cpu.DE.Lo = cpu.DE.Hi
 		return nil
 	case 0x5b:
-		cpu.DE.Lo = cpu.DE.Lo
+		//cpu.DE.Lo = cpu.DE.Lo
 		return nil
 	case 0x5c:
 		cpu.DE.Lo = cpu.HL.Hi
@@ -357,7 +357,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		cpu.HL.Hi = cpu.DE.Lo
 		return nil
 	case 0x64:
-		cpu.HL.Hi = cpu.HL.Hi
+		//cpu.HL.Hi = cpu.HL.Hi
 		return nil
 	case 0x65:
 		cpu.HL.Hi = cpu.HL.Lo
@@ -381,7 +381,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		cpu.HL.Lo = cpu.HL.Hi
 		return nil
 	case 0x6d:
-		cpu.HL.Lo = cpu.HL.Lo
+		//cpu.HL.Lo = cpu.HL.Lo
 		return nil
 	case 0x6f:
 		cpu.HL.Lo = cpu.AF.Hi
@@ -405,7 +405,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		cpu.AF.Hi = cpu.HL.Lo
 		return nil
 	case 0x7f:
-		cpu.AF.Hi = cpu.AF.Hi
+		//cpu.AF.Hi = cpu.AF.Hi
 		return nil
 
 	case 0x46:

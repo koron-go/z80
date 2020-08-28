@@ -6,10 +6,10 @@ import "fmt"
 
 func (cpu *CPU) step(f fetcher, enableInt bool) error {
 	cpu.afterEI = false
+	// increment refresh counter
+	rc := cpu.IR.Lo
+	cpu.IR.Lo = rc&0x80 | (rc+1)&0x7f
 	if !cpu.HALT {
-		// increment refresh counter
-		rr := cpu.IR.Lo
-		cpu.IR.Lo = rr&0x80 | (rr+1)&0x7f
 		// decode and execute with big switch
 		err := decodeExec(cpu, f)
 		if err != nil {
