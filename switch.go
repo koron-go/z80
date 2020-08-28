@@ -379,33 +379,133 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0x76:
 		opHALT(cpu, buf[:1])
 		return nil
-	case 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87:
-		opADDAr(cpu, buf[:1])
+
+	case 0x80:
+		xopADDAb(cpu)
 		return nil
+	case 0x81:
+		xopADDAc(cpu)
+		return nil
+	case 0x82:
+		xopADDAd(cpu)
+		return nil
+	case 0x83:
+		xopADDAe(cpu)
+		return nil
+	case 0x84:
+		xopADDAh(cpu)
+		return nil
+	case 0x85:
+		xopADDAl(cpu)
+		return nil
+	case 0x87:
+		xopADDAa(cpu)
+		return nil
+
 	case 0x86:
 		opADDAHLP(cpu, buf[:1])
 		return nil
-	case 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f:
-		opADCAr(cpu, buf[:1])
+
+	case 0x88:
+		xopADCAb(cpu)
 		return nil
+	case 0x89:
+		xopADCAc(cpu)
+		return nil
+	case 0x8a:
+		xopADCAd(cpu)
+		return nil
+	case 0x8b:
+		xopADCAe(cpu)
+		return nil
+	case 0x8c:
+		xopADCAh(cpu)
+		return nil
+	case 0x8d:
+		xopADCAl(cpu)
+		return nil
+	case 0x8f:
+		xopADCAa(cpu)
+		return nil
+
 	case 0x8e:
 		opADCAHLP(cpu, buf[:1])
 		return nil
-	case 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97:
-		opSUBAr(cpu, buf[:1])
+
+	case 0x90:
+		xopSUBAb(cpu)
 		return nil
+	case 0x91:
+		xopSUBAc(cpu)
+		return nil
+	case 0x92:
+		xopSUBAd(cpu)
+		return nil
+	case 0x93:
+		xopSUBAe(cpu)
+		return nil
+	case 0x94:
+		xopSUBAh(cpu)
+		return nil
+	case 0x95:
+		xopSUBAl(cpu)
+		return nil
+	case 0x97:
+		xopSUBAa(cpu)
+		return nil
+
 	case 0x96:
 		opSUBAHLP(cpu, buf[:1])
 		return nil
-	case 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f:
-		opSBCAr(cpu, buf[:1])
+
+	case 0x98:
+		xopSBCAb(cpu)
 		return nil
+	case 0x99:
+		xopSBCAc(cpu)
+		return nil
+	case 0x9a:
+		xopSBCAd(cpu)
+		return nil
+	case 0x9b:
+		xopSBCAe(cpu)
+		return nil
+	case 0x9c:
+		xopSBCAh(cpu)
+		return nil
+	case 0x9d:
+		xopSBCAl(cpu)
+		return nil
+	case 0x9f:
+		xopSBCAa(cpu)
+		return nil
+
 	case 0x9e:
 		opSBCAHLP(cpu, buf[:1])
 		return nil
-	case 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7:
-		opANDr(cpu, buf[:1])
+
+	case 0xa0:
+		xopANDAb(cpu)
 		return nil
+	case 0xa1:
+		xopANDAc(cpu)
+		return nil
+	case 0xa2:
+		xopANDAd(cpu)
+		return nil
+	case 0xa3:
+		xopANDAe(cpu)
+		return nil
+	case 0xa4:
+		xopANDAh(cpu)
+		return nil
+	case 0xa5:
+		xopANDAl(cpu)
+		return nil
+	case 0xa7:
+		xopANDAa(cpu)
+		return nil
+
 	case 0xa6:
 		opANDHLP(cpu, buf[:1])
 		return nil
@@ -435,15 +535,55 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xae:
 		opXORHLP(cpu, buf[:1])
 		return nil
-	case 0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7:
-		opORr(cpu, buf[:1])
+
+	case 0xb0:
+		xopORb(cpu)
 		return nil
+	case 0xb1:
+		xopORc(cpu)
+		return nil
+	case 0xb2:
+		xopORd(cpu)
+		return nil
+	case 0xb3:
+		xopORe(cpu)
+		return nil
+	case 0xb4:
+		xopORh(cpu)
+		return nil
+	case 0xb5:
+		xopORl(cpu)
+		return nil
+	case 0xb7:
+		xopORa(cpu)
+		return nil
+
 	case 0xb6:
 		opORHLP(cpu, buf[:1])
 		return nil
-	case 0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf:
-		opCPr(cpu, buf[:1])
+
+	case 0xb8:
+		xopCPb(cpu)
 		return nil
+	case 0xb9:
+		xopCPc(cpu)
+		return nil
+	case 0xba:
+		xopCPd(cpu)
+		return nil
+	case 0xbb:
+		xopCPe(cpu)
+		return nil
+	case 0xbc:
+		xopCPh(cpu)
+		return nil
+	case 0xbd:
+		xopCPl(cpu)
+		return nil
+	case 0xbf:
+		xopCPa(cpu)
+		return nil
+
 	case 0xbe:
 		opCPHLP(cpu, buf[:1])
 		return nil
