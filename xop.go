@@ -334,3 +334,31 @@ func xopCALLfSnn(cpu *CPU, l, h uint8) {
 		xopCALLnn(cpu, l, h)
 	}
 }
+
+func xopADDHLbc(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.BC.U16()
+	r := cpu.addU16(a, x)
+	cpu.HL.SetU16(r)
+}
+
+func xopADDHLde(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.DE.U16()
+	r := cpu.addU16(a, x)
+	cpu.HL.SetU16(r)
+}
+
+func xopADDHLhl(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.HL.U16()
+	r := cpu.addU16(a, x)
+	cpu.HL.SetU16(r)
+}
+
+func xopADDHLsp(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.PC
+	r := cpu.addU16(a, x)
+	cpu.HL.SetU16(r)
+}

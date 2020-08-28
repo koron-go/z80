@@ -80,9 +80,20 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0x08:
 		opEXAFAF(cpu, buf[:1])
 		return nil
-	case 0x09, 0x19, 0x29, 0x39:
-		opADDHLss(cpu, buf[:1])
+
+	case 0x09:
+		xopADDHLbc(cpu)
 		return nil
+	case 0x19:
+		xopADDHLde(cpu)
+		return nil
+	case 0x29:
+		xopADDHLhl(cpu)
+		return nil
+	case 0x39:
+		xopADDHLsp(cpu)
+		return nil
+
 	case 0x0a:
 		opLDABCP(cpu, buf[:1])
 		return nil
