@@ -33,12 +33,14 @@ func oopDAA(cpu *CPU) {
 }
 
 func oopHALT(cpu *CPU) {
-	// nothing todo.
+	cpu.HALT = true
 }
 
 func oopEI(cpu *CPU) {
 	cpu.IFF1 = true
 	cpu.IFF2 = true
+
+	cpu.afterEI = true
 }
 
 func oopCPL(cpu *CPU) {

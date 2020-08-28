@@ -1,14 +1,20 @@
 package z80
 
-func opRETI(cpu *CPU, codes []uint8) {
+func oopRETI(cpu *CPU) {
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
+
+	if cpu.INT != nil {
+		cpu.INT.ReturnINT()
+	}
 }
 
-func opRETN(cpu *CPU, codes []uint8) {
+func oopRETN(cpu *CPU) {
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 	cpu.IFF1 = cpu.IFF2
+
+	cpu.InNMI = false
 }
 
 func opCALLnn(cpu *CPU, codes []uint8) {

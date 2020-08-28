@@ -988,6 +988,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		default:
 			return ErrInvalidCodes
 		}
+
 	case 0xdd:
 		buf[1] = f.fetch()
 		switch buf[1] {
@@ -1173,6 +1174,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		default:
 			return ErrInvalidCodes
 		}
+
 	case 0xed:
 		buf[1] = f.fetch()
 		switch buf[1] {
@@ -1193,9 +1195,11 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		case 0x44:
 			opNEG(cpu, buf[:2])
 			return nil
+
 		case 0x45:
-			opRETN(cpu, buf[:2])
+			oopRETN(cpu)
 			return nil
+
 		case 0x46:
 			opIM0(cpu, buf[:2])
 			return nil
@@ -1210,9 +1214,11 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			buf[3] = f.fetch()
 			opLDddnnP(cpu, buf[:4])
 			return nil
+
 		case 0x4d:
-			opRETI(cpu, buf[:2])
+			oopRETI(cpu)
 			return nil
+
 		case 0x4f:
 			opLDRA(cpu, buf[:2])
 			return nil
@@ -1285,6 +1291,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		default:
 			return ErrInvalidCodes
 		}
+
 	case 0xfd:
 		buf[1] = f.fetch()
 		switch buf[1] {
@@ -1470,6 +1477,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		default:
 			return ErrInvalidCodes
 		}
+
 	default:
 		return ErrInvalidCodes
 	}

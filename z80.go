@@ -93,7 +93,8 @@ type CPU struct {
 	Debug       bool
 	BreakPoints map[uint16]struct{}
 
-	decodeBuf [4]uint8
+	decodeBuf [4]uint8 // TODO: eliminate
+	afterEI   bool
 }
 
 func (cpu *CPU) readU16(addr uint16) uint16 {
