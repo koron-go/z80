@@ -229,30 +229,6 @@ func (cpu *CPU) flag(n int) bool {
 	return Flag(cpu.AF.Lo, n)
 }
 
-func (cpu *CPU) flagCC(n uint8) bool {
-	switch n & 0x07 {
-	case 0x00:
-		return !cpu.flag(Z)
-	case 0x01:
-		return cpu.flag(Z)
-	case 0x02:
-		return !cpu.flag(C)
-	case 0x03:
-		return cpu.flag(C)
-	case 0x04:
-		return !cpu.flag(PV)
-	case 0x05:
-		return cpu.flag(PV)
-	case 0x06:
-		return !cpu.flag(S)
-	case 0x07:
-		return cpu.flag(S)
-	default:
-		cpu.failf("invalid flagCC: %02x", n)
-		return false
-	}
-}
-
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
 	var ctxErr error

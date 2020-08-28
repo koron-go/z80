@@ -1,11 +1,5 @@
 package z80
 
-func opLDddnn(cpu *CPU, codes []uint8) {
-	dd := cpu.reg16dd(codes[0] >> 4)
-	nn := toU16(codes[1], codes[2])
-	dd.SetU16(nn)
-}
-
 func opLDIXnn(cpu *CPU, codes []uint8) {
 	nn := toU16(codes[2], codes[3])
 	cpu.IX = nn

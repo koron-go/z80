@@ -1,11 +1,5 @@
 package z80
 
-func opADDAr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.addU8(a, x)
-}
-
 func oopADDAn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
 	cpu.AF.Hi = cpu.addU8(a, n)
@@ -30,12 +24,6 @@ func opADDAIYdP(cpu *CPU, codes []uint8) {
 	p := addrOff(cpu.IY, codes[2])
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.addU8(a, x)
-}
-
-func opADCAr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
 func oopADCAn(cpu *CPU, n uint8) {
@@ -63,12 +51,6 @@ func opADCAIYdP(cpu *CPU, codes []uint8) {
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
-func opSUBAr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.subU8(a, x)
-}
-
 func oopSUBAn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
 	cpu.AF.Hi = cpu.subU8(a, n)
@@ -92,12 +74,6 @@ func opSUBAIYdP(cpu *CPU, codes []uint8) {
 	p := addrOff(cpu.IY, codes[2])
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.subU8(a, x)
-}
-
-func opSBCAr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
 func oopSBCAn(cpu *CPU, n uint8) {
@@ -125,12 +101,6 @@ func opSBCAIYdP(cpu *CPU, codes []uint8) {
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
-func opANDr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.andU8(a, x)
-}
-
 func oopANDn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
 	cpu.AF.Hi = cpu.andU8(a, n)
@@ -154,12 +124,6 @@ func opANDIYdP(cpu *CPU, codes []uint8) {
 	p := addrOff(cpu.IY, codes[2])
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.andU8(a, x)
-}
-
-func opORr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
 func oopORn(cpu *CPU, n uint8) {
@@ -187,12 +151,6 @@ func opORIYdP(cpu *CPU, codes []uint8) {
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
-func opXORr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.xorU8(a, x)
-}
-
 func oopXORn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
 	cpu.AF.Hi = cpu.xorU8(a, n)
@@ -216,12 +174,6 @@ func opXORIYdP(cpu *CPU, codes []uint8) {
 	p := addrOff(cpu.IY, codes[2])
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.xorU8(a, x)
-}
-
-func opCPr(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.subU8(a, x)
 }
 
 func oopCPn(cpu *CPU, n uint8) {
@@ -249,11 +201,6 @@ func opCPIYdP(cpu *CPU, codes []uint8) {
 	cpu.subU8(a, x)
 }
 
-func opINCr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0] >> 3)
-	*r = cpu.incU8(*r)
-}
-
 func oopINCHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	x := cpu.Memory.Get(p)
@@ -270,11 +217,6 @@ func opINCIYdP(cpu *CPU, codes []uint8) {
 	p := addrOff(cpu.IY, codes[2])
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.incU8(x))
-}
-
-func opDECr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0] >> 3)
-	*r = cpu.decU8(*r)
 }
 
 func oopDECHLP(cpu *CPU) {

@@ -1,19 +1,5 @@
 package z80
 
-func opLDr1r2(cpu *CPU, codes []uint8) {
-	*cpu.regP(codes[0] >> 3) = *cpu.regP(codes[0])
-}
-
-func opLDrn(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0] >> 3)
-	*r = codes[1]
-}
-
-func opLDrHLP(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0] >> 3)
-	*r = cpu.Memory.Get(cpu.HL.U16())
-}
-
 func opLDrIXdP(cpu *CPU, codes []uint8) {
 	r := cpu.regP(codes[1] >> 3)
 	p := addrOff(cpu.IX, codes[2])
@@ -24,11 +10,6 @@ func opLDrIYdP(cpu *CPU, codes []uint8) {
 	r := cpu.regP(codes[1] >> 3)
 	p := addrOff(cpu.IY, codes[2])
 	*r = cpu.Memory.Get(p)
-}
-
-func opLDHLPr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0])
-	cpu.Memory.Set(cpu.HL.U16(), *r)
 }
 
 func opLDIXdPr(cpu *CPU, codes []uint8) {

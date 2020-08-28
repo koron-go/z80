@@ -4,12 +4,6 @@ func oopJPnn(cpu *CPU, l, h uint8) {
 	cpu.PC = toU16(l, h)
 }
 
-func opJPccnn(cpu *CPU, codes []uint8) {
-	if cpu.flagCC(codes[0] >> 3) {
-		cpu.PC = toU16(codes[1], codes[2])
-	}
-}
-
 func oopJRe(cpu *CPU, off uint8) {
 	cpu.PC = addrOff(cpu.PC, off)
 }
