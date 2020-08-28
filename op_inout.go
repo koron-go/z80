@@ -2,8 +2,8 @@ package z80
 
 import "math/bits"
 
-func opINAnP(cpu *CPU, codes []uint8) {
-	cpu.AF.Hi = cpu.ioIn(codes[1])
+func oopINAnP(cpu *CPU, n uint8) {
+	cpu.AF.Hi = cpu.ioIn(n)
 }
 
 func opINrCP(cpu *CPU, codes []uint8) {
@@ -61,8 +61,8 @@ func opINDR(cpu *CPU, codes []uint8) {
 	}
 }
 
-func opOUTnPA(cpu *CPU, codes []uint8) {
-	cpu.ioOut(codes[1], cpu.AF.Hi)
+func oopOUTnPA(cpu *CPU, n uint8) {
+	cpu.ioOut(n, cpu.AF.Hi)
 }
 
 func opOUTCPr(cpu *CPU, codes []uint8) {

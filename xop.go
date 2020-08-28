@@ -73,6 +73,31 @@ func xopINCsp(cpu *CPU) {
 	cpu.SP++
 }
 
+func xopDECbc(cpu *CPU) {
+	cpu.BC.Lo--
+	if cpu.BC.Lo == 0xff {
+		cpu.BC.Hi--
+	}
+}
+
+func xopDECde(cpu *CPU) {
+	cpu.DE.Lo--
+	if cpu.DE.Lo == 0xff {
+		cpu.DE.Hi--
+	}
+}
+
+func xopDEChl(cpu *CPU) {
+	cpu.HL.Lo--
+	if cpu.HL.Lo == 0xff {
+		cpu.HL.Hi--
+	}
+}
+
+func xopDECsp(cpu *CPU) {
+	cpu.SP--
+}
+
 func xopLDbchHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	cpu.BC.Hi = cpu.Memory.Get(p)
@@ -106,6 +131,34 @@ func xopLDhllHLP(cpu *CPU) {
 func xopLDafhHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	cpu.AF.Hi = cpu.Memory.Get(p)
+}
+
+func xopINCb(cpu *CPU) {
+	cpu.BC.Hi = cpu.incU8(cpu.BC.Hi)
+}
+
+func xopINCc(cpu *CPU) {
+	cpu.BC.Lo = cpu.incU8(cpu.BC.Lo)
+}
+
+func xopINCd(cpu *CPU) {
+	cpu.DE.Hi = cpu.incU8(cpu.DE.Hi)
+}
+
+func xopINCe(cpu *CPU) {
+	cpu.DE.Lo = cpu.incU8(cpu.DE.Lo)
+}
+
+func xopINCh(cpu *CPU) {
+	cpu.HL.Hi = cpu.incU8(cpu.HL.Hi)
+}
+
+func xopINCl(cpu *CPU) {
+	cpu.HL.Lo = cpu.incU8(cpu.HL.Lo)
+}
+
+func xopINCa(cpu *CPU) {
+	cpu.AF.Hi = cpu.incU8(cpu.AF.Hi)
 }
 
 func xopDECb(cpu *CPU) {
@@ -374,4 +427,80 @@ func xopRETfS(cpu *CPU) {
 	if cpu.AF.Lo&maskS != 0 {
 		oopRET(cpu)
 	}
+}
+
+func xopLDbn(cpu *CPU, n uint8) {
+	cpu.BC.Hi = n
+}
+
+func xopLDcn(cpu *CPU, n uint8) {
+	cpu.BC.Lo = n
+}
+
+func xopLDdn(cpu *CPU, n uint8) {
+	cpu.DE.Hi = n
+}
+
+func xopLDen(cpu *CPU, n uint8) {
+	cpu.DE.Lo = n
+}
+
+func xopLDhn(cpu *CPU, n uint8) {
+	cpu.HL.Hi = n
+}
+
+func xopLDln(cpu *CPU, n uint8) {
+	cpu.HL.Lo = n
+}
+
+func xopLDan(cpu *CPU, n uint8) {
+	cpu.AF.Hi = n
+}
+
+func xopRST00(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0000
+}
+
+func xopRST08(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0008
+}
+
+func xopRST10(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0010
+}
+
+func xopRST18(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0018
+}
+
+func xopRST20(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0020
+}
+
+func xopRST28(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0028
+}
+
+func xopRST30(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0030
+}
+
+func xopRST38(cpu *CPU) {
+	cpu.SP -= 2
+	cpu.writeU16(cpu.SP, cpu.PC)
+	cpu.PC = 0x0038
 }

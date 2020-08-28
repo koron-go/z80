@@ -38,8 +38,8 @@ func opLDIYnnP(cpu *CPU, codes []uint8) {
 	cpu.IY = cpu.readU16(nn)
 }
 
-func opLDnnPHL(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[1], codes[2])
+func oopLDnnPHL(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.HL.U16())
 }
 
@@ -59,7 +59,7 @@ func opLDnnPIY(cpu *CPU, codes []uint8) {
 	cpu.writeU16(nn, cpu.IY)
 }
 
-func opLDSPHL(cpu *CPU, codes []uint8) {
+func oopLDSPHL(cpu *CPU) {
 	cpu.SP = cpu.HL.U16()
 }
 

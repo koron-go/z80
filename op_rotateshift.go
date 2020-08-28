@@ -2,7 +2,7 @@ package z80
 
 import "math/bits"
 
-func opRLCA(cpu *CPU, codes []uint8) {
+func oopRLCA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a<<1 | a>>7
 	cpu.AF.Hi = a2
@@ -12,7 +12,7 @@ func opRLCA(cpu *CPU, codes []uint8) {
 		Put(C, a&0x80 != 0))
 }
 
-func opRLA(cpu *CPU, codes []uint8) {
+func oopRLA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a << 1
 	if cpu.flag(C) {
@@ -25,7 +25,7 @@ func opRLA(cpu *CPU, codes []uint8) {
 		Put(C, a&0x80 != 0))
 }
 
-func opRRCA(cpu *CPU, codes []uint8) {
+func oopRRCA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a>>1 | a<<7
 	cpu.AF.Hi = a2
@@ -35,7 +35,7 @@ func opRRCA(cpu *CPU, codes []uint8) {
 		Put(C, a&0x01 != 0))
 }
 
-func opRRA(cpu *CPU, codes []uint8) {
+func oopRRA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a >> 1
 	if cpu.flag(C) {

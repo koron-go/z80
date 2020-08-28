@@ -1,20 +1,20 @@
 package z80
 
-func opEXDEHL(cpu *CPU, codes []uint8) {
+func oopEXDEHL(cpu *CPU) {
 	cpu.HL, cpu.DE = cpu.DE, cpu.HL
 }
 
-func opEXAFAF(cpu *CPU, codes []uint8) {
+func oopEXAFAF(cpu *CPU) {
 	cpu.AF, cpu.Alternate.AF = cpu.Alternate.AF, cpu.AF
 }
 
-func opEXX(cpu *CPU, codes []uint8) {
+func oopEXX(cpu *CPU) {
 	cpu.BC, cpu.Alternate.BC = cpu.Alternate.BC, cpu.BC
 	cpu.DE, cpu.Alternate.DE = cpu.Alternate.DE, cpu.DE
 	cpu.HL, cpu.Alternate.HL = cpu.Alternate.HL, cpu.HL
 }
 
-func opEXSPPHL(cpu *CPU, codes []uint8) {
+func oopEXSPPHL(cpu *CPU) {
 	v := cpu.readU16(cpu.SP)
 	cpu.writeU16(cpu.SP, cpu.HL.U16())
 	cpu.HL.SetU16(v)

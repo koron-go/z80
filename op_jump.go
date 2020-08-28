@@ -10,35 +10,35 @@ func opJPccnn(cpu *CPU, codes []uint8) {
 	}
 }
 
-func opJRe(cpu *CPU, codes []uint8) {
-	cpu.PC = addrOff(cpu.PC, codes[1])
+func oopJRe(cpu *CPU, off uint8) {
+	cpu.PC = addrOff(cpu.PC, off)
 }
 
-func opJRCe(cpu *CPU, codes []uint8) {
+func oopJRCe(cpu *CPU, off uint8) {
 	if cpu.flag(C) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJRNCe(cpu *CPU, codes []uint8) {
+func oopJRNCe(cpu *CPU, off uint8) {
 	if !cpu.flag(C) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJRZe(cpu *CPU, codes []uint8) {
+func oopJRZe(cpu *CPU, off uint8) {
 	if cpu.flag(Z) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJRNZe(cpu *CPU, codes []uint8) {
+func oopJRNZe(cpu *CPU, off uint8) {
 	if !cpu.flag(Z) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJPHLP(cpu *CPU, codes []uint8) {
+func oopJPHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	cpu.PC = p
 }
@@ -53,9 +53,9 @@ func opJPIYP(cpu *CPU, codes []uint8) {
 	cpu.PC = p
 }
 
-func opDJNZe(cpu *CPU, codes []uint8) {
+func oopDJNZe(cpu *CPU, off uint8) {
 	cpu.BC.Hi--
 	if cpu.BC.Hi != 0 {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }

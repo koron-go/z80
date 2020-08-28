@@ -4,7 +4,7 @@ import "math/bits"
 
 // port from WebMSX.
 // See https://github.com/ppeccin/WebMSX/blob/654e3aa303e84404fba4a89d5fa21fae32753cf5/src/main/msx/cpu/CPU.js#L1010-L1030
-func opDAA(cpu *CPU, codes []uint8) {
+func oopDAA(cpu *CPU) {
 	r := cpu.AF.Hi
 	c := cpu.flag(C)
 	if cpu.flag(N) {
@@ -32,16 +32,16 @@ func opDAA(cpu *CPU, codes []uint8) {
 	cpu.AF.Hi = r
 }
 
-func opHALT(cpu *CPU, codes []uint8) {
+func oopHALT(cpu *CPU) {
 	// nothing todo.
 }
 
-func opEI(cpu *CPU, codes []uint8) {
+func oopEI(cpu *CPU) {
 	cpu.IFF1 = true
 	cpu.IFF2 = true
 }
 
-func opCPL(cpu *CPU, codes []uint8) {
+func oopCPL(cpu *CPU) {
 	cpu.AF.Hi = ^cpu.AF.Hi
 	cpu.flagUpdate(FlagOp{}.Set(H).Set(N))
 }
@@ -59,20 +59,20 @@ func opNEG(cpu *CPU, codes []uint8) {
 		Put(C, a != 0))
 }
 
-func opCCF(cpu *CPU, codes []uint8) {
+func oopCCF(cpu *CPU) {
 	c := cpu.flag(C)
 	cpu.flagUpdate(FlagOp{}.Put(H, c).Reset(N).Put(C, !c))
 }
 
-func opSCF(cpu *CPU, codes []uint8) {
+func oopSCF(cpu *CPU) {
 	cpu.flagUpdate(FlagOp{}.Reset(H).Reset(N).Set(C))
 }
 
-func opNOP(cpu *CPU, codes []uint8) {
+func oopNOP(cpu *CPU) {
 	// do nothing.
 }
 
-func opDI(cpu *CPU, codes []uint8) {
+func oopDI(cpu *CPU) {
 	cpu.IFF1 = false
 	cpu.IFF2 = false
 }

@@ -43,9 +43,9 @@ func opLDIYdPr(cpu *CPU, codes []uint8) {
 	cpu.Memory.Set(p, *r)
 }
 
-func opLDHLPn(cpu *CPU, codes []uint8) {
+func oopLDHLPn(cpu *CPU, n uint8) {
 	p := cpu.HL.U16()
-	cpu.Memory.Set(p, codes[1])
+	cpu.Memory.Set(p, n)
 }
 
 func opLDIXdPn(cpu *CPU, codes []uint8) {
@@ -58,33 +58,33 @@ func opLDIYdPn(cpu *CPU, codes []uint8) {
 	cpu.Memory.Set(p, codes[3])
 }
 
-func opLDABCP(cpu *CPU, codes []uint8) {
+func oopLDABCP(cpu *CPU) {
 	p := cpu.BC.U16()
 	cpu.AF.Hi = cpu.Memory.Get(p)
 }
 
-func opLDADEP(cpu *CPU, codes []uint8) {
+func oopLDADEP(cpu *CPU) {
 	p := cpu.DE.U16()
 	cpu.AF.Hi = cpu.Memory.Get(p)
 }
 
-func opLDAnnP(cpu *CPU, codes []uint8) {
-	p := toU16(codes[1], codes[2])
+func oopLDAnnP(cpu *CPU, l, h uint8) {
+	p := toU16(l, h)
 	cpu.AF.Hi = cpu.Memory.Get(p)
 }
 
-func opLDBCPA(cpu *CPU, codes []uint8) {
+func oopLDBCPA(cpu *CPU) {
 	p := cpu.BC.U16()
 	cpu.Memory.Set(p, cpu.AF.Hi)
 }
 
-func opLDDEPA(cpu *CPU, codes []uint8) {
+func oopLDDEPA(cpu *CPU) {
 	p := cpu.DE.U16()
 	cpu.Memory.Set(p, cpu.AF.Hi)
 }
 
-func opLDnnPA(cpu *CPU, codes []uint8) {
-	p := toU16(codes[1], codes[2])
+func oopLDnnPA(cpu *CPU, l, h uint8) {
+	p := toU16(l, h)
 	cpu.Memory.Set(p, cpu.AF.Hi)
 }
 
