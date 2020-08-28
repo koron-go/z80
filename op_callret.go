@@ -25,7 +25,7 @@ func opCALLccnn(cpu *CPU, codes []uint8) {
 	}
 }
 
-func opRET(cpu *CPU, codes []uint8) {
+func oopRET(cpu *CPU) {
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 }

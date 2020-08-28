@@ -447,9 +447,32 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xbe:
 		opCPHLP(cpu, buf[:1])
 		return nil
-	case 0xc0, 0xc8, 0xd0, 0xd8, 0xe0, 0xe8, 0xf0, 0xf8:
-		opRETcc(cpu, buf[:1])
+
+	case 0xc0:
+		xopRETnZ(cpu)
 		return nil
+	case 0xc8:
+		xopRETfZ(cpu)
+		return nil
+	case 0xd0:
+		xopRETnC(cpu)
+		return nil
+	case 0xd8:
+		xopRETfC(cpu)
+		return nil
+	case 0xe0:
+		xopRETnPV(cpu)
+		return nil
+	case 0xe8:
+		xopRETfPV(cpu)
+		return nil
+	case 0xf0:
+		xopRETnS(cpu)
+		return nil
+	case 0xf8:
+		xopRETfS(cpu)
+		return nil
+
 	case 0xc1:
 		xopPOPbc(cpu)
 		return nil
@@ -505,9 +528,9 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		return nil
 
 	case 0xc3:
-		buf[1] = f.fetch()
-		buf[2] = f.fetch()
-		opJPnn(cpu, buf[:3])
+		l := f.fetch()
+		h := f.fetch()
+		oopJPnn(cpu, l, h)
 		return nil
 
 	case 0xc4:
@@ -570,8 +593,9 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xc7, 0xcf, 0xd7, 0xdf, 0xe7, 0xef, 0xf7, 0xff:
 		opRSTp(cpu, buf[:1])
 		return nil
+
 	case 0xc9:
-		opRET(cpu, buf[:1])
+		oopRET(cpu)
 		return nil
 
 	case 0xcd:
@@ -633,10 +657,12 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xfb:
 		opEI(cpu, buf[:1])
 		return nil
+
 	case 0xfe:
-		buf[1] = f.fetch()
-		opCPn(cpu, buf[:2])
+		n := f.fetch()
+		oopCPn(cpu, n)
 		return nil
+
 	case 0xcb:
 		buf[1] = f.fetch()
 		switch buf[1] {

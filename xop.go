@@ -362,3 +362,51 @@ func xopADDHLsp(cpu *CPU) {
 	r := cpu.addU16(a, x)
 	cpu.HL.SetU16(r)
 }
+
+func xopRETnZ(cpu *CPU) {
+	if cpu.AF.Lo&maskZ == 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETfZ(cpu *CPU) {
+	if cpu.AF.Lo&maskZ != 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETnC(cpu *CPU) {
+	if cpu.AF.Lo&maskC == 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETfC(cpu *CPU) {
+	if cpu.AF.Lo&maskC != 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETnPV(cpu *CPU) {
+	if cpu.AF.Lo&maskPV == 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETfPV(cpu *CPU) {
+	if cpu.AF.Lo&maskPV != 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETnS(cpu *CPU) {
+	if cpu.AF.Lo&maskS == 0 {
+		oopRET(cpu)
+	}
+}
+
+func xopRETfS(cpu *CPU) {
+	if cpu.AF.Lo&maskS != 0 {
+		oopRET(cpu)
+	}
+}

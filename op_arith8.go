@@ -231,9 +231,8 @@ func opCPr(cpu *CPU, codes []uint8) {
 	cpu.subU8(a, x)
 }
 
-func opCPn(cpu *CPU, codes []uint8) {
+func oopCPn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.subU8(a, n)
 }
 

@@ -1,7 +1,7 @@
 package z80
 
-func opJPnn(cpu *CPU, codes []uint8) {
-	cpu.PC = toU16(codes[1], codes[2])
+func oopJPnn(cpu *CPU, l, h uint8) {
+	cpu.PC = toU16(l, h)
 }
 
 func opJPccnn(cpu *CPU, codes []uint8) {
