@@ -237,3 +237,100 @@ func xopJPfSnn(cpu *CPU, l, h uint8) {
 		cpu.PC = toU16(l, h)
 	}
 }
+
+func xopLDHLPb(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.BC.Hi
+	cpu.Memory.Set(p, r)
+}
+
+func xopLDHLPc(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.BC.Lo
+	cpu.Memory.Set(p, r)
+}
+
+func xopLDHLPd(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.DE.Hi
+	cpu.Memory.Set(p, r)
+}
+
+func xopLDHLPe(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.DE.Lo
+	cpu.Memory.Set(p, r)
+}
+
+func xopLDHLPh(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.HL.Hi
+	cpu.Memory.Set(p, r)
+}
+
+func xopLDHLPl(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.HL.Lo
+	cpu.Memory.Set(p, r)
+}
+
+func xopLDHLPa(cpu *CPU) {
+	p := cpu.HL.U16()
+	r := cpu.AF.Hi
+	cpu.Memory.Set(p, r)
+}
+
+func xopCALLnn(cpu *CPU, l, h uint8) {
+	cpu.SP -= 2
+	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
+	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
+	cpu.PC = toU16(l, h)
+}
+
+func xopCALLnZnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskZ == 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLfZnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskZ != 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLnCnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskC == 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLfCnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskC != 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLnPVnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskPV == 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLfPVnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskPV != 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLnSnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskS == 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
+
+func xopCALLfSnn(cpu *CPU, l, h uint8) {
+	if cpu.AF.Lo&maskS != 0 {
+		xopCALLnn(cpu, l, h)
+	}
+}
