@@ -11,8 +11,6 @@ func (cpu *CPU) step(f fetcher, enableInt bool) error {
 		rr := cpu.IR.Lo
 		cpu.IR.Lo = rr&0x80 | (rr+1)&0x7f
 		// decode and execute with big switch
-		cpu.decodeBuf[0] = 0
-		cpu.decodeBuf[1] = 0
 		err := decodeExec(cpu, f)
 		if err != nil {
 			return fmt.Errorf("decode failed at %s: %w", f.fetchLabel(), err)
