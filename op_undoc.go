@@ -158,16 +158,6 @@ func opSL1IYdP(cpu *CPU, codes []uint8) {
 	cpu.Memory.Set(p, v)
 }
 
-func opSL1r(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[1])
-	*r = cpu.sl1U8(*r)
-}
-
-func opSL1HLP(cpu *CPU, codes []uint8) {
-	p := cpu.HL.U16()
-	cpu.Memory.Set(p, cpu.sl1U8(cpu.Memory.Get(p)))
-}
-
 func opLDrx1rx2(cpu *CPU, codes []uint8) {
 	v := cpu.getRX(codes[1])
 	cpu.setRX(codes[1]>>3, v)
