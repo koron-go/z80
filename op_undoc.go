@@ -86,64 +86,60 @@ func (cpu *CPU) setRY(n uint8, v uint8) {
 	}
 }
 
-func opINCIXH(cpu *CPU, codes []uint8) {
+func oopINCIXH(cpu *CPU) {
 	v := cpu.incU8(uint8(cpu.IX >> 8))
 	cpu.IX = uint16(v)<<8 | cpu.IX&0xff
 }
 
-func opDECIXH(cpu *CPU, codes []uint8) {
+func oopDECIXH(cpu *CPU) {
 	v := cpu.decU8(uint8(cpu.IX >> 8))
 	cpu.IX = uint16(v)<<8 | cpu.IX&0xff
 }
 
-func opINCIXL(cpu *CPU, codes []uint8) {
+func oopINCIXL(cpu *CPU) {
 	v := cpu.incU8(uint8(cpu.IX))
 	cpu.IX = uint16(v) | cpu.IX&0xff00
 }
 
-func opDECIXL(cpu *CPU, codes []uint8) {
+func oopDECIXL(cpu *CPU) {
 	v := cpu.decU8(uint8(cpu.IX))
 	cpu.IX = uint16(v) | cpu.IX&0xff00
 }
 
-func opINCIYH(cpu *CPU, codes []uint8) {
+func oopINCIYH(cpu *CPU) {
 	v := cpu.incU8(uint8(cpu.IY >> 8))
 	cpu.IY = uint16(v)<<8 | cpu.IY&0xff
 }
 
-func opDECIYH(cpu *CPU, codes []uint8) {
+func oopDECIYH(cpu *CPU) {
 	v := cpu.decU8(uint8(cpu.IY >> 8))
 	cpu.IY = uint16(v)<<8 | cpu.IY&0xff
 }
 
-func opINCIYL(cpu *CPU, codes []uint8) {
+func oopINCIYL(cpu *CPU) {
 	v := cpu.incU8(uint8(cpu.IY))
 	cpu.IY = uint16(v) | cpu.IY&0xff00
 }
 
-func opDECIYL(cpu *CPU, codes []uint8) {
+func oopDECIYL(cpu *CPU) {
 	v := cpu.decU8(uint8(cpu.IY))
 	cpu.IY = uint16(v) | cpu.IY&0xff00
 }
 
-func opLDIXHn(cpu *CPU, codes []uint8) {
-	v := codes[2]
-	cpu.IX = uint16(v)<<8 | cpu.IX&0xff
+func oopLDIXHn(cpu *CPU, n uint8) {
+	cpu.IX = uint16(n)<<8 | cpu.IX&0xff
 }
 
-func opLDIXLn(cpu *CPU, codes []uint8) {
-	v := codes[2]
-	cpu.IX = uint16(v) | cpu.IX&0xff00
+func oopLDIXLn(cpu *CPU, n uint8) {
+	cpu.IX = uint16(n) | cpu.IX&0xff00
 }
 
-func opLDIYHn(cpu *CPU, codes []uint8) {
-	v := codes[2]
-	cpu.IY = uint16(v)<<8 | cpu.IY&0xff
+func oopLDIYHn(cpu *CPU, n uint8) {
+	cpu.IY = uint16(n)<<8 | cpu.IY&0xff
 }
 
-func opLDIYLn(cpu *CPU, codes []uint8) {
-	v := codes[2]
-	cpu.IY = uint16(v) | cpu.IY&0xff00
+func oopLDIYLn(cpu *CPU, n uint8) {
+	cpu.IY = uint16(n) | cpu.IY&0xff00
 }
 
 func opSL1IXdP(cpu *CPU, codes []uint8) {

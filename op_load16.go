@@ -1,12 +1,12 @@
 package z80
 
-func opLDIXnn(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIXnn(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IX = nn
 }
 
-func opLDIYnn(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIYnn(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IY = nn
 }
 
@@ -22,13 +22,13 @@ func opLDddnnP(cpu *CPU, codes []uint8) {
 	dd.SetU16(cpu.readU16(nn))
 }
 
-func opLDIXnnP(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIXnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IX = cpu.readU16(nn)
 }
 
-func opLDIYnnP(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIYnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IY = cpu.readU16(nn)
 }
 
@@ -43,13 +43,13 @@ func opLDnnPdd(cpu *CPU, codes []uint8) {
 	cpu.writeU16(nn, dd.U16())
 }
 
-func opLDnnPIX(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDnnPIX(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.IX)
 }
 
-func opLDnnPIY(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDnnPIY(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.IY)
 }
 

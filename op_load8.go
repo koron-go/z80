@@ -29,14 +29,14 @@ func oopLDHLPn(cpu *CPU, n uint8) {
 	cpu.Memory.Set(p, n)
 }
 
-func opLDIXdPn(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
-	cpu.Memory.Set(p, codes[3])
+func oopLDIXdPn(cpu *CPU, d, n uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, n)
 }
 
-func opLDIYdPn(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
-	cpu.Memory.Set(p, codes[3])
+func oopLDIYdPn(cpu *CPU, d, n uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, n)
 }
 
 func oopLDABCP(cpu *CPU) {

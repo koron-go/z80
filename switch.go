@@ -259,6 +259,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopCCF(cpu)
 		return nil
 
+	// LD r1, r2
 	case 0x40:
 		//cpu.BC.Hi = cpu.BC.Hi
 		return nil
@@ -1757,66 +1758,238 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xdd:
 		buf[1] = f.fetch()
 		switch buf[1] {
-		case 0x09, 0x19, 0x29, 0x39:
-			opADDIXpp(cpu, buf[:2])
+
+		// ADD IX, pp
+		case 0x09:
+			xopADDIXbc(cpu)
 			return nil
+		case 0x19:
+			xopADDIXde(cpu)
+			return nil
+		case 0x29:
+			xopADDIXix(cpu)
+			return nil
+		case 0x39:
+			xopADDIXsp(cpu)
+			return nil
+
 		case 0x21:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDIXnn(cpu, buf[:4])
+			l := f.fetch()
+			h := f.fetch()
+			oopLDIXnn(cpu, l, h)
 			return nil
+
 		case 0x22:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDnnPIX(cpu, buf[:4])
+			l := f.fetch()
+			h := f.fetch()
+			oopLDnnPIX(cpu, l, h)
 			return nil
+
 		case 0x23:
-			opINCIX(cpu, buf[:2])
+			oopINCIX(cpu)
 			return nil
+
 		case 0x24:
-			opINCIXH(cpu, buf[:2])
+			oopINCIXH(cpu)
 			return nil
+
 		case 0x25:
-			opDECIXH(cpu, buf[:2])
+			oopDECIXH(cpu)
 			return nil
+
 		case 0x26:
-			buf[2] = f.fetch()
-			opLDIXHn(cpu, buf[:3])
+			n := f.fetch()
+			oopLDIXHn(cpu, n)
 			return nil
+
 		case 0x2a:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDIXnnP(cpu, buf[:4])
+			l := f.fetch()
+			h := f.fetch()
+			oopLDIXnnP(cpu, l, h)
 			return nil
+
 		case 0x2b:
-			opDECIX(cpu, buf[:2])
+			oopDECIX(cpu)
 			return nil
+
 		case 0x2c:
-			opINCIXL(cpu, buf[:2])
+			oopINCIXL(cpu)
 			return nil
+
 		case 0x2d:
-			opDECIXL(cpu, buf[:2])
+			oopDECIXL(cpu)
 			return nil
+
 		case 0x2e:
-			buf[2] = f.fetch()
-			opLDIXLn(cpu, buf[:3])
+			n := f.fetch()
+			oopLDIXLn(cpu, n)
 			return nil
+
 		case 0x34:
-			buf[2] = f.fetch()
-			opINCIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopINCIXdP(cpu, d)
 			return nil
+
 		case 0x35:
-			buf[2] = f.fetch()
-			opDECIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopDECIXdP(cpu, d)
 			return nil
+
 		case 0x36:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDIXdPn(cpu, buf[:4])
+			d := f.fetch()
+			n := f.fetch()
+			oopLDIXdPn(cpu, d, n)
 			return nil
-		case 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5f, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6f, 0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7f:
-			opLDrx1rx2(cpu, buf[:2])
+
+		// LD rx1, rx2
+		case 0x40:
+			//cpu.BC.Hi = cpu.BC.Hi
 			return nil
+		case 0x41:
+			cpu.BC.Hi = cpu.BC.Lo
+			return nil
+		case 0x42:
+			cpu.BC.Hi = cpu.DE.Hi
+			return nil
+		case 0x43:
+			cpu.BC.Hi = cpu.DE.Lo
+			return nil
+		case 0x44:
+			cpu.BC.Hi = uint8(cpu.IX >> 8)
+			return nil
+		case 0x45:
+			cpu.BC.Hi = uint8(cpu.IX)
+			return nil
+		case 0x47:
+			cpu.BC.Hi = cpu.AF.Hi
+			return nil
+		case 0x48:
+			cpu.BC.Lo = cpu.BC.Hi
+			return nil
+		case 0x49:
+			//cpu.BC.Lo = cpu.BC.Lo
+			return nil
+		case 0x4a:
+			cpu.BC.Lo = cpu.DE.Hi
+			return nil
+		case 0x4b:
+			cpu.BC.Lo = cpu.DE.Lo
+			return nil
+		case 0x4c:
+			cpu.BC.Lo = uint8(cpu.IX >> 8)
+			return nil
+		case 0x4d:
+			cpu.BC.Lo = uint8(cpu.IX)
+			return nil
+		case 0x4f:
+			cpu.BC.Lo = cpu.AF.Hi
+			return nil
+		case 0x50:
+			cpu.DE.Hi = cpu.BC.Hi
+			return nil
+		case 0x51:
+			cpu.DE.Hi = cpu.BC.Lo
+			return nil
+		case 0x52:
+			//cpu.DE.Hi = cpu.DE.Hi
+			return nil
+		case 0x53:
+			cpu.DE.Hi = cpu.DE.Lo
+			return nil
+		case 0x54:
+			cpu.DE.Hi = uint8(cpu.IX >> 8)
+			return nil
+		case 0x55:
+			cpu.DE.Hi = uint8(cpu.IX)
+			return nil
+		case 0x57:
+			cpu.DE.Hi = cpu.AF.Hi
+			return nil
+		case 0x58:
+			cpu.DE.Lo = cpu.BC.Hi
+			return nil
+		case 0x59:
+			cpu.DE.Lo = cpu.BC.Lo
+			return nil
+		case 0x5a:
+			cpu.DE.Lo = cpu.DE.Hi
+			return nil
+		case 0x5b:
+			//cpu.DE.Lo = cpu.DE.Lo
+			return nil
+		case 0x5c:
+			cpu.DE.Lo = uint8(cpu.IX >> 8)
+			return nil
+		case 0x5d:
+			cpu.DE.Lo = uint8(cpu.IX)
+			return nil
+		case 0x5f:
+			cpu.DE.Lo = cpu.AF.Hi
+			return nil
+		case 0x60:
+			cpu.IX = uint16(cpu.BC.Hi)<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x61:
+			cpu.IX = uint16(cpu.BC.Lo)<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x62:
+			cpu.IX = uint16(cpu.DE.Hi)<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x63:
+			cpu.IX = uint16(cpu.DE.Lo)<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x64:
+			//cpu.IX = uint16(uint8(cpu.IX >> 8))<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x65:
+			cpu.IX = uint16(uint8(cpu.IX))<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x67:
+			cpu.IX = uint16(cpu.AF.Hi)<<8 | cpu.IX&0x00ff
+			return nil
+		case 0x68:
+			cpu.IX = uint16(cpu.BC.Hi) | cpu.IX&0xff00
+			return nil
+		case 0x69:
+			cpu.IX = uint16(cpu.BC.Lo) | cpu.IX&0xff00
+			return nil
+		case 0x6a:
+			cpu.IX = uint16(cpu.DE.Hi) | cpu.IX&0xff00
+			return nil
+		case 0x6b:
+			cpu.IX = uint16(cpu.DE.Lo) | cpu.IX&0xff00
+			return nil
+		case 0x6c:
+			cpu.IX = uint16(uint8(cpu.IX>>8)) | cpu.IX&0xff00
+			return nil
+		case 0x6d:
+			//cpu.IX = uint16(uint8(cpu.IX)) | cpu.IX&0xff00
+			return nil
+		case 0x6f:
+			cpu.IX = uint16(cpu.AF.Hi) | cpu.IX&0xff00
+			return nil
+		case 0x78:
+			cpu.AF.Hi = cpu.BC.Hi
+			return nil
+		case 0x79:
+			cpu.AF.Hi = cpu.BC.Lo
+			return nil
+		case 0x7a:
+			cpu.AF.Hi = cpu.DE.Hi
+			return nil
+		case 0x7b:
+			cpu.AF.Hi = cpu.DE.Lo
+			return nil
+		case 0x7c:
+			cpu.AF.Hi = uint8(cpu.IX >> 8)
+			return nil
+		case 0x7d:
+			cpu.AF.Hi = uint8(cpu.IX)
+			return nil
+		case 0x7f:
+			//cpu.AF.Hi = cpu.AF.Hi
+			return nil
+
 		case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x7e:
 			buf[2] = f.fetch()
 			opLDrIXdP(cpu, buf[:3])
@@ -2060,66 +2233,238 @@ func decodeExec(cpu *CPU, f fetcher) error {
 	case 0xfd:
 		buf[1] = f.fetch()
 		switch buf[1] {
-		case 0x09, 0x19, 0x29, 0x39:
-			opADDIYrr(cpu, buf[:2])
+
+		// ADD IY, pp
+		case 0x09:
+			xopADDIYbc(cpu)
 			return nil
+		case 0x19:
+			xopADDIYde(cpu)
+			return nil
+		case 0x29:
+			xopADDIYiy(cpu)
+			return nil
+		case 0x39:
+			xopADDIYsp(cpu)
+			return nil
+
 		case 0x21:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDIYnn(cpu, buf[:4])
+			l := f.fetch()
+			h := f.fetch()
+			oopLDIYnn(cpu, l, h)
 			return nil
+
 		case 0x22:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDnnPIY(cpu, buf[:4])
+			l := f.fetch()
+			h := f.fetch()
+			oopLDnnPIY(cpu, l, h)
 			return nil
+
 		case 0x23:
-			opINCIY(cpu, buf[:2])
+			oopINCIY(cpu)
 			return nil
+
 		case 0x24:
-			opINCIYH(cpu, buf[:2])
+			oopINCIYH(cpu)
 			return nil
+
 		case 0x25:
-			opDECIYH(cpu, buf[:2])
+			oopDECIYH(cpu)
 			return nil
+
 		case 0x26:
-			buf[2] = f.fetch()
-			opLDIYHn(cpu, buf[:3])
+			n := f.fetch()
+			oopLDIYHn(cpu, n)
 			return nil
+
 		case 0x2a:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDIYnnP(cpu, buf[:4])
+			l := f.fetch()
+			h := f.fetch()
+			oopLDIYnnP(cpu, l, h)
 			return nil
+
 		case 0x2b:
-			opDECIY(cpu, buf[:2])
+			oopDECIY(cpu)
 			return nil
+
 		case 0x2c:
-			opINCIYL(cpu, buf[:2])
+			oopINCIYL(cpu)
 			return nil
+
 		case 0x2d:
-			opDECIYL(cpu, buf[:2])
+			oopDECIYL(cpu)
 			return nil
+
 		case 0x2e:
-			buf[2] = f.fetch()
-			opLDIYLn(cpu, buf[:3])
+			n := f.fetch()
+			oopLDIYLn(cpu, n)
 			return nil
+
 		case 0x34:
-			buf[2] = f.fetch()
-			opINCIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopINCIYdP(cpu, d)
 			return nil
+
 		case 0x35:
-			buf[2] = f.fetch()
-			opDECIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopDECIYdP(cpu, d)
 			return nil
+
 		case 0x36:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDIYdPn(cpu, buf[:4])
+			d := f.fetch()
+			n := f.fetch()
+			oopLDIYdPn(cpu, d, n)
 			return nil
-		case 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5f, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6f, 0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7f:
-			opLDry1ry2(cpu, buf[:2])
+
+		// LD ry1, ry2
+		case 0x40:
+			//cpu.BC.Hi = cpu.BC.Hi
 			return nil
+		case 0x41:
+			cpu.BC.Hi = cpu.BC.Lo
+			return nil
+		case 0x42:
+			cpu.BC.Hi = cpu.DE.Hi
+			return nil
+		case 0x43:
+			cpu.BC.Hi = cpu.DE.Lo
+			return nil
+		case 0x44:
+			cpu.BC.Hi = uint8(cpu.IY >> 8)
+			return nil
+		case 0x45:
+			cpu.BC.Hi = uint8(cpu.IY)
+			return nil
+		case 0x47:
+			cpu.BC.Hi = cpu.AF.Hi
+			return nil
+		case 0x48:
+			cpu.BC.Lo = cpu.BC.Hi
+			return nil
+		case 0x49:
+			//cpu.BC.Lo = cpu.BC.Lo
+			return nil
+		case 0x4a:
+			cpu.BC.Lo = cpu.DE.Hi
+			return nil
+		case 0x4b:
+			cpu.BC.Lo = cpu.DE.Lo
+			return nil
+		case 0x4c:
+			cpu.BC.Lo = uint8(cpu.IY >> 8)
+			return nil
+		case 0x4d:
+			cpu.BC.Lo = uint8(cpu.IY)
+			return nil
+		case 0x4f:
+			cpu.BC.Lo = cpu.AF.Hi
+			return nil
+		case 0x50:
+			cpu.DE.Hi = cpu.BC.Hi
+			return nil
+		case 0x51:
+			cpu.DE.Hi = cpu.BC.Lo
+			return nil
+		case 0x52:
+			//cpu.DE.Hi = cpu.DE.Hi
+			return nil
+		case 0x53:
+			cpu.DE.Hi = cpu.DE.Lo
+			return nil
+		case 0x54:
+			cpu.DE.Hi = uint8(cpu.IY >> 8)
+			return nil
+		case 0x55:
+			cpu.DE.Hi = uint8(cpu.IY)
+			return nil
+		case 0x57:
+			cpu.DE.Hi = cpu.AF.Hi
+			return nil
+		case 0x58:
+			cpu.DE.Lo = cpu.BC.Hi
+			return nil
+		case 0x59:
+			cpu.DE.Lo = cpu.BC.Lo
+			return nil
+		case 0x5a:
+			cpu.DE.Lo = cpu.DE.Hi
+			return nil
+		case 0x5b:
+			//cpu.DE.Lo = cpu.DE.Lo
+			return nil
+		case 0x5c:
+			cpu.DE.Lo = uint8(cpu.IY >> 8)
+			return nil
+		case 0x5d:
+			cpu.DE.Lo = uint8(cpu.IY)
+			return nil
+		case 0x5f:
+			cpu.DE.Lo = cpu.AF.Hi
+			return nil
+		case 0x60:
+			cpu.IY = uint16(cpu.BC.Hi)<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x61:
+			cpu.IY = uint16(cpu.BC.Lo)<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x62:
+			cpu.IY = uint16(cpu.DE.Hi)<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x63:
+			cpu.IY = uint16(cpu.DE.Lo)<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x64:
+			//cpu.IY = uint16(uint8(cpu.IY >> 8))<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x65:
+			cpu.IY = uint16(uint8(cpu.IY))<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x67:
+			cpu.IY = uint16(cpu.AF.Hi)<<8 | cpu.IY&0x00ff
+			return nil
+		case 0x68:
+			cpu.IY = uint16(cpu.BC.Hi) | cpu.IY&0xff00
+			return nil
+		case 0x69:
+			cpu.IY = uint16(cpu.BC.Lo) | cpu.IY&0xff00
+			return nil
+		case 0x6a:
+			cpu.IY = uint16(cpu.DE.Hi) | cpu.IY&0xff00
+			return nil
+		case 0x6b:
+			cpu.IY = uint16(cpu.DE.Lo) | cpu.IY&0xff00
+			return nil
+		case 0x6c:
+			cpu.IY = uint16(uint8(cpu.IY>>8)) | cpu.IY&0xff00
+			return nil
+		case 0x6d:
+			//cpu.IY = uint16(uint8(cpu.IY)) | cpu.IY&0xff00
+			return nil
+		case 0x6f:
+			cpu.IY = uint16(cpu.AF.Hi) | cpu.IY&0xff00
+			return nil
+		case 0x78:
+			cpu.AF.Hi = cpu.BC.Hi
+			return nil
+		case 0x79:
+			cpu.AF.Hi = cpu.BC.Lo
+			return nil
+		case 0x7a:
+			cpu.AF.Hi = cpu.DE.Hi
+			return nil
+		case 0x7b:
+			cpu.AF.Hi = cpu.DE.Lo
+			return nil
+		case 0x7c:
+			cpu.AF.Hi = uint8(cpu.IY >> 8)
+			return nil
+		case 0x7d:
+			cpu.AF.Hi = uint8(cpu.IY)
+			return nil
+		case 0x7f:
+			//cpu.AF.Hi = cpu.AF.Hi
+			return nil
+
 		case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x7e:
 			buf[2] = f.fetch()
 			opLDrIYdP(cpu, buf[:3])

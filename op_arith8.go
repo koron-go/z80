@@ -207,14 +207,14 @@ func oopINCHLP(cpu *CPU) {
 	cpu.Memory.Set(p, cpu.incU8(x))
 }
 
-func opINCIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopINCIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.incU8(x))
 }
 
-func opINCIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopINCIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.incU8(x))
 }
@@ -225,14 +225,14 @@ func oopDECHLP(cpu *CPU) {
 	cpu.Memory.Set(p, cpu.decU8(x))
 }
 
-func opDECIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopDECIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.decU8(x))
 }
 
-func opDECIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopDECIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.decU8(x))
 }

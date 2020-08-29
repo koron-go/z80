@@ -798,3 +798,51 @@ func xopSETbHLP(cpu *CPU, b uint8) {
 	x = cpu.bitset8(b, x)
 	cpu.Memory.Set(p, x)
 }
+
+func xopADDIXbc(cpu *CPU) {
+	a := cpu.IX
+	x := cpu.BC.U16()
+	cpu.IX = cpu.addU16(a, x)
+}
+
+func xopADDIXde(cpu *CPU) {
+	a := cpu.IX
+	x := cpu.DE.U16()
+	cpu.IX = cpu.addU16(a, x)
+}
+
+func xopADDIXix(cpu *CPU) {
+	a := cpu.IX
+	x := cpu.IX
+	cpu.IX = cpu.addU16(a, x)
+}
+
+func xopADDIXsp(cpu *CPU) {
+	a := cpu.IX
+	x := cpu.SP
+	cpu.IX = cpu.addU16(a, x)
+}
+
+func xopADDIYbc(cpu *CPU) {
+	a := cpu.IY
+	x := cpu.BC.U16()
+	cpu.IY = cpu.addU16(a, x)
+}
+
+func xopADDIYde(cpu *CPU) {
+	a := cpu.IY
+	x := cpu.DE.U16()
+	cpu.IY = cpu.addU16(a, x)
+}
+
+func xopADDIYiy(cpu *CPU) {
+	a := cpu.IY
+	x := cpu.IY
+	cpu.IY = cpu.addU16(a, x)
+}
+
+func xopADDIYsp(cpu *CPU) {
+	a := cpu.IY
+	x := cpu.SP
+	cpu.IY = cpu.addU16(a, x)
+}

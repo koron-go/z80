@@ -12,30 +12,18 @@ func opSBCHLss(cpu *CPU, codes []uint8) {
 	cpu.HL.SetU16(cpu.sbcU16(a, x))
 }
 
-func opADDIXpp(cpu *CPU, codes []uint8) {
-	a := cpu.IX
-	x := cpu.reg16pp(codes[1] >> 4)
-	cpu.IX = cpu.addU16(a, x)
-}
-
-func opADDIYrr(cpu *CPU, codes []uint8) {
-	a := cpu.IY
-	x := cpu.reg16rr(codes[1] >> 4)
-	cpu.IY = cpu.addU16(a, x)
-}
-
-func opINCIX(cpu *CPU, codes []uint8) {
+func oopINCIX(cpu *CPU) {
 	cpu.IX = cpu.incU16(cpu.IX)
 }
 
-func opINCIY(cpu *CPU, codes []uint8) {
+func oopINCIY(cpu *CPU) {
 	cpu.IY = cpu.incU16(cpu.IY)
 }
 
-func opDECIX(cpu *CPU, codes []uint8) {
+func oopDECIX(cpu *CPU) {
 	cpu.IX = cpu.decU16(cpu.IX)
 }
 
-func opDECIY(cpu *CPU, codes []uint8) {
+func oopDECIY(cpu *CPU) {
 	cpu.IY = cpu.decU16(cpu.IY)
 }
