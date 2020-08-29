@@ -2,8 +2,7 @@ package z80
 
 func decodeExec(cpu *CPU, f fetcher) error {
 	buf := cpu.decodeBuf[:4]
-	buf[0] = f.fetch()
-	switch buf[0] {
+	switch f.fetch() {
 	case 0x00:
 		oopNOP(cpu)
 		return nil
