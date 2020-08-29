@@ -58,16 +58,6 @@ func oopRLCIYdP(cpu *CPU, d uint8) {
 	cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
 }
 
-func opRLr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[1])
-	*r = cpu.rlU8(*r)
-}
-
-func opRLHLP(cpu *CPU, codes []uint8) {
-	p := cpu.HL.U16()
-	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
-}
-
 func oopRLIXdP(cpu *CPU, d uint8) {
 	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))

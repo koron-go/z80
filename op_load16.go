@@ -16,12 +16,6 @@ func oopLDHLnnP(cpu *CPU, l, h uint8) {
 	cpu.HL.Hi = cpu.Memory.Get(nn + 1)
 }
 
-func opLDddnnP(cpu *CPU, codes []uint8) {
-	dd := cpu.reg16dd(codes[1] >> 4)
-	nn := toU16(codes[2], codes[3])
-	dd.SetU16(cpu.readU16(nn))
-}
-
 func oopLDIXnnP(cpu *CPU, l, h uint8) {
 	nn := toU16(l, h)
 	cpu.IX = cpu.readU16(nn)
@@ -35,12 +29,6 @@ func oopLDIYnnP(cpu *CPU, l, h uint8) {
 func oopLDnnPHL(cpu *CPU, l, h uint8) {
 	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.HL.U16())
-}
-
-func opLDnnPdd(cpu *CPU, codes []uint8) {
-	dd := cpu.reg16dd(codes[1] >> 4)
-	nn := toU16(codes[2], codes[3])
-	cpu.writeU16(nn, dd.U16())
 }
 
 func oopLDnnPIX(cpu *CPU, l, h uint8) {

@@ -1,22 +1,7 @@
 package z80
 
-import "math/bits"
-
 func oopINAnP(cpu *CPU, n uint8) {
 	cpu.AF.Hi = cpu.ioIn(n)
-}
-
-func opINrCP(cpu *CPU, codes []uint8) {
-	v := cpu.ioIn(cpu.BC.Lo)
-	// FIXME: support 0x06 to apply flags only.
-	r := cpu.regP(codes[1] >> 3)
-	*r = v
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(v)%2 == 0).
-		Reset(N))
 }
 
 func oopINI(cpu *CPU) {
@@ -63,11 +48,6 @@ func oopINDR(cpu *CPU) {
 
 func oopOUTnPA(cpu *CPU, n uint8) {
 	cpu.ioOut(n, cpu.AF.Hi)
-}
-
-func opOUTCPr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[1] >> 3)
-	cpu.ioOut(cpu.BC.Lo, *r)
 }
 
 func oopOUTI(cpu *CPU) {
