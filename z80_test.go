@@ -43,10 +43,7 @@ func tSteps(t *testing.T, label string, states States, memory tMemory, steps int
 		IO:     &tForbiddenIO{},
 	}
 	for i := 0; i < steps; i++ {
-		err := cpu.Step()
-		if err != nil {
-			t.Fatal(err)
-		}
+		cpu.Step()
 	}
 
 	mask := ^ignoreFlags

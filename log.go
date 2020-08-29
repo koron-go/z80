@@ -3,7 +3,11 @@ package z80
 import "log"
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
-	log.Printf("Z80 failed: "+msg, args...)
+	log.Printf("Z80 fail: "+msg, args...)
+}
+
+func (cpu *CPU) warnf(msg string, args ...interface{}) {
+	log.Printf("Z80 warn: "+msg, args...)
 }
 
 // not used for now
