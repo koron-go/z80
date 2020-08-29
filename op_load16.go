@@ -57,30 +57,30 @@ func oopLDSPHL(cpu *CPU) {
 	cpu.SP = cpu.HL.U16()
 }
 
-func opLDSPIX(cpu *CPU, codes []uint8) {
+func oopLDSPIX(cpu *CPU) {
 	cpu.SP = cpu.IX
 }
 
-func opLDSPIY(cpu *CPU, codes []uint8) {
+func oopLDSPIY(cpu *CPU) {
 	cpu.SP = cpu.IY
 }
 
-func opPUSHIX(cpu *CPU, codes []uint8) {
+func oopPUSHIX(cpu *CPU) {
 	cpu.SP -= 2
 	cpu.writeU16(cpu.SP, cpu.IX)
 }
 
-func opPUSHIY(cpu *CPU, codes []uint8) {
+func oopPUSHIY(cpu *CPU) {
 	cpu.SP -= 2
 	cpu.writeU16(cpu.SP, cpu.IY)
 }
 
-func opPOPIX(cpu *CPU, codes []uint8) {
+func oopPOPIX(cpu *CPU) {
 	cpu.IX = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 }
 
-func opPOPIY(cpu *CPU, codes []uint8) {
+func oopPOPIY(cpu *CPU) {
 	cpu.IY = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 }

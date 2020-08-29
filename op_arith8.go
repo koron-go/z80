@@ -11,17 +11,16 @@ func oopADDAHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.addU8(a, x)
 }
 
-func opADDAIXdP(cpu *CPU, codes []uint8) {
+func oopADDAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
-	//fmt.Printf("a=%02x p=%04x x=%02x ix=%04x\n", a, p, x, cpu.IX)
 	cpu.AF.Hi = cpu.addU8(a, x)
 }
 
-func opADDAIYdP(cpu *CPU, codes []uint8) {
+func oopADDAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.addU8(a, x)
 }
@@ -37,16 +36,16 @@ func oopADCAHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
-func opADCAIXdP(cpu *CPU, codes []uint8) {
+func oopADCAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
-func opADCAIYdP(cpu *CPU, codes []uint8) {
+func oopADCAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
@@ -62,16 +61,16 @@ func oopSUBAHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
 
-func opSUBAIXdP(cpu *CPU, codes []uint8) {
+func oopSUBAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
 
-func opSUBAIYdP(cpu *CPU, codes []uint8) {
+func oopSUBAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
@@ -87,16 +86,16 @@ func oopSBCAHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
-func opSBCAIXdP(cpu *CPU, codes []uint8) {
+func oopSBCAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
-func opSBCAIYdP(cpu *CPU, codes []uint8) {
+func oopSBCAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
@@ -112,16 +111,16 @@ func oopANDHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.andU8(a, x)
 }
 
-func opANDIXdP(cpu *CPU, codes []uint8) {
+func oopANDIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.andU8(a, x)
 }
 
-func opANDIYdP(cpu *CPU, codes []uint8) {
+func oopANDIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.andU8(a, x)
 }
@@ -137,16 +136,16 @@ func oopORHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
-func opORIXdP(cpu *CPU, codes []uint8) {
+func oopORIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
-func opORIYdP(cpu *CPU, codes []uint8) {
+func oopORIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
@@ -162,16 +161,16 @@ func oopXORHLP(cpu *CPU) {
 	cpu.AF.Hi = cpu.xorU8(a, x)
 }
 
-func opXORIXdP(cpu *CPU, codes []uint8) {
+func oopXORIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.xorU8(a, x)
 }
 
-func opXORIYdP(cpu *CPU, codes []uint8) {
+func oopXORIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.xorU8(a, x)
 }
@@ -187,16 +186,16 @@ func oopCPHLP(cpu *CPU) {
 	cpu.subU8(a, x)
 }
 
-func opCPIXdP(cpu *CPU, codes []uint8) {
+func oopCPIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.subU8(a, x)
 }
 
-func opCPIYdP(cpu *CPU, codes []uint8) {
+func oopCPIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.subU8(a, x)
 }

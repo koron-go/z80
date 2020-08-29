@@ -20,13 +20,13 @@ func oopEXSPPHL(cpu *CPU) {
 	cpu.HL.SetU16(v)
 }
 
-func opEXSPPIX(cpu *CPU, codes []uint8) {
+func oopEXSPPIX(cpu *CPU) {
 	v := cpu.readU16(cpu.SP)
 	cpu.writeU16(cpu.SP, cpu.IX)
 	cpu.IX = v
 }
 
-func opEXSPPIY(cpu *CPU, codes []uint8) {
+func oopEXSPPIY(cpu *CPU) {
 	v := cpu.readU16(cpu.SP)
 	cpu.writeU16(cpu.SP, cpu.IY)
 	cpu.IY = v

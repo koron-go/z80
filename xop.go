@@ -846,3 +846,143 @@ func xopADDIYsp(cpu *CPU) {
 	x := cpu.SP
 	cpu.IY = cpu.addU16(a, x)
 }
+
+func xopLDbIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.BC.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDcIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.BC.Lo = cpu.Memory.Get(p)
+}
+
+func xopLDdIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.DE.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDeIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.DE.Lo = cpu.Memory.Get(p)
+}
+
+func xopLDhIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.HL.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDlIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.HL.Lo = cpu.Memory.Get(p)
+}
+
+func xopLDaIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.AF.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDbIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.BC.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDcIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.BC.Lo = cpu.Memory.Get(p)
+}
+
+func xopLDdIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.DE.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDeIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.DE.Lo = cpu.Memory.Get(p)
+}
+
+func xopLDhIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.HL.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDlIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.HL.Lo = cpu.Memory.Get(p)
+}
+
+func xopLDaIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.AF.Hi = cpu.Memory.Get(p)
+}
+
+func xopLDIXdPb(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.BC.Hi)
+}
+
+func xopLDIXdPc(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.BC.Lo)
+}
+
+func xopLDIXdPd(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.DE.Hi)
+}
+
+func xopLDIXdPe(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.DE.Lo)
+}
+
+func xopLDIXdPh(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.HL.Hi)
+}
+
+func xopLDIXdPl(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.HL.Lo)
+}
+
+func xopLDIXdPa(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
+	cpu.Memory.Set(p, cpu.AF.Hi)
+}
+
+func xopLDIYdPb(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.BC.Hi)
+}
+
+func xopLDIYdPc(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.BC.Lo)
+}
+
+func xopLDIYdPd(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.DE.Hi)
+}
+
+func xopLDIYdPe(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.DE.Lo)
+}
+
+func xopLDIYdPh(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.HL.Hi)
+}
+
+func xopLDIYdPl(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.HL.Lo)
+}
+
+func xopLDIYdPa(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
+	cpu.Memory.Set(p, cpu.AF.Hi)
+}

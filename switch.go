@@ -456,6 +456,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopHALT(cpu)
 		return nil
 
+	// ADD A, r
 	case 0x80:
 		xopADDAb(cpu)
 		return nil
@@ -478,10 +479,12 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		xopADDAa(cpu)
 		return nil
 
+	// ADD A, (HL)
 	case 0x86:
 		oopADDAHLP(cpu)
 		return nil
 
+	// ADC A, r
 	case 0x88:
 		xopADCAb(cpu)
 		return nil
@@ -508,6 +511,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopADCAHLP(cpu)
 		return nil
 
+	// SUB A, r
 	case 0x90:
 		xopSUBAb(cpu)
 		return nil
@@ -534,6 +538,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopSUBAHLP(cpu)
 		return nil
 
+	// SBC A, r
 	case 0x98:
 		xopSBCAb(cpu)
 		return nil
@@ -560,6 +565,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopSBCAHLP(cpu)
 		return nil
 
+	// ADD r
 	case 0xa0:
 		xopANDAb(cpu)
 		return nil
@@ -586,6 +592,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopANDHLP(cpu)
 		return nil
 
+	// XOR r
 	case 0xa8:
 		xopXORb(cpu)
 		return nil
@@ -612,6 +619,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopXORHLP(cpu)
 		return nil
 
+	// OR r
 	case 0xb0:
 		xopORb(cpu)
 		return nil
@@ -638,6 +646,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		oopORHLP(cpu)
 		return nil
 
+	// CP r
 	case 0xb8:
 		xopCPb(cpu)
 		return nil
@@ -1990,85 +1999,311 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			//cpu.AF.Hi = cpu.AF.Hi
 			return nil
 
-		case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x7e:
-			buf[2] = f.fetch()
-			opLDrIXdP(cpu, buf[:3])
+		// LD r, (IX+d)
+		case 0x46:
+			d := f.fetch()
+			xopLDbIXdP(cpu, d)
 			return nil
-		case 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77:
-			buf[2] = f.fetch()
-			opLDIXdPr(cpu, buf[:3])
+		case 0x4e:
+			d := f.fetch()
+			xopLDcIXdP(cpu, d)
 			return nil
-		case 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87:
-			opADDArx(cpu, buf[:2])
+		case 0x56:
+			d := f.fetch()
+			xopLDdIXdP(cpu, d)
 			return nil
+		case 0x5e:
+			d := f.fetch()
+			xopLDeIXdP(cpu, d)
+			return nil
+		case 0x66:
+			d := f.fetch()
+			xopLDhIXdP(cpu, d)
+			return nil
+		case 0x6e:
+			d := f.fetch()
+			xopLDlIXdP(cpu, d)
+			return nil
+		case 0x7e:
+			d := f.fetch()
+			xopLDaIXdP(cpu, d)
+			return nil
+
+		// LD (IX+d), r
+		case 0x70:
+			d := f.fetch()
+			xopLDIXdPb(cpu, d)
+			return nil
+		case 0x71:
+			d := f.fetch()
+			xopLDIXdPc(cpu, d)
+			return nil
+		case 0x72:
+			d := f.fetch()
+			xopLDIXdPd(cpu, d)
+			return nil
+		case 0x73:
+			d := f.fetch()
+			xopLDIXdPe(cpu, d)
+			return nil
+		case 0x74:
+			d := f.fetch()
+			xopLDIXdPh(cpu, d)
+			return nil
+		case 0x75:
+			d := f.fetch()
+			xopLDIXdPl(cpu, d)
+			return nil
+		case 0x77:
+			d := f.fetch()
+			xopLDIXdPa(cpu, d)
+			return nil
+
+		// ADD A, rx (undocumented)
+		case 0x80:
+			xopADDAb(cpu)
+			return nil
+		case 0x81:
+			xopADDAc(cpu)
+			return nil
+		case 0x82:
+			xopADDAd(cpu)
+			return nil
+		case 0x83:
+			xopADDAe(cpu)
+			return nil
+		case 0x84:
+			xopADDAixh(cpu)
+			return nil
+		case 0x85:
+			xopADDAixl(cpu)
+			return nil
+		case 0x87:
+			xopADDAa(cpu)
+			return nil
+
 		case 0x86:
-			buf[2] = f.fetch()
-			opADDAIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopADDAIXdP(cpu, d)
 			return nil
-		case 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f:
-			opADCArx(cpu, buf[:2])
+
+		// ADC A, rx
+		case 0x88:
+			xopADCAb(cpu)
 			return nil
+		case 0x89:
+			xopADCAc(cpu)
+			return nil
+		case 0x8a:
+			xopADCAd(cpu)
+			return nil
+		case 0x8b:
+			xopADCAe(cpu)
+			return nil
+		case 0x8c:
+			xopADCAixh(cpu)
+			return nil
+		case 0x8d:
+			xopADCAixl(cpu)
+			return nil
+		case 0x8f:
+			xopADCAa(cpu)
+			return nil
+
 		case 0x8e:
-			buf[2] = f.fetch()
-			opADCAIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopADCAIXdP(cpu, d)
 			return nil
-		case 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97:
-			opSUBArx(cpu, buf[:2])
+
+		// SUB A, rx
+		case 0x90:
+			xopSUBAb(cpu)
 			return nil
+		case 0x91:
+			xopSUBAc(cpu)
+			return nil
+		case 0x92:
+			xopSUBAd(cpu)
+			return nil
+		case 0x93:
+			xopSUBAe(cpu)
+			return nil
+		case 0x94:
+			xopSUBAixh(cpu)
+			return nil
+		case 0x95:
+			xopSUBAixl(cpu)
+			return nil
+		case 0x97:
+			xopSUBAa(cpu)
+			return nil
+
 		case 0x96:
-			buf[2] = f.fetch()
-			opSUBAIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopSUBAIXdP(cpu, d)
 			return nil
-		case 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f:
-			opSBCArx(cpu, buf[:2])
+
+		// SBC A, rx
+		case 0x98:
+			xopSBCAb(cpu)
 			return nil
+		case 0x99:
+			xopSBCAc(cpu)
+			return nil
+		case 0x9a:
+			xopSBCAd(cpu)
+			return nil
+		case 0x9b:
+			xopSBCAe(cpu)
+			return nil
+		case 0x9c:
+			xopSBCAixh(cpu)
+			return nil
+		case 0x9d:
+			xopSBCAixl(cpu)
+			return nil
+		case 0x9f:
+			xopSBCAa(cpu)
+			return nil
+
 		case 0x9e:
-			buf[2] = f.fetch()
-			opSBCAIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopSBCAIXdP(cpu, d)
 			return nil
-		case 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7:
-			opANDrx(cpu, buf[:2])
+
+		// ADD rx
+		case 0xa0:
+			xopANDAb(cpu)
 			return nil
+		case 0xa1:
+			xopANDAc(cpu)
+			return nil
+		case 0xa2:
+			xopANDAd(cpu)
+			return nil
+		case 0xa3:
+			xopANDAe(cpu)
+			return nil
+		case 0xa4:
+			xopANDixh(cpu)
+			return nil
+		case 0xa5:
+			xopANDixl(cpu)
+			return nil
+		case 0xa7:
+			xopANDAa(cpu)
+			return nil
+
+		// AND (IX+d)
 		case 0xa6:
-			buf[2] = f.fetch()
-			opANDIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopANDIXdP(cpu, d)
 			return nil
-		case 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf:
-			opXORrx(cpu, buf[:2])
+
+		// XOR rx
+		case 0xa8:
+			xopXORb(cpu)
 			return nil
+		case 0xa9:
+			xopXORc(cpu)
+			return nil
+		case 0xaa:
+			xopXORd(cpu)
+			return nil
+		case 0xab:
+			xopXORe(cpu)
+			return nil
+		case 0xac:
+			xopXORixh(cpu)
+			return nil
+		case 0xad:
+			xopXORixl(cpu)
+			return nil
+		case 0xaf:
+			xopXORa(cpu)
+			return nil
+
 		case 0xae:
-			buf[2] = f.fetch()
-			opXORIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopXORIXdP(cpu, d)
 			return nil
-		case 0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7:
-			opORrx(cpu, buf[:2])
+
+		// OR rx
+		case 0xb0:
+			xopORb(cpu)
 			return nil
+		case 0xb1:
+			xopORc(cpu)
+			return nil
+		case 0xb2:
+			xopORd(cpu)
+			return nil
+		case 0xb3:
+			xopORe(cpu)
+			return nil
+		case 0xb4:
+			xopORixh(cpu)
+			return nil
+		case 0xb5:
+			xopORixl(cpu)
+			return nil
+		case 0xb7:
+			xopORa(cpu)
+			return nil
+
 		case 0xb6:
-			buf[2] = f.fetch()
-			opORIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopORIXdP(cpu, d)
 			return nil
-		case 0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf:
-			opCPrx(cpu, buf[:2])
+
+		// CP rx
+		case 0xb8:
+			xopCPb(cpu)
 			return nil
+		case 0xb9:
+			xopCPc(cpu)
+			return nil
+		case 0xba:
+			xopCPd(cpu)
+			return nil
+		case 0xbb:
+			xopCPe(cpu)
+			return nil
+		case 0xbc:
+			xopCPixh(cpu)
+			return nil
+		case 0xbd:
+			xopCPixl(cpu)
+			return nil
+		case 0xbf:
+			xopCPa(cpu)
+			return nil
+
 		case 0xbe:
-			buf[2] = f.fetch()
-			opCPIXdP(cpu, buf[:3])
+			d := f.fetch()
+			oopCPIXdP(cpu, d)
 			return nil
+
 		case 0xe1:
-			opPOPIX(cpu, buf[:2])
+			oopPOPIX(cpu)
 			return nil
+
 		case 0xe3:
-			opEXSPPIX(cpu, buf[:2])
+			oopEXSPPIX(cpu)
 			return nil
+
 		case 0xe5:
-			opPUSHIX(cpu, buf[:2])
+			oopPUSHIX(cpu)
 			return nil
+
 		case 0xe9:
-			opJPIXP(cpu, buf[:2])
+			oopJPIXP(cpu)
 			return nil
+
 		case 0xf9:
-			opLDSPIX(cpu, buf[:2])
+			oopLDSPIX(cpu)
 			return nil
+
 		case 0xcb:
 			buf[2] = f.fetch()
 			buf[3] = f.fetch()
@@ -2465,85 +2700,311 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			//cpu.AF.Hi = cpu.AF.Hi
 			return nil
 
-		case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x7e:
-			buf[2] = f.fetch()
-			opLDrIYdP(cpu, buf[:3])
+		// LD r, (IY+d)
+		case 0x46:
+			d := f.fetch()
+			xopLDbIYdP(cpu, d)
 			return nil
-		case 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77:
-			buf[2] = f.fetch()
-			opLDIYdPr(cpu, buf[:3])
+		case 0x4e:
+			d := f.fetch()
+			xopLDcIYdP(cpu, d)
 			return nil
-		case 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87:
-			opADDAry(cpu, buf[:2])
+		case 0x56:
+			d := f.fetch()
+			xopLDdIYdP(cpu, d)
 			return nil
+		case 0x5e:
+			d := f.fetch()
+			xopLDeIYdP(cpu, d)
+			return nil
+		case 0x66:
+			d := f.fetch()
+			xopLDhIYdP(cpu, d)
+			return nil
+		case 0x6e:
+			d := f.fetch()
+			xopLDlIYdP(cpu, d)
+			return nil
+		case 0x7e:
+			d := f.fetch()
+			xopLDaIYdP(cpu, d)
+			return nil
+
+		// LD (IY+d), r
+		case 0x70:
+			d := f.fetch()
+			xopLDIYdPb(cpu, d)
+			return nil
+		case 0x71:
+			d := f.fetch()
+			xopLDIYdPc(cpu, d)
+			return nil
+		case 0x72:
+			d := f.fetch()
+			xopLDIYdPd(cpu, d)
+			return nil
+		case 0x73:
+			d := f.fetch()
+			xopLDIYdPe(cpu, d)
+			return nil
+		case 0x74:
+			d := f.fetch()
+			xopLDIYdPh(cpu, d)
+			return nil
+		case 0x75:
+			d := f.fetch()
+			xopLDIYdPl(cpu, d)
+			return nil
+		case 0x77:
+			d := f.fetch()
+			xopLDIYdPa(cpu, d)
+			return nil
+
+		// ADD A, ry (undocumented)
+		case 0x80:
+			xopADDAb(cpu)
+			return nil
+		case 0x81:
+			xopADDAc(cpu)
+			return nil
+		case 0x82:
+			xopADDAd(cpu)
+			return nil
+		case 0x83:
+			xopADDAe(cpu)
+			return nil
+		case 0x84:
+			xopADDAiyh(cpu)
+			return nil
+		case 0x85:
+			xopADDAiyl(cpu)
+			return nil
+		case 0x87:
+			xopADDAa(cpu)
+			return nil
+
 		case 0x86:
-			buf[2] = f.fetch()
-			opADDAIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopADDAIYdP(cpu, d)
 			return nil
-		case 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f:
-			opADCAry(cpu, buf[:2])
+
+		// ADC A, ry
+		case 0x88:
+			xopADCAb(cpu)
 			return nil
+		case 0x89:
+			xopADCAc(cpu)
+			return nil
+		case 0x8a:
+			xopADCAd(cpu)
+			return nil
+		case 0x8b:
+			xopADCAe(cpu)
+			return nil
+		case 0x8c:
+			xopADCAiyh(cpu)
+			return nil
+		case 0x8d:
+			xopADCAiyl(cpu)
+			return nil
+		case 0x8f:
+			xopADCAa(cpu)
+			return nil
+
 		case 0x8e:
-			buf[2] = f.fetch()
-			opADCAIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopADCAIYdP(cpu, d)
 			return nil
-		case 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97:
-			opSUBAry(cpu, buf[:2])
+
+		// SUB A, ry
+		case 0x90:
+			xopSUBAb(cpu)
 			return nil
+		case 0x91:
+			xopSUBAc(cpu)
+			return nil
+		case 0x92:
+			xopSUBAd(cpu)
+			return nil
+		case 0x93:
+			xopSUBAe(cpu)
+			return nil
+		case 0x94:
+			xopSUBAiyh(cpu)
+			return nil
+		case 0x95:
+			xopSUBAiyl(cpu)
+			return nil
+		case 0x97:
+			xopSUBAa(cpu)
+			return nil
+
 		case 0x96:
-			buf[2] = f.fetch()
-			opSUBAIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopSUBAIYdP(cpu, d)
 			return nil
-		case 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f:
-			opSBCAry(cpu, buf[:2])
+
+		// SBC A, ry
+		case 0x98:
+			xopSBCAb(cpu)
 			return nil
+		case 0x99:
+			xopSBCAc(cpu)
+			return nil
+		case 0x9a:
+			xopSBCAd(cpu)
+			return nil
+		case 0x9b:
+			xopSBCAe(cpu)
+			return nil
+		case 0x9c:
+			xopSBCAiyh(cpu)
+			return nil
+		case 0x9d:
+			xopSBCAiyl(cpu)
+			return nil
+		case 0x9f:
+			xopSBCAa(cpu)
+			return nil
+
 		case 0x9e:
-			buf[2] = f.fetch()
-			opSBCAIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopSBCAIYdP(cpu, d)
 			return nil
-		case 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7:
-			opANDry(cpu, buf[:2])
+
+		// ADD rx
+		case 0xa0:
+			xopANDAb(cpu)
 			return nil
+		case 0xa1:
+			xopANDAc(cpu)
+			return nil
+		case 0xa2:
+			xopANDAd(cpu)
+			return nil
+		case 0xa3:
+			xopANDAe(cpu)
+			return nil
+		case 0xa4:
+			xopANDiyh(cpu)
+			return nil
+		case 0xa5:
+			xopANDiyl(cpu)
+			return nil
+		case 0xa7:
+			xopANDAa(cpu)
+			return nil
+
+		// AND (IY+d)
 		case 0xa6:
-			buf[2] = f.fetch()
-			opANDIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopANDIYdP(cpu, d)
 			return nil
-		case 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf:
-			opXORry(cpu, buf[:2])
+
+		// XOR rx
+		case 0xa8:
+			xopXORb(cpu)
 			return nil
+		case 0xa9:
+			xopXORc(cpu)
+			return nil
+		case 0xaa:
+			xopXORd(cpu)
+			return nil
+		case 0xab:
+			xopXORe(cpu)
+			return nil
+		case 0xac:
+			xopXORiyh(cpu)
+			return nil
+		case 0xad:
+			xopXORiyl(cpu)
+			return nil
+		case 0xaf:
+			xopXORa(cpu)
+			return nil
+
 		case 0xae:
-			buf[2] = f.fetch()
-			opXORIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopXORIYdP(cpu, d)
 			return nil
-		case 0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7:
-			opORry(cpu, buf[:2])
+
+		// OR ry
+		case 0xb0:
+			xopORb(cpu)
 			return nil
+		case 0xb1:
+			xopORc(cpu)
+			return nil
+		case 0xb2:
+			xopORd(cpu)
+			return nil
+		case 0xb3:
+			xopORe(cpu)
+			return nil
+		case 0xb4:
+			xopORiyh(cpu)
+			return nil
+		case 0xb5:
+			xopORiyl(cpu)
+			return nil
+		case 0xb7:
+			xopORa(cpu)
+			return nil
+
 		case 0xb6:
-			buf[2] = f.fetch()
-			opORIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopORIYdP(cpu, d)
 			return nil
-		case 0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf:
-			opCPry(cpu, buf[:2])
+
+		// CP ry
+		case 0xb8:
+			xopCPb(cpu)
 			return nil
+		case 0xb9:
+			xopCPc(cpu)
+			return nil
+		case 0xba:
+			xopCPd(cpu)
+			return nil
+		case 0xbb:
+			xopCPe(cpu)
+			return nil
+		case 0xbc:
+			xopCPiyh(cpu)
+			return nil
+		case 0xbd:
+			xopCPiyl(cpu)
+			return nil
+		case 0xbf:
+			xopCPa(cpu)
+			return nil
+
 		case 0xbe:
-			buf[2] = f.fetch()
-			opCPIYdP(cpu, buf[:3])
+			d := f.fetch()
+			oopCPIYdP(cpu, d)
 			return nil
+
 		case 0xe1:
-			opPOPIY(cpu, buf[:2])
+			oopPOPIY(cpu)
 			return nil
+
 		case 0xe3:
-			opEXSPPIY(cpu, buf[:2])
+			oopEXSPPIY(cpu)
 			return nil
+
 		case 0xe5:
-			opPUSHIY(cpu, buf[:2])
+			oopPUSHIY(cpu)
 			return nil
+
 		case 0xe9:
-			opJPIYP(cpu, buf[:2])
+			oopJPIYP(cpu)
 			return nil
+
 		case 0xf9:
-			opLDSPIY(cpu, buf[:2])
+			oopLDSPIY(cpu)
 			return nil
+
 		case 0xcb:
 			buf[2] = f.fetch()
 			buf[3] = f.fetch()

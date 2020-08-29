@@ -37,12 +37,12 @@ func oopJPHLP(cpu *CPU) {
 	cpu.PC = p
 }
 
-func opJPIXP(cpu *CPU, codes []uint8) {
+func oopJPIXP(cpu *CPU, ) {
 	p := cpu.IX
 	cpu.PC = p
 }
 
-func opJPIYP(cpu *CPU, codes []uint8) {
+func oopJPIYP(cpu *CPU, ) {
 	p := cpu.IY
 	cpu.PC = p
 }

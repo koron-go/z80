@@ -42,6 +42,30 @@ func xopADDAa(cpu *CPU) {
 	cpu.AF.Hi = cpu.addU8(a, x)
 }
 
+func xopADDAixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.addU8(a, x)
+}
+
+func xopADDAixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.addU8(a, x)
+}
+
+func xopADDAiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.addU8(a, x)
+}
+
+func xopADDAiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
+	cpu.AF.Hi = cpu.addU8(a, x)
+}
+
 func xopADCAb(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.BC.Hi
@@ -81,6 +105,30 @@ func xopADCAl(cpu *CPU) {
 func xopADCAa(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.AF.Hi
+	cpu.AF.Hi = cpu.adcU8(a, x)
+}
+
+func xopADCAixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.adcU8(a, x)
+}
+
+func xopADCAixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.adcU8(a, x)
+}
+
+func xopADCAiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.adcU8(a, x)
+}
+
+func xopADCAiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
@@ -126,6 +174,30 @@ func xopSUBAa(cpu *CPU) {
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
 
+func xopSUBAixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.subU8(a, x)
+}
+
+func xopSUBAixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.subU8(a, x)
+}
+
+func xopSUBAiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.subU8(a, x)
+}
+
+func xopSUBAiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
+	cpu.AF.Hi = cpu.subU8(a, x)
+}
+
 func xopSBCAb(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.BC.Hi
@@ -168,6 +240,30 @@ func xopSBCAa(cpu *CPU) {
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
+func xopSBCAixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.sbcU8(a, x)
+}
+
+func xopSBCAixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.sbcU8(a, x)
+}
+
+func xopSBCAiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.sbcU8(a, x)
+}
+
+func xopSBCAiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
+	cpu.AF.Hi = cpu.sbcU8(a, x)
+}
+
 func xopANDAb(cpu *CPU) {
 	cpu.AF.Hi &= cpu.BC.Hi
 	cpu.updateFlagLogic8(cpu.AF.Hi, true)
@@ -201,6 +297,30 @@ func xopANDAl(cpu *CPU) {
 func xopANDAa(cpu *CPU) {
 	cpu.AF.Hi &= cpu.AF.Hi
 	cpu.updateFlagLogic8(cpu.AF.Hi, true)
+}
+
+func xopANDixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.andU8(a, x)
+}
+
+func xopANDixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.andU8(a, x)
+}
+
+func xopANDiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.andU8(a, x)
+}
+
+func xopANDiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
+	cpu.AF.Hi = cpu.andU8(a, x)
 }
 
 func xopXORb(cpu *CPU) {
@@ -238,6 +358,30 @@ func xopXORa(cpu *CPU) {
 	cpu.updateFlagLogic8(cpu.AF.Hi, false)
 }
 
+func xopXORixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.xorU8(a, x)
+}
+
+func xopXORixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.xorU8(a, x)
+}
+
+func xopXORiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.xorU8(a, x)
+}
+
+func xopXORiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
+	cpu.AF.Hi = cpu.xorU8(a, x)
+}
+
 func xopORb(cpu *CPU) {
 	cpu.AF.Hi |= cpu.BC.Hi
 	cpu.updateFlagLogic8(cpu.AF.Hi, false)
@@ -271,6 +415,30 @@ func xopORl(cpu *CPU) {
 func xopORa(cpu *CPU) {
 	cpu.AF.Hi |= cpu.AF.Hi
 	cpu.updateFlagLogic8(cpu.AF.Hi, false)
+}
+
+func xopORixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.AF.Hi = cpu.orU8(a, x)
+}
+
+func xopORixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.AF.Hi = cpu.orU8(a, x)
+}
+
+func xopORiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.AF.Hi = cpu.orU8(a, x)
+}
+
+func xopORiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
+	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
 func xopCPb(cpu *CPU) {
@@ -312,5 +480,29 @@ func xopCPl(cpu *CPU) {
 func xopCPa(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.AF.Hi
+	cpu.subU8(a, x)
+}
+
+func xopCPixh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX >> 8)
+	cpu.subU8(a, x)
+}
+
+func xopCPixl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IX)
+	cpu.subU8(a, x)
+}
+
+func xopCPiyh(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY >> 8)
+	cpu.subU8(a, x)
+}
+
+func xopCPiyl(cpu *CPU) {
+	a := cpu.AF.Hi
+	x := uint8(cpu.IY)
 	cpu.subU8(a, x)
 }
