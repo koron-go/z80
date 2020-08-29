@@ -784,3 +784,17 @@ func xopSRLHLP(cpu *CPU) {
 	x = cpu.srlU8(x)
 	cpu.Memory.Set(p, x)
 }
+
+func xopBITbHLP(cpu *CPU, b uint8) {
+	p := cpu.HL.U16()
+	x := cpu.Memory.Get(p)
+	x = cpu.bitres8(b, x)
+	cpu.Memory.Set(p, x)
+}
+
+func xopSETbHLP(cpu *CPU, b uint8) {
+	p := cpu.HL.U16()
+	x := cpu.Memory.Get(p)
+	x = cpu.bitset8(b, x)
+	cpu.Memory.Set(p, x)
+}

@@ -916,8 +916,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		return nil
 
 	case 0xcb:
-		buf[1] = f.fetch()
-		switch buf[1] {
+		switch f.fetch() {
 
 		// RLC r / RLC (HL)
 		case 0x00:
@@ -1127,25 +1126,628 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			xopSRLa(cpu)
 			return nil
 
-		case 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5f, 0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6f, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77, 0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7f:
-			opBITbr(cpu, buf[:2])
+		// BIT 0, r|(HL)
+		case 0x40:
+			cpu.bitchk8(0, cpu.BC.Hi)
 			return nil
-		case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x76, 0x7e:
-			opBITbHLP(cpu, buf[:2])
+		case 0x41:
+			cpu.bitchk8(0, cpu.BC.Lo)
+			return nil
+		case 0x42:
+			cpu.bitchk8(0, cpu.DE.Hi)
+			return nil
+		case 0x43:
+			cpu.bitchk8(0, cpu.DE.Lo)
+			return nil
+		case 0x44:
+			cpu.bitchk8(0, cpu.HL.Hi)
+			return nil
+		case 0x45:
+			cpu.bitchk8(0, cpu.HL.Lo)
+			return nil
+		case 0x46:
+			cpu.bitchk8(0, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x47:
+			cpu.bitchk8(0, cpu.AF.Hi)
 			return nil
 
-		case 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f, 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97, 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f, 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf, 0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7, 0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf:
-			opRESbr(cpu, buf[:2])
+		// BIT 1, r|(HL)
+		case 0x48:
+			cpu.bitchk8(1, cpu.BC.Hi)
 			return nil
-		case 0x86, 0x8e, 0x96, 0x9e, 0xa6, 0xae, 0xb6, 0xbe:
-			opRESbHLP(cpu, buf[:2])
+		case 0x49:
+			cpu.bitchk8(1, cpu.BC.Lo)
+			return nil
+		case 0x4a:
+			cpu.bitchk8(1, cpu.DE.Hi)
+			return nil
+		case 0x4b:
+			cpu.bitchk8(1, cpu.DE.Lo)
+			return nil
+		case 0x4c:
+			cpu.bitchk8(1, cpu.HL.Hi)
+			return nil
+		case 0x4d:
+			cpu.bitchk8(1, cpu.HL.Lo)
+			return nil
+		case 0x4e:
+			cpu.bitchk8(1, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x4f:
+			cpu.bitchk8(1, cpu.AF.Hi)
 			return nil
 
-		case 0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xdf, 0xe0, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe7, 0xe8, 0xe9, 0xea, 0xeb, 0xec, 0xed, 0xef, 0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xff:
-			opSETbr(cpu, buf[:2])
+		// BIT 2, r|(HL)
+		case 0x50:
+			cpu.bitchk8(2, cpu.BC.Hi)
 			return nil
-		case 0xc6, 0xce, 0xd6, 0xde, 0xe6, 0xee, 0xf6, 0xfe:
-			opSETbHLP(cpu, buf[:2])
+		case 0x51:
+			cpu.bitchk8(2, cpu.BC.Lo)
+			return nil
+		case 0x52:
+			cpu.bitchk8(2, cpu.DE.Hi)
+			return nil
+		case 0x53:
+			cpu.bitchk8(2, cpu.DE.Lo)
+			return nil
+		case 0x54:
+			cpu.bitchk8(2, cpu.HL.Hi)
+			return nil
+		case 0x55:
+			cpu.bitchk8(2, cpu.HL.Lo)
+			return nil
+		case 0x56:
+			cpu.bitchk8(2, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x57:
+			cpu.bitchk8(2, cpu.AF.Hi)
+			return nil
+
+		// BIT 3, r|(HL)
+		case 0x58:
+			cpu.bitchk8(3, cpu.BC.Hi)
+			return nil
+		case 0x59:
+			cpu.bitchk8(3, cpu.BC.Lo)
+			return nil
+		case 0x5a:
+			cpu.bitchk8(3, cpu.DE.Hi)
+			return nil
+		case 0x5b:
+			cpu.bitchk8(3, cpu.DE.Lo)
+			return nil
+		case 0x5c:
+			cpu.bitchk8(3, cpu.HL.Hi)
+			return nil
+		case 0x5d:
+			cpu.bitchk8(3, cpu.HL.Lo)
+			return nil
+		case 0x5e:
+			cpu.bitchk8(3, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x5f:
+			cpu.bitchk8(3, cpu.AF.Hi)
+			return nil
+
+		// BIT 4, r|(HL)
+		case 0x60:
+			cpu.bitchk8(4, cpu.BC.Hi)
+			return nil
+		case 0x61:
+			cpu.bitchk8(4, cpu.BC.Lo)
+			return nil
+		case 0x62:
+			cpu.bitchk8(4, cpu.DE.Hi)
+			return nil
+		case 0x63:
+			cpu.bitchk8(4, cpu.DE.Lo)
+			return nil
+		case 0x64:
+			cpu.bitchk8(4, cpu.HL.Hi)
+			return nil
+		case 0x65:
+			cpu.bitchk8(4, cpu.HL.Lo)
+			return nil
+		case 0x66:
+			cpu.bitchk8(4, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x67:
+			cpu.bitchk8(4, cpu.AF.Hi)
+			return nil
+
+		// BIT 5, r|(HL)
+		case 0x68:
+			cpu.bitchk8(5, cpu.BC.Hi)
+			return nil
+		case 0x69:
+			cpu.bitchk8(5, cpu.BC.Lo)
+			return nil
+		case 0x6a:
+			cpu.bitchk8(5, cpu.DE.Hi)
+			return nil
+		case 0x6b:
+			cpu.bitchk8(5, cpu.DE.Lo)
+			return nil
+		case 0x6c:
+			cpu.bitchk8(5, cpu.HL.Hi)
+			return nil
+		case 0x6d:
+			cpu.bitchk8(5, cpu.HL.Lo)
+			return nil
+		case 0x6e:
+			cpu.bitchk8(5, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x6f:
+			cpu.bitchk8(5, cpu.AF.Hi)
+			return nil
+
+		// BIT 6, r|(HL)
+		case 0x70:
+			cpu.bitchk8(6, cpu.BC.Hi)
+			return nil
+		case 0x71:
+			cpu.bitchk8(6, cpu.BC.Lo)
+			return nil
+		case 0x72:
+			cpu.bitchk8(6, cpu.DE.Hi)
+			return nil
+		case 0x73:
+			cpu.bitchk8(6, cpu.DE.Lo)
+			return nil
+		case 0x74:
+			cpu.bitchk8(6, cpu.HL.Hi)
+			return nil
+		case 0x75:
+			cpu.bitchk8(6, cpu.HL.Lo)
+			return nil
+		case 0x76:
+			cpu.bitchk8(6, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x77:
+			cpu.bitchk8(6, cpu.AF.Hi)
+			return nil
+
+		// BIT 7, r|(HL)
+		case 0x78:
+			cpu.bitchk8(7, cpu.BC.Hi)
+			return nil
+		case 0x79:
+			cpu.bitchk8(7, cpu.BC.Lo)
+			return nil
+		case 0x7a:
+			cpu.bitchk8(7, cpu.DE.Hi)
+			return nil
+		case 0x7b:
+			cpu.bitchk8(7, cpu.DE.Lo)
+			return nil
+		case 0x7c:
+			cpu.bitchk8(7, cpu.HL.Hi)
+			return nil
+		case 0x7d:
+			cpu.bitchk8(7, cpu.HL.Lo)
+			return nil
+		case 0x7e:
+			cpu.bitchk8(7, cpu.Memory.Get(cpu.HL.U16()))
+			return nil
+		case 0x7f:
+			cpu.bitchk8(7, cpu.AF.Hi)
+			return nil
+
+		// RES 0, r|(HL)
+		case 0x80:
+			cpu.BC.Hi = cpu.bitres8(0, cpu.BC.Hi)
+			return nil
+		case 0x81:
+			cpu.BC.Lo = cpu.bitres8(0, cpu.BC.Lo)
+			return nil
+		case 0x82:
+			cpu.DE.Hi = cpu.bitres8(0, cpu.DE.Hi)
+			return nil
+		case 0x83:
+			cpu.DE.Lo = cpu.bitres8(0, cpu.DE.Lo)
+			return nil
+		case 0x84:
+			cpu.HL.Hi = cpu.bitres8(0, cpu.HL.Hi)
+			return nil
+		case 0x85:
+			cpu.HL.Lo = cpu.bitres8(0, cpu.HL.Lo)
+			return nil
+		case 0x86:
+			xopBITbHLP(cpu, 0)
+			return nil
+		case 0x87:
+			cpu.AF.Hi = cpu.bitres8(0, cpu.AF.Hi)
+			return nil
+
+		// RES 1, r|(HL)
+		case 0x88:
+			cpu.BC.Hi = cpu.bitres8(1, cpu.BC.Hi)
+			return nil
+		case 0x89:
+			cpu.BC.Lo = cpu.bitres8(1, cpu.BC.Lo)
+			return nil
+		case 0x8a:
+			cpu.DE.Hi = cpu.bitres8(1, cpu.DE.Hi)
+			return nil
+		case 0x8b:
+			cpu.DE.Lo = cpu.bitres8(1, cpu.DE.Lo)
+			return nil
+		case 0x8c:
+			cpu.HL.Hi = cpu.bitres8(1, cpu.HL.Hi)
+			return nil
+		case 0x8d:
+			cpu.HL.Lo = cpu.bitres8(1, cpu.HL.Lo)
+			return nil
+		case 0x8e:
+			xopBITbHLP(cpu, 1)
+			return nil
+		case 0x8f:
+			cpu.AF.Hi = cpu.bitres8(1, cpu.AF.Hi)
+			return nil
+
+		// RES 2, r|(HL)
+		case 0x90:
+			cpu.BC.Hi = cpu.bitres8(2, cpu.BC.Hi)
+			return nil
+		case 0x91:
+			cpu.BC.Lo = cpu.bitres8(2, cpu.BC.Lo)
+			return nil
+		case 0x92:
+			cpu.DE.Hi = cpu.bitres8(2, cpu.DE.Hi)
+			return nil
+		case 0x93:
+			cpu.DE.Lo = cpu.bitres8(2, cpu.DE.Lo)
+			return nil
+		case 0x94:
+			cpu.HL.Hi = cpu.bitres8(2, cpu.HL.Hi)
+			return nil
+		case 0x95:
+			cpu.HL.Lo = cpu.bitres8(2, cpu.HL.Lo)
+			return nil
+		case 0x96:
+			xopBITbHLP(cpu, 2)
+			return nil
+		case 0x97:
+			cpu.AF.Hi = cpu.bitres8(2, cpu.AF.Hi)
+			return nil
+
+		// RES 3, r|(HL)
+		case 0x98:
+			cpu.BC.Hi = cpu.bitres8(3, cpu.BC.Hi)
+			return nil
+		case 0x99:
+			cpu.BC.Lo = cpu.bitres8(3, cpu.BC.Lo)
+			return nil
+		case 0x9a:
+			cpu.DE.Hi = cpu.bitres8(3, cpu.DE.Hi)
+			return nil
+		case 0x9b:
+			cpu.DE.Lo = cpu.bitres8(3, cpu.DE.Lo)
+			return nil
+		case 0x9c:
+			cpu.HL.Hi = cpu.bitres8(3, cpu.HL.Hi)
+			return nil
+		case 0x9d:
+			cpu.HL.Lo = cpu.bitres8(3, cpu.HL.Lo)
+			return nil
+		case 0x9e:
+			xopBITbHLP(cpu, 3)
+			return nil
+		case 0x9f:
+			cpu.AF.Hi = cpu.bitres8(3, cpu.AF.Hi)
+			return nil
+
+		// RES 4, r|(HL)
+		case 0xa0:
+			cpu.BC.Hi = cpu.bitres8(4, cpu.BC.Hi)
+			return nil
+		case 0xa1:
+			cpu.BC.Lo = cpu.bitres8(4, cpu.BC.Lo)
+			return nil
+		case 0xa2:
+			cpu.DE.Hi = cpu.bitres8(4, cpu.DE.Hi)
+			return nil
+		case 0xa3:
+			cpu.DE.Lo = cpu.bitres8(4, cpu.DE.Lo)
+			return nil
+		case 0xa4:
+			cpu.HL.Hi = cpu.bitres8(4, cpu.HL.Hi)
+			return nil
+		case 0xa5:
+			cpu.HL.Lo = cpu.bitres8(4, cpu.HL.Lo)
+			return nil
+		case 0xa6:
+			xopBITbHLP(cpu, 4)
+			return nil
+		case 0xa7:
+			cpu.AF.Hi = cpu.bitres8(4, cpu.AF.Hi)
+			return nil
+
+		// RES 5, r|(HL)
+		case 0xa8:
+			cpu.BC.Hi = cpu.bitres8(5, cpu.BC.Hi)
+			return nil
+		case 0xa9:
+			cpu.BC.Lo = cpu.bitres8(5, cpu.BC.Lo)
+			return nil
+		case 0xaa:
+			cpu.DE.Hi = cpu.bitres8(5, cpu.DE.Hi)
+			return nil
+		case 0xab:
+			cpu.DE.Lo = cpu.bitres8(5, cpu.DE.Lo)
+			return nil
+		case 0xac:
+			cpu.HL.Hi = cpu.bitres8(5, cpu.HL.Hi)
+			return nil
+		case 0xad:
+			cpu.HL.Lo = cpu.bitres8(5, cpu.HL.Lo)
+			return nil
+		case 0xae:
+			xopBITbHLP(cpu, 5)
+			return nil
+		case 0xaf:
+			cpu.AF.Hi = cpu.bitres8(5, cpu.AF.Hi)
+			return nil
+
+		// RES 6, r|(HL)
+		case 0xb0:
+			cpu.BC.Hi = cpu.bitres8(6, cpu.BC.Hi)
+			return nil
+		case 0xb1:
+			cpu.BC.Lo = cpu.bitres8(6, cpu.BC.Lo)
+			return nil
+		case 0xb2:
+			cpu.DE.Hi = cpu.bitres8(6, cpu.DE.Hi)
+			return nil
+		case 0xb3:
+			cpu.DE.Lo = cpu.bitres8(6, cpu.DE.Lo)
+			return nil
+		case 0xb4:
+			cpu.HL.Hi = cpu.bitres8(6, cpu.HL.Hi)
+			return nil
+		case 0xb5:
+			cpu.HL.Lo = cpu.bitres8(6, cpu.HL.Lo)
+			return nil
+		case 0xb6:
+			xopBITbHLP(cpu, 6)
+			return nil
+		case 0xb7:
+			cpu.AF.Hi = cpu.bitres8(6, cpu.AF.Hi)
+			return nil
+
+		// RES 7, r|(HL)
+		case 0xb8:
+			cpu.BC.Hi = cpu.bitres8(7, cpu.BC.Hi)
+			return nil
+		case 0xb9:
+			cpu.BC.Lo = cpu.bitres8(7, cpu.BC.Lo)
+			return nil
+		case 0xba:
+			cpu.DE.Hi = cpu.bitres8(7, cpu.DE.Hi)
+			return nil
+		case 0xbb:
+			cpu.DE.Lo = cpu.bitres8(7, cpu.DE.Lo)
+			return nil
+		case 0xbc:
+			cpu.HL.Hi = cpu.bitres8(7, cpu.HL.Hi)
+			return nil
+		case 0xbd:
+			cpu.HL.Lo = cpu.bitres8(7, cpu.HL.Lo)
+			return nil
+		case 0xbe:
+			xopBITbHLP(cpu, 7)
+			return nil
+		case 0xbf:
+			cpu.AF.Hi = cpu.bitres8(7, cpu.AF.Hi)
+			return nil
+
+		// SET 0, r|(HL)
+		case 0xc0:
+			cpu.BC.Hi = cpu.bitset8(0, cpu.BC.Hi)
+			return nil
+		case 0xc1:
+			cpu.BC.Lo = cpu.bitset8(0, cpu.BC.Lo)
+			return nil
+		case 0xc2:
+			cpu.DE.Hi = cpu.bitset8(0, cpu.DE.Hi)
+			return nil
+		case 0xc3:
+			cpu.DE.Lo = cpu.bitset8(0, cpu.DE.Lo)
+			return nil
+		case 0xc4:
+			cpu.HL.Hi = cpu.bitset8(0, cpu.HL.Hi)
+			return nil
+		case 0xc5:
+			cpu.HL.Lo = cpu.bitset8(0, cpu.HL.Lo)
+			return nil
+		case 0xc6:
+			xopSETbHLP(cpu, 0)
+			return nil
+		case 0xc7:
+			cpu.AF.Hi = cpu.bitset8(0, cpu.AF.Hi)
+			return nil
+
+		// SET 1, r|(HL)
+		case 0xc8:
+			cpu.BC.Hi = cpu.bitset8(1, cpu.BC.Hi)
+			return nil
+		case 0xc9:
+			cpu.BC.Lo = cpu.bitset8(1, cpu.BC.Lo)
+			return nil
+		case 0xca:
+			cpu.DE.Hi = cpu.bitset8(1, cpu.DE.Hi)
+			return nil
+		case 0xcb:
+			cpu.DE.Lo = cpu.bitset8(1, cpu.DE.Lo)
+			return nil
+		case 0xcc:
+			cpu.HL.Hi = cpu.bitset8(1, cpu.HL.Hi)
+			return nil
+		case 0xcd:
+			cpu.HL.Lo = cpu.bitset8(1, cpu.HL.Lo)
+			return nil
+		case 0xce:
+			xopSETbHLP(cpu, 1)
+			return nil
+		case 0xcf:
+			cpu.AF.Hi = cpu.bitset8(1, cpu.AF.Hi)
+			return nil
+
+		// SET 2, r|(HL)
+		case 0xd0:
+			cpu.BC.Hi = cpu.bitset8(2, cpu.BC.Hi)
+			return nil
+		case 0xd1:
+			cpu.BC.Lo = cpu.bitset8(2, cpu.BC.Lo)
+			return nil
+		case 0xd2:
+			cpu.DE.Hi = cpu.bitset8(2, cpu.DE.Hi)
+			return nil
+		case 0xd3:
+			cpu.DE.Lo = cpu.bitset8(2, cpu.DE.Lo)
+			return nil
+		case 0xd4:
+			cpu.HL.Hi = cpu.bitset8(2, cpu.HL.Hi)
+			return nil
+		case 0xd5:
+			cpu.HL.Lo = cpu.bitset8(2, cpu.HL.Lo)
+			return nil
+		case 0xd6:
+			xopSETbHLP(cpu, 2)
+			return nil
+		case 0xd7:
+			cpu.AF.Hi = cpu.bitset8(2, cpu.AF.Hi)
+			return nil
+
+		// SET 3, r|(HL)
+		case 0xd8:
+			cpu.BC.Hi = cpu.bitset8(3, cpu.BC.Hi)
+			return nil
+		case 0xd9:
+			cpu.BC.Lo = cpu.bitset8(3, cpu.BC.Lo)
+			return nil
+		case 0xda:
+			cpu.DE.Hi = cpu.bitset8(3, cpu.DE.Hi)
+			return nil
+		case 0xdb:
+			cpu.DE.Lo = cpu.bitset8(3, cpu.DE.Lo)
+			return nil
+		case 0xdc:
+			cpu.HL.Hi = cpu.bitset8(3, cpu.HL.Hi)
+			return nil
+		case 0xdd:
+			cpu.HL.Lo = cpu.bitset8(3, cpu.HL.Lo)
+			return nil
+		case 0xde:
+			xopSETbHLP(cpu, 3)
+			return nil
+		case 0xdf:
+			cpu.AF.Hi = cpu.bitset8(3, cpu.AF.Hi)
+			return nil
+
+		// SET 4, r|(HL)
+		case 0xe0:
+			cpu.BC.Hi = cpu.bitset8(4, cpu.BC.Hi)
+			return nil
+		case 0xe1:
+			cpu.BC.Lo = cpu.bitset8(4, cpu.BC.Lo)
+			return nil
+		case 0xe2:
+			cpu.DE.Hi = cpu.bitset8(4, cpu.DE.Hi)
+			return nil
+		case 0xe3:
+			cpu.DE.Lo = cpu.bitset8(4, cpu.DE.Lo)
+			return nil
+		case 0xe4:
+			cpu.HL.Hi = cpu.bitset8(4, cpu.HL.Hi)
+			return nil
+		case 0xe5:
+			cpu.HL.Lo = cpu.bitset8(4, cpu.HL.Lo)
+			return nil
+		case 0xe6:
+			xopSETbHLP(cpu, 4)
+			return nil
+		case 0xe7:
+			cpu.AF.Hi = cpu.bitset8(4, cpu.AF.Hi)
+			return nil
+
+		// SET 5, r|(HL)
+		case 0xe8:
+			cpu.BC.Hi = cpu.bitset8(5, cpu.BC.Hi)
+			return nil
+		case 0xe9:
+			cpu.BC.Lo = cpu.bitset8(5, cpu.BC.Lo)
+			return nil
+		case 0xea:
+			cpu.DE.Hi = cpu.bitset8(5, cpu.DE.Hi)
+			return nil
+		case 0xeb:
+			cpu.DE.Lo = cpu.bitset8(5, cpu.DE.Lo)
+			return nil
+		case 0xec:
+			cpu.HL.Hi = cpu.bitset8(5, cpu.HL.Hi)
+			return nil
+		case 0xed:
+			cpu.HL.Lo = cpu.bitset8(5, cpu.HL.Lo)
+			return nil
+		case 0xee:
+			xopSETbHLP(cpu, 5)
+			return nil
+		case 0xef:
+			cpu.AF.Hi = cpu.bitset8(5, cpu.AF.Hi)
+			return nil
+
+		// SET 6, r|(HL)
+		case 0xf0:
+			cpu.BC.Hi = cpu.bitset8(6, cpu.BC.Hi)
+			return nil
+		case 0xf1:
+			cpu.BC.Lo = cpu.bitset8(6, cpu.BC.Lo)
+			return nil
+		case 0xf2:
+			cpu.DE.Hi = cpu.bitset8(6, cpu.DE.Hi)
+			return nil
+		case 0xf3:
+			cpu.DE.Lo = cpu.bitset8(6, cpu.DE.Lo)
+			return nil
+		case 0xf4:
+			cpu.HL.Hi = cpu.bitset8(6, cpu.HL.Hi)
+			return nil
+		case 0xf5:
+			cpu.HL.Lo = cpu.bitset8(6, cpu.HL.Lo)
+			return nil
+		case 0xf6:
+			xopSETbHLP(cpu, 6)
+			return nil
+		case 0xf7:
+			cpu.AF.Hi = cpu.bitset8(6, cpu.AF.Hi)
+			return nil
+
+		// SET 7, r|(HL)
+		case 0xf8:
+			cpu.BC.Hi = cpu.bitset8(7, cpu.BC.Hi)
+			return nil
+		case 0xf9:
+			cpu.BC.Lo = cpu.bitset8(7, cpu.BC.Lo)
+			return nil
+		case 0xfa:
+			cpu.DE.Hi = cpu.bitset8(7, cpu.DE.Hi)
+			return nil
+		case 0xfb:
+			cpu.DE.Lo = cpu.bitset8(7, cpu.DE.Lo)
+			return nil
+		case 0xfc:
+			cpu.HL.Hi = cpu.bitset8(7, cpu.HL.Hi)
+			return nil
+		case 0xfd:
+			cpu.HL.Lo = cpu.bitset8(7, cpu.HL.Lo)
+			return nil
+		case 0xfe:
+			xopSETbHLP(cpu, 7)
+			return nil
+		case 0xff:
+			cpu.AF.Hi = cpu.bitset8(7, cpu.AF.Hi)
 			return nil
 
 		default:
