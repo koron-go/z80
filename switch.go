@@ -1765,8 +1765,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		}
 
 	case 0xdd:
-		buf[1] = f.fetch()
-		switch buf[1] {
+		switch f.fetch() {
 
 		// ADD IX, pp
 		case 0x09:
@@ -2305,42 +2304,119 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return nil
 
 		case 0xcb:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			switch buf[3] {
+			d := f.fetch()
+			switch f.fetch() {
+
 			case 0x06:
-				opRLCIXdP(cpu, buf[:4])
+				oopRLCIXdP(cpu, d)
 				return nil
+
 			case 0x0e:
-				opRRCIXdP(cpu, buf[:4])
+				oopRRCIXdP(cpu, d)
 				return nil
+
 			case 0x16:
-				opRLIXdP(cpu, buf[:4])
+				oopRLIXdP(cpu, d)
 				return nil
+
 			case 0x1e:
-				opRRIXdP(cpu, buf[:4])
+				oopRRIXdP(cpu, d)
 				return nil
+
 			case 0x26:
-				opSLAIXdP(cpu, buf[:4])
+				oopSLAIXdP(cpu, d)
 				return nil
+
 			case 0x2e:
-				opSRAIXdP(cpu, buf[:4])
+				oopSRAIXdP(cpu, d)
 				return nil
+
 			case 0x36:
-				opSL1IXdP(cpu, buf[:4])
+				oopSL1IXdP(cpu, d)
 				return nil
+
 			case 0x3e:
-				opSRLIXdP(cpu, buf[:4])
+				oopSRLIXdP(cpu, d)
 				return nil
-			case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x76, 0x7e:
-				opBITbIXdP(cpu, buf[:4])
+
+			// BIT b, (IX+d)
+			case 0x46:
+				xopBITbIXdP(cpu, 0, d)
 				return nil
-			case 0x86, 0x8e, 0x96, 0x9e, 0xa6, 0xae, 0xb6, 0xbe:
-				opRESbIXdP(cpu, buf[:4])
+			case 0x4e:
+				xopBITbIXdP(cpu, 1, d)
 				return nil
-			case 0xc6, 0xce, 0xd6, 0xde, 0xe6, 0xee, 0xf6, 0xfe:
-				opSETbIXdP(cpu, buf[:4])
+			case 0x56:
+				xopBITbIXdP(cpu, 2, d)
 				return nil
+			case 0x5e:
+				xopBITbIXdP(cpu, 3, d)
+				return nil
+			case 0x66:
+				xopBITbIXdP(cpu, 4, d)
+				return nil
+			case 0x6e:
+				xopBITbIXdP(cpu, 5, d)
+				return nil
+			case 0x76:
+				xopBITbIXdP(cpu, 6, d)
+				return nil
+			case 0x7e:
+				xopBITbIXdP(cpu, 7, d)
+				return nil
+
+			// RES b, (IX+d)
+			case 0x86:
+				xopRESbIXdP(cpu, 0, d)
+				return nil
+			case 0x8e:
+				xopRESbIXdP(cpu, 1, d)
+				return nil
+			case 0x96:
+				xopRESbIXdP(cpu, 2, d)
+				return nil
+			case 0x9e:
+				xopRESbIXdP(cpu, 3, d)
+				return nil
+			case 0xa6:
+				xopRESbIXdP(cpu, 4, d)
+				return nil
+			case 0xae:
+				xopRESbIXdP(cpu, 5, d)
+				return nil
+			case 0xb6:
+				xopRESbIXdP(cpu, 6, d)
+				return nil
+			case 0xbe:
+				xopRESbIXdP(cpu, 7, d)
+				return nil
+
+			// SET b, (IX+d)
+			case 0xc6:
+				xopSETbIXdP(cpu, 0, d)
+				return nil
+			case 0xce:
+				xopSETbIXdP(cpu, 1, d)
+				return nil
+			case 0xd6:
+				xopSETbIXdP(cpu, 2, d)
+				return nil
+			case 0xde:
+				xopSETbIXdP(cpu, 3, d)
+				return nil
+			case 0xe6:
+				xopSETbIXdP(cpu, 4, d)
+				return nil
+			case 0xee:
+				xopSETbIXdP(cpu, 5, d)
+				return nil
+			case 0xf6:
+				xopSETbIXdP(cpu, 6, d)
+				return nil
+			case 0xfe:
+				xopSETbIXdP(cpu, 7, d)
+				return nil
+
 			default:
 				return ErrInvalidCodes
 			}
@@ -2466,8 +2542,7 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		}
 
 	case 0xfd:
-		buf[1] = f.fetch()
-		switch buf[1] {
+		switch f.fetch() {
 
 		// ADD IY, pp
 		case 0x09:
@@ -3006,42 +3081,119 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return nil
 
 		case 0xcb:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			switch buf[3] {
+			d := f.fetch()
+			switch f.fetch() {
+
 			case 0x06:
-				opRLCIYdP(cpu, buf[:4])
+				oopRLCIYdP(cpu, d)
 				return nil
+
 			case 0x0e:
-				opRRCIYdP(cpu, buf[:4])
+				oopRRCIYdP(cpu, d)
 				return nil
+
 			case 0x16:
-				opRLIYdP(cpu, buf[:4])
+				oopRLIYdP(cpu, d)
 				return nil
+
 			case 0x1e:
-				opRRIYdP(cpu, buf[:4])
+				oopRRIYdP(cpu, d)
 				return nil
+
 			case 0x26:
-				opSLAIYdP(cpu, buf[:4])
+				oopSLAIYdP(cpu, d)
 				return nil
+
 			case 0x2e:
-				opSRAIYdP(cpu, buf[:4])
+				oopSRAIYdP(cpu, d)
 				return nil
+
 			case 0x36:
-				opSL1IYdP(cpu, buf[:4])
+				oopSL1IYdP(cpu, d)
 				return nil
+
 			case 0x3e:
-				opSRLIYdP(cpu, buf[:4])
+				oopSRLIYdP(cpu, d)
 				return nil
-			case 0x46, 0x4e, 0x56, 0x5e, 0x66, 0x6e, 0x76, 0x7e:
-				opBITbIYdP(cpu, buf[:4])
+
+			// BIT b, (IY+d)
+			case 0x46:
+				xopBITbIYdP(cpu, 0, d)
 				return nil
-			case 0x86, 0x8e, 0x96, 0x9e, 0xa6, 0xae, 0xb6, 0xbe:
-				opRESbIYdP(cpu, buf[:4])
+			case 0x4e:
+				xopBITbIYdP(cpu, 1, d)
 				return nil
-			case 0xc6, 0xce, 0xd6, 0xde, 0xe6, 0xee, 0xf6, 0xfe:
-				opSETbIYdP(cpu, buf[:4])
+			case 0x56:
+				xopBITbIYdP(cpu, 2, d)
 				return nil
+			case 0x5e:
+				xopBITbIYdP(cpu, 3, d)
+				return nil
+			case 0x66:
+				xopBITbIYdP(cpu, 4, d)
+				return nil
+			case 0x6e:
+				xopBITbIYdP(cpu, 5, d)
+				return nil
+			case 0x76:
+				xopBITbIYdP(cpu, 6, d)
+				return nil
+			case 0x7e:
+				xopBITbIYdP(cpu, 7, d)
+				return nil
+
+			// RES b, (IY+d)
+			case 0x86:
+				xopRESbIYdP(cpu, 0, d)
+				return nil
+			case 0x8e:
+				xopRESbIYdP(cpu, 1, d)
+				return nil
+			case 0x96:
+				xopRESbIYdP(cpu, 2, d)
+				return nil
+			case 0x9e:
+				xopRESbIYdP(cpu, 3, d)
+				return nil
+			case 0xa6:
+				xopRESbIYdP(cpu, 4, d)
+				return nil
+			case 0xae:
+				xopRESbIYdP(cpu, 5, d)
+				return nil
+			case 0xb6:
+				xopRESbIYdP(cpu, 6, d)
+				return nil
+			case 0xbe:
+				xopRESbIYdP(cpu, 7, d)
+				return nil
+
+			// SET b, (IY+d)
+			case 0xc6:
+				xopSETbIYdP(cpu, 0, d)
+				return nil
+			case 0xce:
+				xopSETbIYdP(cpu, 1, d)
+				return nil
+			case 0xd6:
+				xopSETbIYdP(cpu, 2, d)
+				return nil
+			case 0xde:
+				xopSETbIYdP(cpu, 3, d)
+				return nil
+			case 0xe6:
+				xopSETbIYdP(cpu, 4, d)
+				return nil
+			case 0xee:
+				xopSETbIYdP(cpu, 5, d)
+				return nil
+			case 0xf6:
+				xopSETbIYdP(cpu, 6, d)
+				return nil
+			case 0xfe:
+				xopSETbIYdP(cpu, 7, d)
+				return nil
+
 			default:
 				return ErrInvalidCodes
 			}

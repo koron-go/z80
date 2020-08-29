@@ -142,14 +142,14 @@ func oopLDIYLn(cpu *CPU, n uint8) {
 	cpu.IY = uint16(n) | cpu.IY&0xff00
 }
 
-func opSL1IXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopSL1IXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	v := cpu.sl1U8(cpu.Memory.Get(p))
 	cpu.Memory.Set(p, v)
 }
 
-func opSL1IYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopSL1IYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	v := cpu.sl1U8(cpu.Memory.Get(p))
 	cpu.Memory.Set(p, v)
 }

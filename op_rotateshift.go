@@ -48,13 +48,13 @@ func oopRRA(cpu *CPU) {
 		Put(C, a&0x01 != 0))
 }
 
-func opRLCIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopRLCIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
 }
 
-func opRLCIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopRLCIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.rlcU8(cpu.Memory.Get(p)))
 }
 
@@ -68,63 +68,63 @@ func opRLHLP(cpu *CPU, codes []uint8) {
 	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
 }
 
-func opRLIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopRLIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
 }
 
-func opRLIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopRLIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.rlU8(cpu.Memory.Get(p)))
 }
 
-func opRRCIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopRRCIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
 }
 
-func opRRCIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopRRCIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.rrcU8(cpu.Memory.Get(p)))
 }
 
-func opRRIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopRRIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
 }
 
-func opRRIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopRRIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.rrU8(cpu.Memory.Get(p)))
 }
 
-func opSLAIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopSLAIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
 }
 
-func opSLAIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopSLAIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.slaU8(cpu.Memory.Get(p)))
 }
 
-func opSRAIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopSRAIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
 }
 
-func opSRAIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopSRAIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.sraU8(cpu.Memory.Get(p)))
 }
 
-func opSRLIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopSRLIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
 }
 
-func opSRLIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopSRLIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
 }
 
