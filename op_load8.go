@@ -57,7 +57,7 @@ func oopLDnnPA(cpu *CPU, l, h uint8) {
 	cpu.Memory.Set(p, cpu.AF.Hi)
 }
 
-func opLDAI(cpu *CPU, codes []uint8) {
+func oopLDAI(cpu *CPU) {
 	d := cpu.IR.Hi
 	cpu.AF.Hi = d
 	// update F by d
@@ -79,7 +79,7 @@ func opLDAI(cpu *CPU, codes []uint8) {
 		Keep(C))
 }
 
-func opLDAR(cpu *CPU, codes []uint8) {
+func oopLDAR(cpu *CPU) {
 	d := cpu.IR.Lo
 	cpu.AF.Hi = d
 	// update F by d
@@ -100,10 +100,10 @@ func opLDAR(cpu *CPU, codes []uint8) {
 		Keep(C))
 }
 
-func opLDIA(cpu *CPU, codes []uint8) {
+func oopLDIA(cpu *CPU) {
 	cpu.IR.Hi = cpu.AF.Hi
 }
 
-func opLDRA(cpu *CPU, codes []uint8) {
+func oopLDRA(cpu *CPU) {
 	cpu.IR.Lo = cpu.AF.Hi
 }

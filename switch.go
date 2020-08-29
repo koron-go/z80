@@ -1,7 +1,6 @@
 package z80
 
 func decodeExec(cpu *CPU, f fetcher) error {
-	buf := cpu.decodeBuf[:4]
 	switch f.fetch() {
 	case 0x00:
 		oopNOP(cpu)
@@ -2425,24 +2424,93 @@ func decodeExec(cpu *CPU, f fetcher) error {
 		}
 
 	case 0xed:
-		buf[1] = f.fetch()
-		switch buf[1] {
-		case 0x40, 0x48, 0x50, 0x58, 0x60, 0x68, 0x78:
-			opINrCP(cpu, buf[:2])
+		switch f.fetch() {
+
+		// IN r, (C)
+		// FIXME: IN r[6], (C) to apply flags only.
+		case 0x40:
+			xopINbCP(cpu)
 			return nil
-		case 0x41, 0x49, 0x51, 0x59, 0x61, 0x69, 0x79:
-			opOUTCPr(cpu, buf[:2])
+		case 0x48:
+			xopINcCP(cpu)
 			return nil
-		case 0x42, 0x52, 0x62, 0x72:
-			opSBCHLss(cpu, buf[:2])
+		case 0x50:
+			xopINdCP(cpu)
 			return nil
-		case 0x43, 0x53, 0x63, 0x73:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDnnPdd(cpu, buf[:4])
+		case 0x58:
+			xopINeCP(cpu)
 			return nil
+		case 0x60:
+			xopINhCP(cpu)
+			return nil
+		case 0x68:
+			xopINlCP(cpu)
+			return nil
+		case 0x78:
+			xopINaCP(cpu)
+			return nil
+
+		// OUT (C), r
+		case 0x41:
+			xopOUTCPb(cpu)
+			return nil
+		case 0x49:
+			xopOUTCPc(cpu)
+			return nil
+		case 0x51:
+			xopOUTCPd(cpu)
+			return nil
+		case 0x59:
+			xopOUTCPe(cpu)
+			return nil
+		case 0x61:
+			xopOUTCPh(cpu)
+			return nil
+		case 0x69:
+			xopOUTCPl(cpu)
+			return nil
+		case 0x79:
+			xopOUTCPa(cpu)
+			return nil
+
+		// SBC HL, ss
+		case 0x42:
+			xopSBCHLbc(cpu)
+			return nil
+		case 0x52:
+			xopSBCHLde(cpu)
+			return nil
+		case 0x62:
+			xopSBCHLhl(cpu)
+			return nil
+		case 0x72:
+			xopSBCHLsp(cpu)
+			return nil
+
+		// LD (nn), dd
+		case 0x43:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDnnPbc(cpu, l, h)
+			return nil
+		case 0x53:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDnnPde(cpu, l, h)
+			return nil
+		case 0x63:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDnnPhl(cpu, l, h)
+			return nil
+		case 0x73:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDnnPsp(cpu, l, h)
+			return nil
+
 		case 0x44:
-			opNEG(cpu, buf[:2])
+			oopNEG(cpu)
 			return nil
 
 		case 0x45:
@@ -2450,18 +2518,47 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return nil
 
 		case 0x46:
-			opIM0(cpu, buf[:2])
+			oopIM0(cpu)
 			return nil
+
 		case 0x47:
-			opLDIA(cpu, buf[:2])
+			oopLDIA(cpu)
 			return nil
-		case 0x4a, 0x5a, 0x6a, 0x7a:
-			opADCHLss(cpu, buf[:2])
+
+		// ADC HL, ss
+		case 0x4a:
+			xopADCHLbc(cpu)
 			return nil
-		case 0x4b, 0x5b, 0x6b, 0x7b:
-			buf[2] = f.fetch()
-			buf[3] = f.fetch()
-			opLDddnnP(cpu, buf[:4])
+		case 0x5a:
+			xopADCHLde(cpu)
+			return nil
+		case 0x6a:
+			xopADCHLhl(cpu)
+			return nil
+		case 0x7a:
+			xopADCHLsp(cpu)
+			return nil
+
+		// LD dd, (nn)
+		case 0x4b:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDbcnnP(cpu, l, h)
+			return nil
+		case 0x5b:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDdennP(cpu, l, h)
+			return nil
+		case 0x6b:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDhlnnP(cpu, l, h)
+			return nil
+		case 0x7b:
+			l := f.fetch()
+			h := f.fetch()
+			xopLDspnnP(cpu, l, h)
 			return nil
 
 		case 0x4d:
@@ -2469,74 +2566,97 @@ func decodeExec(cpu *CPU, f fetcher) error {
 			return nil
 
 		case 0x4f:
-			opLDRA(cpu, buf[:2])
+			oopLDRA(cpu)
 			return nil
+
 		case 0x56:
-			opIM1(cpu, buf[:2])
+			oopIM1(cpu)
 			return nil
+
 		case 0x57:
-			opLDAI(cpu, buf[:2])
+			oopLDAI(cpu)
 			return nil
+
 		case 0x5e:
-			opIM2(cpu, buf[:2])
+			oopIM2(cpu)
 			return nil
+
 		case 0x5f:
-			opLDAR(cpu, buf[:2])
+			oopLDAR(cpu)
 			return nil
+
 		case 0x67:
-			opRRD(cpu, buf[:2])
+			oopRRD(cpu)
 			return nil
+
 		case 0x6f:
-			opRLD(cpu, buf[:2])
+			oopRLD(cpu)
 			return nil
+
 		case 0xa0:
-			opLDI(cpu, buf[:2])
+			oopLDI(cpu)
 			return nil
+
 		case 0xa1:
-			opCPI(cpu, buf[:2])
+			oopCPI(cpu)
 			return nil
+
 		case 0xa2:
-			opINI(cpu, buf[:2])
+			oopINI(cpu)
 			return nil
+
 		case 0xa3:
-			opOUTI(cpu, buf[:2])
+			oopOUTI(cpu)
 			return nil
+
 		case 0xa8:
-			opLDD(cpu, buf[:2])
+			oopLDD(cpu)
 			return nil
+
 		case 0xa9:
-			opCPD(cpu, buf[:2])
+			oopCPD(cpu)
 			return nil
+
 		case 0xaa:
-			opIND(cpu, buf[:2])
+			oopIND(cpu)
 			return nil
+
 		case 0xab:
-			opOUTD(cpu, buf[:2])
+			oopOUTD(cpu)
 			return nil
+
 		case 0xb0:
-			opLDIR(cpu, buf[:2])
+			oopLDIR(cpu)
 			return nil
+
 		case 0xb1:
-			opCPIR(cpu, buf[:2])
+			oopCPIR(cpu)
 			return nil
+
 		case 0xb2:
-			opINIR(cpu, buf[:2])
+			oopINIR(cpu)
 			return nil
+
 		case 0xb3:
-			opOTIR(cpu, buf[:2])
+			oopOTIR(cpu)
 			return nil
+
 		case 0xb8:
-			opLDDR(cpu, buf[:2])
+			oopLDDR(cpu)
 			return nil
+
 		case 0xb9:
-			opCPDR(cpu, buf[:2])
+			oopCPDR(cpu)
 			return nil
+
 		case 0xba:
-			opINDR(cpu, buf[:2])
+			oopINDR(cpu)
 			return nil
+
 		case 0xbb:
-			opOTDR(cpu, buf[:2])
+			oopOTDR(cpu)
 			return nil
+
 		default:
 			return ErrInvalidCodes
 		}

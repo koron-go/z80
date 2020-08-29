@@ -46,17 +46,27 @@ func oopCPL(cpu *CPU) {
 	cpu.flagUpdate(FlagOp{}.Set(H).Set(N))
 }
 
-func opNEG(cpu *CPU, codes []uint8) {
+func oopNEG(cpu *CPU) {
 	a := cpu.AF.Hi
-	v := ^a + 1
-	cpu.AF.Hi = v
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f != 0).
-		Put(PV, a == 0x80).
-		Set(N).
-		Put(C, a != 0))
+	r := ^a + 1
+	cpu.AF.Hi = r
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	if r&0x0f != 0 {
+		or |= maskH
+	}
+	if a == 0x80 {
+		or |= maskPV
+	}
+	or |= maskN
+	if a != 0x00 {
+		or |= maskC
+	}
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func oopCCF(cpu *CPU) {
@@ -77,14 +87,14 @@ func oopDI(cpu *CPU) {
 	cpu.IFF2 = false
 }
 
-func opIM0(cpu *CPU, codes []uint8) {
+func oopIM0(cpu *CPU) {
 	cpu.IM = 0
 }
 
-func opIM1(cpu *CPU, codes []uint8) {
+func oopIM1(cpu *CPU) {
 	cpu.IM = 1
 }
 
-func opIM2(cpu *CPU, codes []uint8) {
+func oopIM2(cpu *CPU) {
 	cpu.IM = 2
 }

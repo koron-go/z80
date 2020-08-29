@@ -128,7 +128,7 @@ func oopSRLIYdP(cpu *CPU, d uint8) {
 	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
 }
 
-func opRLD(cpu *CPU, codes []uint8) {
+func oopRLD(cpu *CPU) {
 	p := cpu.HL.U16()
 	a := cpu.AF.Hi
 	b := cpu.Memory.Get(p)
@@ -144,7 +144,7 @@ func opRLD(cpu *CPU, codes []uint8) {
 		Reset(N))
 }
 
-func opRRD(cpu *CPU, codes []uint8) {
+func oopRRD(cpu *CPU) {
 	p := cpu.HL.U16()
 	a := cpu.AF.Hi
 	b := cpu.Memory.Get(p)

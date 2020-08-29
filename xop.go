@@ -986,3 +986,161 @@ func xopLDIYdPa(cpu *CPU, d uint8) {
 	p := addrOff(cpu.IY, d)
 	cpu.Memory.Set(p, cpu.AF.Hi)
 }
+
+func xopINbCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.BC.Hi = r
+	cpu.updateIOIn(r)
+}
+
+func xopINcCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.BC.Lo = r
+	cpu.updateIOIn(r)
+}
+
+func xopINdCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.DE.Hi = r
+	cpu.updateIOIn(r)
+}
+
+func xopINeCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.DE.Lo = r
+	cpu.updateIOIn(r)
+}
+
+func xopINhCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.HL.Hi = r
+	cpu.updateIOIn(r)
+}
+
+func xopINlCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.HL.Lo = r
+	cpu.updateIOIn(r)
+}
+
+func xopINaCP(cpu *CPU) {
+	r := cpu.ioIn(cpu.BC.Lo)
+	cpu.AF.Hi = r
+	cpu.updateIOIn(r)
+}
+
+func xopOUTCPb(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.BC.Hi)
+}
+
+func xopOUTCPc(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.BC.Lo)
+}
+
+func xopOUTCPd(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.DE.Hi)
+}
+
+func xopOUTCPe(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.DE.Lo)
+}
+
+func xopOUTCPh(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.HL.Hi)
+}
+
+func xopOUTCPl(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.HL.Lo)
+}
+
+func xopOUTCPa(cpu *CPU) {
+	cpu.ioOut(cpu.BC.Lo, cpu.AF.Hi)
+}
+
+func xopSBCHLbc(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.BC.U16()
+	cpu.HL.SetU16(cpu.sbcU16(a, x))
+}
+
+func xopSBCHLde(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.DE.U16()
+	cpu.HL.SetU16(cpu.sbcU16(a, x))
+}
+
+func xopSBCHLhl(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.HL.U16()
+	cpu.HL.SetU16(cpu.sbcU16(a, x))
+}
+
+func xopSBCHLsp(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.SP
+	cpu.HL.SetU16(cpu.sbcU16(a, x))
+}
+
+func xopLDnnPbc(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.writeU16(nn, cpu.BC.U16())
+}
+
+func xopLDnnPde(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.writeU16(nn, cpu.DE.U16())
+}
+
+func xopLDnnPhl(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.writeU16(nn, cpu.HL.U16())
+}
+
+func xopLDnnPsp(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.writeU16(nn, cpu.SP)
+}
+
+func xopLDbcnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.BC.SetU16(cpu.readU16(nn))
+}
+
+func xopLDdennP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.DE.SetU16(cpu.readU16(nn))
+}
+
+func xopLDhlnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.HL.SetU16(cpu.readU16(nn))
+}
+
+func xopLDspnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.SP = cpu.readU16(nn)
+}
+
+func xopADCHLbc(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.BC.U16()
+	cpu.HL.SetU16(cpu.adcU16(a, x))
+}
+
+func xopADCHLde(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.DE.U16()
+	cpu.HL.SetU16(cpu.adcU16(a, x))
+}
+
+func xopADCHLhl(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.HL.U16()
+	cpu.HL.SetU16(cpu.adcU16(a, x))
+}
+
+func xopADCHLsp(cpu *CPU) {
+	a := cpu.HL.U16()
+	x := cpu.SP
+	cpu.HL.SetU16(cpu.adcU16(a, x))
+}
