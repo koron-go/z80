@@ -1,304 +1,237 @@
 package z80
 
-func opADDAr(cpu *CPU, codes []uint8) {
+func oopADDAn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.addU8(a, x)
-}
-
-func opADDAn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.addU8(a, n)
 }
 
-func opADDAHLP(cpu *CPU, codes []uint8) {
+func oopADDAHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.addU8(a, x)
 }
 
-func opADDAIXdP(cpu *CPU, codes []uint8) {
+func oopADDAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
-	x := cpu.Memory.Get(p)
-	//fmt.Printf("a=%02x p=%04x x=%02x ix=%04x\n", a, p, x, cpu.IX)
-	cpu.AF.Hi = cpu.addU8(a, x)
-}
-
-func opADDAIYdP(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.addU8(a, x)
 }
 
-func opADCAr(cpu *CPU, codes []uint8) {
+func oopADDAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.adcU8(a, x)
+	p := addrOff(cpu.IY, d)
+	x := cpu.Memory.Get(p)
+	cpu.AF.Hi = cpu.addU8(a, x)
 }
 
-func opADCAn(cpu *CPU, codes []uint8) {
+func oopADCAn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.adcU8(a, n)
 }
 
-func opADCAHLP(cpu *CPU, codes []uint8) {
+func oopADCAHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
-func opADCAIXdP(cpu *CPU, codes []uint8) {
+func oopADCAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
-func opADCAIYdP(cpu *CPU, codes []uint8) {
+func oopADCAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.adcU8(a, x)
 }
 
-func opSUBAr(cpu *CPU, codes []uint8) {
+func oopSUBAn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.subU8(a, x)
-}
-
-func opSUBAn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.subU8(a, n)
 }
 
-func opSUBAHLP(cpu *CPU, codes []uint8) {
+func oopSUBAHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
 
-func opSUBAIXdP(cpu *CPU, codes []uint8) {
+func oopSUBAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
 
-func opSUBAIYdP(cpu *CPU, codes []uint8) {
+func oopSUBAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.subU8(a, x)
 }
 
-func opSBCAr(cpu *CPU, codes []uint8) {
+func oopSBCAn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.sbcU8(a, x)
-}
-
-func opSBCAn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.sbcU8(a, n)
 }
 
-func opSBCAHLP(cpu *CPU, codes []uint8) {
+func oopSBCAHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
-func opSBCAIXdP(cpu *CPU, codes []uint8) {
+func oopSBCAIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
-func opSBCAIYdP(cpu *CPU, codes []uint8) {
+func oopSBCAIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.sbcU8(a, x)
 }
 
-func opANDr(cpu *CPU, codes []uint8) {
+func oopANDn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.andU8(a, x)
-}
-
-func opANDn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.andU8(a, n)
 }
 
-func opANDHLP(cpu *CPU, codes []uint8) {
+func oopANDHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.andU8(a, x)
 }
 
-func opANDIXdP(cpu *CPU, codes []uint8) {
+func oopANDIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.andU8(a, x)
 }
 
-func opANDIYdP(cpu *CPU, codes []uint8) {
+func oopANDIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.andU8(a, x)
 }
 
-func opORr(cpu *CPU, codes []uint8) {
+func oopORn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.orU8(a, x)
-}
-
-func opORn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.orU8(a, n)
 }
 
-func opORHLP(cpu *CPU, codes []uint8) {
+func oopORHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
-func opORIXdP(cpu *CPU, codes []uint8) {
+func oopORIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
-func opORIYdP(cpu *CPU, codes []uint8) {
+func oopORIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.orU8(a, x)
 }
 
-func opXORr(cpu *CPU, codes []uint8) {
+func oopXORn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.AF.Hi = cpu.xorU8(a, x)
-}
-
-func opXORn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.AF.Hi = cpu.xorU8(a, n)
 }
 
-func opXORHLP(cpu *CPU, codes []uint8) {
+func oopXORHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.AF.Hi = cpu.xorU8(a, x)
 }
 
-func opXORIXdP(cpu *CPU, codes []uint8) {
+func oopXORIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.xorU8(a, x)
 }
 
-func opXORIYdP(cpu *CPU, codes []uint8) {
+func oopXORIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.AF.Hi = cpu.xorU8(a, x)
 }
 
-func opCPr(cpu *CPU, codes []uint8) {
+func oopCPn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	x := *cpu.regP(codes[0])
-	cpu.subU8(a, x)
-}
-
-func opCPn(cpu *CPU, codes []uint8) {
-	a := cpu.AF.Hi
-	n := codes[1]
 	cpu.subU8(a, n)
 }
 
-func opCPHLP(cpu *CPU, codes []uint8) {
+func oopCPHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
 	cpu.subU8(a, x)
 }
 
-func opCPIXdP(cpu *CPU, codes []uint8) {
+func oopCPIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IX, codes[2])
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.subU8(a, x)
 }
 
-func opCPIYdP(cpu *CPU, codes []uint8) {
+func oopCPIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
-	p := addrOff(cpu.IY, codes[2])
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.subU8(a, x)
 }
 
-func opINCr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0] >> 3)
-	*r = cpu.incU8(*r)
-}
-
-func opINCHLP(cpu *CPU, codes []uint8) {
+func oopINCHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.incU8(x))
 }
 
-func opINCIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopINCIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.incU8(x))
 }
 
-func opINCIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopINCIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.incU8(x))
 }
 
-func opDECr(cpu *CPU, codes []uint8) {
-	r := cpu.regP(codes[0] >> 3)
-	*r = cpu.decU8(*r)
-}
-
-func opDECHLP(cpu *CPU, codes []uint8) {
+func oopDECHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.decU8(x))
 }
 
-func opDECIXdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IX, codes[2])
+func oopDECIXdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.decU8(x))
 }
 
-func opDECIYdP(cpu *CPU, codes []uint8) {
-	p := addrOff(cpu.IY, codes[2])
+func oopDECIYdP(cpu *CPU, d uint8) {
+	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
 	cpu.Memory.Set(p, cpu.decU8(x))
 }

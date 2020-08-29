@@ -1,38 +1,38 @@
 package z80
 
-func opEXDEHL(cpu *CPU, codes []uint8) {
+func oopEXDEHL(cpu *CPU) {
 	cpu.HL, cpu.DE = cpu.DE, cpu.HL
 }
 
-func opEXAFAF(cpu *CPU, codes []uint8) {
+func oopEXAFAF(cpu *CPU) {
 	cpu.AF, cpu.Alternate.AF = cpu.Alternate.AF, cpu.AF
 }
 
-func opEXX(cpu *CPU, codes []uint8) {
+func oopEXX(cpu *CPU) {
 	cpu.BC, cpu.Alternate.BC = cpu.Alternate.BC, cpu.BC
 	cpu.DE, cpu.Alternate.DE = cpu.Alternate.DE, cpu.DE
 	cpu.HL, cpu.Alternate.HL = cpu.Alternate.HL, cpu.HL
 }
 
-func opEXSPPHL(cpu *CPU, codes []uint8) {
+func oopEXSPPHL(cpu *CPU) {
 	v := cpu.readU16(cpu.SP)
 	cpu.writeU16(cpu.SP, cpu.HL.U16())
 	cpu.HL.SetU16(v)
 }
 
-func opEXSPPIX(cpu *CPU, codes []uint8) {
+func oopEXSPPIX(cpu *CPU) {
 	v := cpu.readU16(cpu.SP)
 	cpu.writeU16(cpu.SP, cpu.IX)
 	cpu.IX = v
 }
 
-func opEXSPPIY(cpu *CPU, codes []uint8) {
+func oopEXSPPIY(cpu *CPU) {
 	v := cpu.readU16(cpu.SP)
 	cpu.writeU16(cpu.SP, cpu.IY)
 	cpu.IY = v
 }
 
-func opLDI(cpu *CPU, codes []uint8) {
+func oopLDI(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
 	cpu.Memory.Set(de, cpu.Memory.Get(hl))
@@ -46,7 +46,7 @@ func opLDI(cpu *CPU, codes []uint8) {
 		Reset(N))
 }
 
-func opLDIR(cpu *CPU, codes []uint8) {
+func oopLDIR(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
 	cpu.Memory.Set(de, cpu.Memory.Get(hl))
@@ -63,7 +63,7 @@ func opLDIR(cpu *CPU, codes []uint8) {
 	}
 }
 
-func opLDD(cpu *CPU, codes []uint8) {
+func oopLDD(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
 	cpu.Memory.Set(de, cpu.Memory.Get(hl))
@@ -77,7 +77,7 @@ func opLDD(cpu *CPU, codes []uint8) {
 		Reset(N))
 }
 
-func opLDDR(cpu *CPU, codes []uint8) {
+func oopLDDR(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
 	cpu.Memory.Set(de, cpu.Memory.Get(hl))
@@ -94,7 +94,7 @@ func opLDDR(cpu *CPU, codes []uint8) {
 	}
 }
 
-func opCPI(cpu *CPU, codes []uint8) {
+func oopCPI(cpu *CPU) {
 	a := cpu.AF.Hi
 	hl := cpu.HL.U16()
 	x := cpu.Memory.Get(hl)
@@ -110,7 +110,7 @@ func opCPI(cpu *CPU, codes []uint8) {
 		Set(N))
 }
 
-func opCPIR(cpu *CPU, codes []uint8) {
+func oopCPIR(cpu *CPU) {
 	a := cpu.AF.Hi
 	hl := cpu.HL.U16()
 	x := cpu.Memory.Get(hl)
@@ -129,7 +129,7 @@ func opCPIR(cpu *CPU, codes []uint8) {
 	}
 }
 
-func opCPD(cpu *CPU, codes []uint8) {
+func oopCPD(cpu *CPU) {
 	a := cpu.AF.Hi
 	hl := cpu.HL.U16()
 	x := cpu.Memory.Get(hl)
@@ -145,7 +145,7 @@ func opCPD(cpu *CPU, codes []uint8) {
 		Set(N))
 }
 
-func opCPDR(cpu *CPU, codes []uint8) {
+func oopCPDR(cpu *CPU) {
 	a := cpu.AF.Hi
 	hl := cpu.HL.U16()
 	x := cpu.Memory.Get(hl)

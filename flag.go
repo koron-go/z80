@@ -45,6 +45,18 @@ func (cpu *CPU) updateFlagBitop(r uint8, carry uint8) {
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
+func (cpu *CPU) updateIOIn(r uint8) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= r & maskStd
+	if r== 0 {
+		or |= maskZ
+	}
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
+
 func (cpu *CPU) flagUpdate(fo FlagOp) {
 	fo.ApplyOn(&cpu.AF.Lo)
 }

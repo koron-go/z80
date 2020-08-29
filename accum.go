@@ -89,6 +89,24 @@ func (cpu *CPU) decU8(a uint8) uint8 {
 	return r
 }
 
+func (cpu *CPU) decP8(p *uint8) {
+	*p--
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= *p & maskStd
+	if *p == 0 {
+		or |= maskZ
+	}
+	if *p&0x0f == 0x0f {
+		or |= maskH
+	}
+	if *p == 0x7f {
+		or |= maskPV
+	}
+	or |= maskN
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func (cpu *CPU) addU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32
@@ -208,7 +226,7 @@ func (cpu *CPU) srlU8(a uint8) uint8 {
 
 func (cpu *CPU) bitchk8(b, v uint8) {
 	r := v&(0x01<<b) != 0
-	var nand uint8 =  maskZ | maskH | maskN
+	var nand uint8 = maskZ | maskH | maskN
 	var or uint8
 	if !r {
 		or |= maskZ

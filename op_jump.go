@@ -1,61 +1,55 @@
 package z80
 
-func opJPnn(cpu *CPU, codes []uint8) {
-	cpu.PC = toU16(codes[1], codes[2])
+func oopJPnn(cpu *CPU, l, h uint8) {
+	cpu.PC = toU16(l, h)
 }
 
-func opJPccnn(cpu *CPU, codes []uint8) {
-	if cpu.flagCC(codes[0] >> 3) {
-		cpu.PC = toU16(codes[1], codes[2])
-	}
+func oopJRe(cpu *CPU, off uint8) {
+	cpu.PC = addrOff(cpu.PC, off)
 }
 
-func opJRe(cpu *CPU, codes []uint8) {
-	cpu.PC = addrOff(cpu.PC, codes[1])
-}
-
-func opJRCe(cpu *CPU, codes []uint8) {
+func oopJRCe(cpu *CPU, off uint8) {
 	if cpu.flag(C) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJRNCe(cpu *CPU, codes []uint8) {
+func oopJRNCe(cpu *CPU, off uint8) {
 	if !cpu.flag(C) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJRZe(cpu *CPU, codes []uint8) {
+func oopJRZe(cpu *CPU, off uint8) {
 	if cpu.flag(Z) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJRNZe(cpu *CPU, codes []uint8) {
+func oopJRNZe(cpu *CPU, off uint8) {
 	if !cpu.flag(Z) {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func opJPHLP(cpu *CPU, codes []uint8) {
+func oopJPHLP(cpu *CPU) {
 	p := cpu.HL.U16()
 	cpu.PC = p
 }
 
-func opJPIXP(cpu *CPU, codes []uint8) {
+func oopJPIXP(cpu *CPU, ) {
 	p := cpu.IX
 	cpu.PC = p
 }
 
-func opJPIYP(cpu *CPU, codes []uint8) {
+func oopJPIYP(cpu *CPU, ) {
 	p := cpu.IY
 	cpu.PC = p
 }
 
-func opDJNZe(cpu *CPU, codes []uint8) {
+func oopDJNZe(cpu *CPU, off uint8) {
 	cpu.BC.Hi--
 	if cpu.BC.Hi != 0 {
-		cpu.PC = addrOff(cpu.PC, codes[1])
+		cpu.PC = addrOff(cpu.PC, off)
 	}
 }

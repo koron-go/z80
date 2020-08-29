@@ -1,103 +1,74 @@
 package z80
 
-func opLDddnn(cpu *CPU, codes []uint8) {
-	dd := cpu.reg16dd(codes[0] >> 4)
-	nn := toU16(codes[1], codes[2])
-	dd.SetU16(nn)
-}
-
-func opLDIXnn(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIXnn(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IX = nn
 }
 
-func opLDIYnn(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIYnn(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IY = nn
 }
 
-func opLDHLnnP(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[1], codes[2])
-	cpu.HL.SetU16(cpu.readU16(nn))
+func oopLDHLnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
+	cpu.HL.Lo = cpu.Memory.Get(nn)
+	cpu.HL.Hi = cpu.Memory.Get(nn + 1)
 }
 
-func opLDddnnP(cpu *CPU, codes []uint8) {
-	dd := cpu.reg16dd(codes[1] >> 4)
-	nn := toU16(codes[2], codes[3])
-	dd.SetU16(cpu.readU16(nn))
-}
-
-func opLDIXnnP(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIXnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IX = cpu.readU16(nn)
 }
 
-func opLDIYnnP(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDIYnnP(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.IY = cpu.readU16(nn)
 }
 
-func opLDnnPHL(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[1], codes[2])
+func oopLDnnPHL(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.HL.U16())
 }
 
-func opLDnnPdd(cpu *CPU, codes []uint8) {
-	dd := cpu.reg16dd(codes[1] >> 4)
-	nn := toU16(codes[2], codes[3])
-	cpu.writeU16(nn, dd.U16())
-}
-
-func opLDnnPIX(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDnnPIX(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.IX)
 }
 
-func opLDnnPIY(cpu *CPU, codes []uint8) {
-	nn := toU16(codes[2], codes[3])
+func oopLDnnPIY(cpu *CPU, l, h uint8) {
+	nn := toU16(l, h)
 	cpu.writeU16(nn, cpu.IY)
 }
 
-func opLDSPHL(cpu *CPU, codes []uint8) {
+func oopLDSPHL(cpu *CPU) {
 	cpu.SP = cpu.HL.U16()
 }
 
-func opLDSPIX(cpu *CPU, codes []uint8) {
+func oopLDSPIX(cpu *CPU) {
 	cpu.SP = cpu.IX
 }
 
-func opLDSPIY(cpu *CPU, codes []uint8) {
+func oopLDSPIY(cpu *CPU) {
 	cpu.SP = cpu.IY
 }
 
-func opPUSHqq(cpu *CPU, codes []uint8) {
-	qq := cpu.reg16qq(codes[0] >> 4)
-	cpu.SP -= 2
-	cpu.writeU16(cpu.SP, qq.U16())
-}
-
-func opPUSHIX(cpu *CPU, codes []uint8) {
+func oopPUSHIX(cpu *CPU) {
 	cpu.SP -= 2
 	cpu.writeU16(cpu.SP, cpu.IX)
 }
 
-func opPUSHIY(cpu *CPU, codes []uint8) {
+func oopPUSHIY(cpu *CPU) {
 	cpu.SP -= 2
 	cpu.writeU16(cpu.SP, cpu.IY)
 }
 
-func opPOPqq(cpu *CPU, codes []uint8) {
-	qq := cpu.reg16qq(codes[0] >> 4)
-	qq.SetU16(cpu.readU16(cpu.SP))
-	cpu.SP += 2
-}
-
-func opPOPIX(cpu *CPU, codes []uint8) {
+func oopPOPIX(cpu *CPU) {
 	cpu.IX = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 }
 
-func opPOPIY(cpu *CPU, codes []uint8) {
+func oopPOPIY(cpu *CPU) {
 	cpu.IY = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 }
