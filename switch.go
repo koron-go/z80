@@ -1,7 +1,7 @@
 package z80
 
 // executeOne executes only an op-code.
-func executeOne(cpu *CPU, f fetcher) {
+func (cpu *CPU) executeOne(f fetcher) {
 	if cpu.HALT {
 		return
 	}

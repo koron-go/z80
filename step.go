@@ -48,7 +48,7 @@ func (cpu *CPU) Step() {
 		return
 	}
 	// execute an op-code.
-	executeOne(cpu, cpu)
+	cpu.executeOne(cpu)
 }
 
 func (cpu *CPU) tryInterrupt() bool {
@@ -101,7 +101,7 @@ func (cpu *CPU) tryInterrupt() bool {
 	}
 	cpu.HALT = false
 	ms := memSrc(d)
-	executeOne(cpu, &ms)
+	cpu.executeOne(&ms)
 	return true
 }
 
