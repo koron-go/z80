@@ -39,8 +39,6 @@ func oopHALT(cpu *CPU) {
 func oopEI(cpu *CPU) {
 	cpu.IFF1 = true
 	cpu.IFF2 = true
-
-	cpu.afterEI = true
 }
 
 func oopCPL(cpu *CPU) {
