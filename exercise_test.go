@@ -161,7 +161,12 @@ func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, cr
 }
 
 func testRunZexdoc(t *testing.T) {
-	testRunZexCase(t, zex.DocLDD1)
+	for _, c := range zex.DocCases {
+		t.Run(c.Desc, func(t *testing.T) {
+			//t.Parallel()
+			testRunZexCase(t, c)
+		})
+	}
 }
 
 func testRunZexCase(t *testing.T, c zex.Case) {
@@ -178,13 +183,17 @@ func testRunZexCase(t *testing.T, c zex.Case) {
 	var crc uint32 = 0xffffffff
 	shiftMax, countMax := c.Maxes()
 	iter := c.Iter()
+
 	crc = zexRunIter(cpu, iter, 0, 0, c.FlagMask, crc)
-	crc = zexRunIter(cpu, iter, 1, 1, c.FlagMask, crc)
+	for j := uint64(1); j < countMax; j++ {
+		crc = zexRunIter(cpu, iter, 1, j, c.FlagMask, crc)
+	}
 	for i := uint64(2); i < shiftMax+2; i++ {
 		for j := uint64(0); j < countMax; j++ {
 			crc = zexRunIter(cpu, iter, i, j, c.FlagMask, crc)
 		}
 	}
+
 	act := crc
 
 	exp := uint32(c.Expect)
