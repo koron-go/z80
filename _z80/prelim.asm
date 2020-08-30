@@ -350,7 +350,7 @@ reladr	macro	r
 allok:	ld	de,okmsg
 	ld	c,9
 	call	5
-	halt
+	jp	0
 
 okmsg:	db	'Preliminary tests complete$'
 

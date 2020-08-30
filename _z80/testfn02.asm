@@ -6,4 +6,4 @@
 	call	5
 	ld	e, 'K'
 	call	5
-	halt
+	jp	0

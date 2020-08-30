@@ -4,7 +4,7 @@
 	ld	c, 9
 	ld	de, msg
 	call	5
-	halt
+	jp	0
 
 msg:
 	db	'Hello 09h$'
