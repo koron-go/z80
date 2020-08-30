@@ -3,10 +3,13 @@ package z80
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"hash/crc32"
 	"log"
 	"testing"
 
 	"github.com/koron-go/z80/internal/tinycpm"
+	"github.com/koron-go/z80/internal/zex"
 )
 
 //go:generate zmac -o testdata/testfn02.cim -o testdata/testfn02.lst _z80/testfn02.asm
@@ -75,4 +78,117 @@ func TestExerciser(t *testing.T) {
 	t.Run("run testdata/prelim.cim", func(t *testing.T) {
 		tRunMinibios(t, "testdata/prelim.cim", "Preliminary tests complete")
 	})
+	t.Run("run zexdoc", testRunZexdoc)
+}
+
+func zexSetStatus(cpu *CPU, s zex.Status) {
+	mem := cpu.Memory
+	// setup IUT (instruction under test)
+	mem.Set(0x1000, s.Inst0)
+	mem.Set(0x1001, s.Inst1)
+	mem.Set(0x1002, s.Inst2)
+	mem.Set(0x1003, s.Inst3)
+	mem.Set(0x1004, 0x00)
+	// setup machine state
+	cpu.IY = s.IY
+	cpu.IX = s.IX
+	cpu.HL.SetU16(s.HL)
+	cpu.DE.SetU16(s.DE)
+	cpu.BC.SetU16(s.BC)
+	cpu.AF.Lo = s.Flags
+	cpu.AF.Hi = s.Accum
+	cpu.SP = s.SP
+	cpu.PC = 0x1000
+	// setup MSBT
+	for i, u8 := range s.Bytes()[4:] {
+		mem.Set(zex.MSBT+uint16(i), u8)
+	}
+}
+
+func zexGetStatus(cpu *CPU) zex.Status {
+	var s zex.Status
+	s.MemOP = uint16(cpu.Memory.Get(zex.MSBT)) |
+		uint16(cpu.Memory.Get(zex.MSBT+1))<<8
+	s.IY = cpu.IY
+	s.IX = cpu.IX
+	s.HL = cpu.HL.U16()
+	s.DE = cpu.DE.U16()
+	s.BC = cpu.BC.U16()
+	s.Flags = cpu.AF.Lo
+	s.Accum = cpu.AF.Hi
+	s.SP = cpu.SP
+	return s
+}
+
+func zexIsHalt(cpu *CPU) bool {
+	switch cpu.Memory.Get(0x1000) {
+	case 0x76:
+		return true
+	case 0xdd, 0xfd:
+		switch cpu.Memory.Get(0x1001) {
+		case 0x76:
+			return true
+		}
+	}
+	return false
+}
+
+var crcTable = crc32.MakeTable(crc32.IEEE)
+
+func zexUpdateCRC(sum uint32, v uint8) uint32 {
+	return crcTable[uint8(sum)^v] ^ (sum >> 8)
+}
+
+func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, crc uint32) uint32 {
+	before := iter.Status(shift, count)
+	//beforeBytes := before.Bytes()
+	//fmt.Printf("\n%08x %032x\n", beforeBytes[:4], beforeBytes[4:])
+	zexSetStatus(cpu, before)
+	if !zexIsHalt(cpu) {
+		err := cpu.Run(context.Background())
+		if err != ErrBreakPoint {
+			panic(fmt.Sprintf("unexpected termination: %v", err))
+		}
+	}
+	after := zexGetStatus(cpu)
+	after.Flags &= flagMask
+	afterBytes := after.Bytes()[4:] // skip instruction 4 bytes.
+	for _, b := range afterBytes {
+		crc = zexUpdateCRC(crc, b)
+	}
+	//fmt.Printf("%08x %032x\n", crc, afterBytes)
+	return crc
+}
+
+func testRunZexdoc(t *testing.T) {
+	testRunZexCase(t, zex.DocLDD1)
+}
+
+func testRunZexCase(t *testing.T, c zex.Case) {
+	t.Helper()
+	mem, io := tinycpm.New()
+	cpu := &CPU{
+		Memory: mem,
+		IO:     io,
+		BreakPoints: map[uint16]struct{}{
+			0x1004: {},
+		},
+	}
+
+	var crc uint32 = 0xffffffff
+	shiftMax, countMax := c.Maxes()
+	iter := c.Iter()
+	crc = zexRunIter(cpu, iter, 0, 0, c.FlagMask, crc)
+	crc = zexRunIter(cpu, iter, 1, 1, c.FlagMask, crc)
+	for i := uint64(2); i < shiftMax+2; i++ {
+		for j := uint64(0); j < countMax; j++ {
+			crc = zexRunIter(cpu, iter, i, j, c.FlagMask, crc)
+		}
+	}
+	act := crc
+
+	exp := uint32(c.Expect)
+	if act != exp {
+		t.Errorf("failed %s: want=%08x got=%08x", c.Desc, exp, act)
+	}
 }

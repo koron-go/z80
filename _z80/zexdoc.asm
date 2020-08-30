@@ -1208,7 +1208,7 @@ test:	push	af
 	push	bc
 	push	de
 	push	hl
-      if	0
+      if	0		; print current case
 	ld	de,crlf
 	ld	c,9
 	call	bdos
@@ -1221,6 +1221,9 @@ test:	push	af
 	ld	b,16
 	ld	hl,msbt
 	call	hexstr
+	ld	de,crlf
+	ld	c,9
+	call	bdos
       endif
 	di			; disable interrupts
 	ld	(spsav),sp	; save stack pointer
@@ -1257,14 +1260,11 @@ tcrc:	ld	a,(de)
 	call	updcrc		; accumulate crc of this test case
 	dec	b
 	jp	nz,tcrc
-      if	0
-	ld	e,' '
-	ld	c,2
-	call	bdos
+      if	0		; print CRC and check targets (MSAT)
 	ld	hl,crcval
 	call	phex8
-	ld	de,crlf
-	ld	c,9
+	ld	e,' '
+	ld	c,2
 	call	bdos
 	ld	hl,msat
 	ld	b,16
