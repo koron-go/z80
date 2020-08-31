@@ -99,16 +99,16 @@ func zexSetStatus(cpu *CPU, s zex.Status) {
 	cpu.AF.Hi = s.Accum
 	cpu.SP = s.SP
 	cpu.PC = 0x1000
-	// setup MSBT
+	// setup Msbt
 	for i, u8 := range s.Bytes()[4:] {
-		mem.Set(zex.MSBT+uint16(i), u8)
+		mem.Set(zex.Msbt+uint16(i), u8)
 	}
 }
 
 func zexGetStatus(cpu *CPU) zex.Status {
 	var s zex.Status
-	s.MemOP = uint16(cpu.Memory.Get(zex.MSBT)) |
-		uint16(cpu.Memory.Get(zex.MSBT+1))<<8
+	s.MemOP = uint16(cpu.Memory.Get(zex.Msbt)) |
+		uint16(cpu.Memory.Get(zex.Msbt+1))<<8
 	s.IY = cpu.IY
 	s.IX = cpu.IX
 	s.HL = cpu.HL.U16()
@@ -141,8 +141,8 @@ func zexUpdateCRC(sum uint32, v uint8) uint32 {
 
 func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, crc uint32) uint32 {
 	before := iter.Status(shift, count)
-	//beforeBytes := before.Bytes()
-	//fmt.Printf("\n%08x %032x\n", beforeBytes[:4], beforeBytes[4:])
+	beforeBytes := before.Bytes()
+	fmt.Printf("\n%08x %032x\n", beforeBytes[:4], beforeBytes[4:])
 	zexSetStatus(cpu, before)
 	if !zexIsHalt(cpu) {
 		err := cpu.Run(context.Background())
@@ -156,12 +156,19 @@ func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, cr
 	for _, b := range afterBytes {
 		crc = zexUpdateCRC(crc, b)
 	}
-	//fmt.Printf("%08x %032x\n", crc, afterBytes)
+	fmt.Printf("%08x %032x\n", crc, afterBytes)
 	return crc
 }
 
+var zexCases []zex.Case 
+
+func init() {
+	//zexCases = zex.DocCases
+	zexCases = append(zexCases, zex.DocCPD1)
+}
+
 func testRunZexdoc(t *testing.T) {
-	for _, c := range zex.DocCases {
+	for _, c := range zexCases {
 		t.Run(c.Desc, func(t *testing.T) {
 			//t.Parallel()
 			testRunZexCase(t, c)

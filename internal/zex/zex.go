@@ -162,5 +162,7 @@ func (it Iter) Status(shift, count uint64) Status {
 	return newStatus(code)
 }
 
-// MSBT means machine state before test.
-const MSBT = 0x0103
+// Msbt means machine state before test.
+const Msbt = 0x0103
+const MsbtLo = Msbt & 0xff
+const MsbtHi = (Msbt >> 8) & 0xff
