@@ -202,7 +202,7 @@ func readDesc(r *bufio.Reader) (string, error) {
 func writeTestCase(w io.Writer, tc *testCase) error {
 	uplabel := strings.ToUpper(tc.label)
 	fmt.Fprintf(w, "\n")
-	fmt.Fprintf(w, "// Doc%s: %s\n", uplabel, tc.comment)
+	fmt.Fprintf(w, "// Doc%s - %s\n", uplabel, tc.comment)
 	fmt.Fprintf(w, "var Doc%s = Case{\n", uplabel)
 	fmt.Fprintf(w, "\t0x%02x,\n", tc.mask)
 	if err := writeState(w, tc.base); err != nil {

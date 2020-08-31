@@ -1,6 +1,6 @@
 package zex
 
-// DocADC16: <adc,sbc> hl,<bc,de,hl,sp> (38,912 cycles)
+// DocADC16 - <adc,sbc> hl,<bc,de,hl,sp> (38,912 cycles)
 var DocADC16 = Case{
 	0xc7,
 	Status{
@@ -19,7 +19,7 @@ var DocADC16 = Case{
 	"<adc,sbc> hl,<bc,de,hl,sp>",
 }
 
-// DocADD16: add hl,<bc,de,hl,sp> (19,456 cycles)
+// DocADD16 - add hl,<bc,de,hl,sp> (19,456 cycles)
 var DocADD16 = Case{
 	0xc7,
 	Status{
@@ -38,7 +38,7 @@ var DocADD16 = Case{
 	"add hl,<bc,de,hl,sp>",
 }
 
-// DocADD16X: add ix,<bc,de,ix,sp> (19,456 cycles)
+// DocADD16X - add ix,<bc,de,ix,sp> (19,456 cycles)
 var DocADD16X = Case{
 	0xc7,
 	Status{
@@ -57,7 +57,7 @@ var DocADD16X = Case{
 	"add ix,<bc,de,ix,sp>",
 }
 
-// DocADD16Y: add iy,<bc,de,iy,sp> (19,456 cycles)
+// DocADD16Y - add iy,<bc,de,iy,sp> (19,456 cycles)
 var DocADD16Y = Case{
 	0xc7,
 	Status{
@@ -76,7 +76,7 @@ var DocADD16Y = Case{
 	"add iy,<bc,de,iy,sp>",
 }
 
-// DocALU8I: aluop a,nn (28,672 cycles)
+// DocALU8I - aluop a,nn (28,672 cycles)
 var DocALU8I = Case{
 	0xd7,
 	Status{
@@ -95,7 +95,7 @@ var DocALU8I = Case{
 	"aluop a,nn",
 }
 
-// DocALU8R: aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)
+// DocALU8R - aluop a,<b,c,d,e,h,l,(hl),a> (753,664 cycles)
 var DocALU8R = Case{
 	0xd7,
 	Status{
@@ -114,7 +114,7 @@ var DocALU8R = Case{
 	"aluop a,<b,c,d,e,h,l,(hl),a>",
 }
 
-// DocALU8RX: aluop a,<ixh,ixl,iyh,iyl> (376,832 cycles)
+// DocALU8RX - aluop a,<ixh,ixl,iyh,iyl> (376,832 cycles)
 var DocALU8RX = Case{
 	0xd7,
 	Status{
@@ -133,7 +133,7 @@ var DocALU8RX = Case{
 	"aluop a,<ixh,ixl,iyh,iyl>",
 }
 
-// DocALU8X: aluop a,(<ix,iy>+1) (229,376 cycles)
+// DocALU8X - aluop a,(<ix,iy>+1) (229,376 cycles)
 var DocALU8X = Case{
 	0xd7,
 	Status{
@@ -152,7 +152,7 @@ var DocALU8X = Case{
 	"aluop a,(<ix,iy>+1)",
 }
 
-// DocBITX: bit n,(<ix,iy>+1) (2048 cycles)
+// DocBITX - bit n,(<ix,iy>+1) (2048 cycles)
 var DocBITX = Case{
 	0x53,
 	Status{
@@ -171,7 +171,7 @@ var DocBITX = Case{
 	"bit n,(<ix,iy>+1)",
 }
 
-// DocBITZ80: bit n,<b,c,d,e,h,l,(hl),a> (49,152 cycles)
+// DocBITZ80 - bit n,<b,c,d,e,h,l,(hl),a> (49,152 cycles)
 var DocBITZ80 = Case{
 	0x53,
 	Status{
@@ -190,7 +190,7 @@ var DocBITZ80 = Case{
 	"bit n,<b,c,d,e,h,l,(hl),a>",
 }
 
-// DocCPD1: cpd<r> (1) (6144 cycles)
+// DocCPD1 - cpd<r> (1) (6144 cycles)
 var DocCPD1 = Case{
 	0xd7,
 	Status{
@@ -209,7 +209,7 @@ var DocCPD1 = Case{
 	"cpd<r>",
 }
 
-// DocCPI1: cpi<r> (1) (6144 cycles)
+// DocCPI1 - cpi<r> (1) (6144 cycles)
 var DocCPI1 = Case{
 	0xd7,
 	Status{
@@ -228,7 +228,7 @@ var DocCPI1 = Case{
 	"cpi<r>",
 }
 
-// DocDAAOP: <daa,cpl,scf,ccf> (65,536 cycles)
+// DocDAAOP - <daa,cpl,scf,ccf> (65,536 cycles)
 var DocDAAOP = Case{
 	0xd7,
 	Status{
@@ -247,7 +247,7 @@ var DocDAAOP = Case{
 	"<daa,cpl,scf,ccf>",
 }
 
-// DocINCA: <inc,dec> a (3072 cycles)
+// DocINCA - <inc,dec> a (3072 cycles)
 var DocINCA = Case{
 	0xd7,
 	Status{
@@ -266,7 +266,7 @@ var DocINCA = Case{
 	"<inc,dec> a",
 }
 
-// DocINCB: <inc,dec> b (3072 cycles)
+// DocINCB - <inc,dec> b (3072 cycles)
 var DocINCB = Case{
 	0xd7,
 	Status{
@@ -285,7 +285,7 @@ var DocINCB = Case{
 	"<inc,dec> b",
 }
 
-// DocINCBC: <inc,dec> bc (1536 cycles)
+// DocINCBC - <inc,dec> bc (1536 cycles)
 var DocINCBC = Case{
 	0xd7,
 	Status{
@@ -304,7 +304,7 @@ var DocINCBC = Case{
 	"<inc,dec> bc",
 }
 
-// DocINCC: <inc,dec> c (3072 cycles)
+// DocINCC - <inc,dec> c (3072 cycles)
 var DocINCC = Case{
 	0xd7,
 	Status{
@@ -323,7 +323,7 @@ var DocINCC = Case{
 	"<inc,dec> c",
 }
 
-// DocINCD: <inc,dec> d (3072 cycles)
+// DocINCD - <inc,dec> d (3072 cycles)
 var DocINCD = Case{
 	0xd7,
 	Status{
@@ -342,7 +342,7 @@ var DocINCD = Case{
 	"<inc,dec> d",
 }
 
-// DocINCDE: <inc,dec> de (1536 cycles)
+// DocINCDE - <inc,dec> de (1536 cycles)
 var DocINCDE = Case{
 	0xd7,
 	Status{
@@ -361,7 +361,7 @@ var DocINCDE = Case{
 	"<inc,dec> de",
 }
 
-// DocINCE: <inc,dec> e (3072 cycles)
+// DocINCE - <inc,dec> e (3072 cycles)
 var DocINCE = Case{
 	0xd7,
 	Status{
@@ -380,7 +380,7 @@ var DocINCE = Case{
 	"<inc,dec> e",
 }
 
-// DocINCH: <inc,dec> h (3072 cycles)
+// DocINCH - <inc,dec> h (3072 cycles)
 var DocINCH = Case{
 	0xd7,
 	Status{
@@ -399,7 +399,7 @@ var DocINCH = Case{
 	"<inc,dec> h",
 }
 
-// DocINCHL: <inc,dec> hl (1536 cycles)
+// DocINCHL - <inc,dec> hl (1536 cycles)
 var DocINCHL = Case{
 	0xd7,
 	Status{
@@ -418,7 +418,7 @@ var DocINCHL = Case{
 	"<inc,dec> hl",
 }
 
-// DocINCIX: <inc,dec> ix (1536 cycles)
+// DocINCIX - <inc,dec> ix (1536 cycles)
 var DocINCIX = Case{
 	0xd7,
 	Status{
@@ -437,7 +437,7 @@ var DocINCIX = Case{
 	"<inc,dec> ix",
 }
 
-// DocINCIY: <inc,dec> iy (1536 cycles)
+// DocINCIY - <inc,dec> iy (1536 cycles)
 var DocINCIY = Case{
 	0xd7,
 	Status{
@@ -456,7 +456,7 @@ var DocINCIY = Case{
 	"<inc,dec> iy",
 }
 
-// DocINCL: <inc,dec> l (3072 cycles)
+// DocINCL - <inc,dec> l (3072 cycles)
 var DocINCL = Case{
 	0xd7,
 	Status{
@@ -475,7 +475,7 @@ var DocINCL = Case{
 	"<inc,dec> l",
 }
 
-// DocINCM: <inc,dec> (hl) (3072 cycles)
+// DocINCM - <inc,dec> (hl) (3072 cycles)
 var DocINCM = Case{
 	0xd7,
 	Status{
@@ -494,7 +494,7 @@ var DocINCM = Case{
 	"<inc,dec> (hl)",
 }
 
-// DocINCSP: <inc,dec> sp (1536 cycles)
+// DocINCSP - <inc,dec> sp (1536 cycles)
 var DocINCSP = Case{
 	0xd7,
 	Status{
@@ -513,7 +513,7 @@ var DocINCSP = Case{
 	"<inc,dec> sp",
 }
 
-// DocINCX: <inc,dec> (<ix,iy>+1) (6144 cycles)
+// DocINCX - <inc,dec> (<ix,iy>+1) (6144 cycles)
 var DocINCX = Case{
 	0xd7,
 	Status{
@@ -532,7 +532,7 @@ var DocINCX = Case{
 	"<inc,dec> (<ix,iy>+1)",
 }
 
-// DocINCXH: <inc,dec> ixh (3072 cycles)
+// DocINCXH - <inc,dec> ixh (3072 cycles)
 var DocINCXH = Case{
 	0xd7,
 	Status{
@@ -551,7 +551,7 @@ var DocINCXH = Case{
 	"<inc,dec> ixh",
 }
 
-// DocINCXL: <inc,dec> ixl (3072 cycles)
+// DocINCXL - <inc,dec> ixl (3072 cycles)
 var DocINCXL = Case{
 	0xd7,
 	Status{
@@ -570,7 +570,7 @@ var DocINCXL = Case{
 	"<inc,dec> ixl",
 }
 
-// DocINCYH: <inc,dec> iyh (3072 cycles)
+// DocINCYH - <inc,dec> iyh (3072 cycles)
 var DocINCYH = Case{
 	0xd7,
 	Status{
@@ -589,7 +589,7 @@ var DocINCYH = Case{
 	"<inc,dec> iyh",
 }
 
-// DocINCYL: <inc,dec> iyl (3072 cycles)
+// DocINCYL - <inc,dec> iyl (3072 cycles)
 var DocINCYL = Case{
 	0xd7,
 	Status{
@@ -608,7 +608,7 @@ var DocINCYL = Case{
 	"<inc,dec> iyl",
 }
 
-// DocLD161: ld <bc,de>,(nnnn) (32 cycles)
+// DocLD161 - ld <bc,de>,(nnnn) (32 cycles)
 var DocLD161 = Case{
 	0xd7,
 	Status{
@@ -627,7 +627,7 @@ var DocLD161 = Case{
 	"ld <bc,de>,(nnnn)",
 }
 
-// DocLD162: ld hl,(nnnn) (16 cycles)
+// DocLD162 - ld hl,(nnnn) (16 cycles)
 var DocLD162 = Case{
 	0xd7,
 	Status{
@@ -646,7 +646,7 @@ var DocLD162 = Case{
 	"ld hl,(nnnn)",
 }
 
-// DocLD163: ld sp,(nnnn) (16 cycles)
+// DocLD163 - ld sp,(nnnn) (16 cycles)
 var DocLD163 = Case{
 	0xd7,
 	Status{
@@ -665,7 +665,7 @@ var DocLD163 = Case{
 	"ld sp,(nnnn)",
 }
 
-// DocLD164: ld <ix,iy>,(nnnn) (32 cycles)
+// DocLD164 - ld <ix,iy>,(nnnn) (32 cycles)
 var DocLD164 = Case{
 	0xd7,
 	Status{
@@ -684,7 +684,7 @@ var DocLD164 = Case{
 	"ld <ix,iy>,(nnnn)",
 }
 
-// DocLD165: ld (nnnn),<bc,de> (64 cycles)
+// DocLD165 - ld (nnnn),<bc,de> (64 cycles)
 var DocLD165 = Case{
 	0xd7,
 	Status{
@@ -703,7 +703,7 @@ var DocLD165 = Case{
 	"ld (nnnn),<bc,de>",
 }
 
-// DocLD166: ld (nnnn),hl (16 cycles)
+// DocLD166 - ld (nnnn),hl (16 cycles)
 var DocLD166 = Case{
 	0xd7,
 	Status{
@@ -722,7 +722,7 @@ var DocLD166 = Case{
 	"ld (nnnn),hl",
 }
 
-// DocLD167: ld (nnnn),sp (16 cycles)
+// DocLD167 - ld (nnnn),sp (16 cycles)
 var DocLD167 = Case{
 	0xd7,
 	Status{
@@ -741,7 +741,7 @@ var DocLD167 = Case{
 	"ld (nnnn),sp",
 }
 
-// DocLD168: ld (nnnn),<ix,iy> (64 cycles)
+// DocLD168 - ld (nnnn),<ix,iy> (64 cycles)
 var DocLD168 = Case{
 	0xd7,
 	Status{
@@ -760,7 +760,7 @@ var DocLD168 = Case{
 	"ld (nnnn),<ix,iy>",
 }
 
-// DocLD16IM: ld <bc,de,hl,sp>,nnnn (64 cycles)
+// DocLD16IM - ld <bc,de,hl,sp>,nnnn (64 cycles)
 var DocLD16IM = Case{
 	0xd7,
 	Status{
@@ -779,7 +779,7 @@ var DocLD16IM = Case{
 	"ld <bc,de,hl,sp>,nnnn",
 }
 
-// DocLD16IX: ld <ix,iy>,nnnn (32 cycles)
+// DocLD16IX - ld <ix,iy>,nnnn (32 cycles)
 var DocLD16IX = Case{
 	0xd7,
 	Status{
@@ -798,7 +798,7 @@ var DocLD16IX = Case{
 	"ld <ix,iy>,nnnn",
 }
 
-// DocLD8BD: ld a,<(bc),(de)> (44 cycles)
+// DocLD8BD - ld a,<(bc),(de)> (44 cycles)
 var DocLD8BD = Case{
 	0xd7,
 	Status{
@@ -817,7 +817,7 @@ var DocLD8BD = Case{
 	"ld a,<(bc),(de)>",
 }
 
-// DocLD8IM: ld <b,c,d,e,h,l,(hl),a>,nn (64 cycles)
+// DocLD8IM - ld <b,c,d,e,h,l,(hl),a>,nn (64 cycles)
 var DocLD8IM = Case{
 	0xd7,
 	Status{
@@ -836,7 +836,7 @@ var DocLD8IM = Case{
 	"ld <b,c,d,e,h,l,(hl),a>,nn",
 }
 
-// DocLD8IMX: ld (<ix,iy>+1),nn (32 cycles)
+// DocLD8IMX - ld (<ix,iy>+1),nn (32 cycles)
 var DocLD8IMX = Case{
 	0xd7,
 	Status{
@@ -855,7 +855,7 @@ var DocLD8IMX = Case{
 	"ld (<ix,iy>+1),nn",
 }
 
-// DocLD8IX1: ld <b,c,d,e>,(<ix,iy>+1) (512 cycles)
+// DocLD8IX1 - ld <b,c,d,e>,(<ix,iy>+1) (512 cycles)
 var DocLD8IX1 = Case{
 	0xd7,
 	Status{
@@ -874,7 +874,7 @@ var DocLD8IX1 = Case{
 	"ld <b,c,d,e>,(<ix,iy>+1)",
 }
 
-// DocLD8IX2: ld <h,l>,(<ix,iy>+1) (256 cycles)
+// DocLD8IX2 - ld <h,l>,(<ix,iy>+1) (256 cycles)
 var DocLD8IX2 = Case{
 	0xd7,
 	Status{
@@ -893,7 +893,7 @@ var DocLD8IX2 = Case{
 	"ld <h,l>,(<ix,iy>+1)",
 }
 
-// DocLD8IX3: ld a,(<ix,iy>+1) (128 cycles)
+// DocLD8IX3 - ld a,(<ix,iy>+1) (128 cycles)
 var DocLD8IX3 = Case{
 	0xd7,
 	Status{
@@ -912,7 +912,7 @@ var DocLD8IX3 = Case{
 	"ld a,(<ix,iy>+1)",
 }
 
-// DocLD8IXY: ld <ixh,ixl,iyh,iyl>,nn (32 cycles)
+// DocLD8IXY - ld <ixh,ixl,iyh,iyl>,nn (32 cycles)
 var DocLD8IXY = Case{
 	0xd7,
 	Status{
@@ -931,7 +931,7 @@ var DocLD8IXY = Case{
 	"ld <ixh,ixl,iyh,iyl>,nn",
 }
 
-// DocLD8RR: ld <b,c,d,e,h,l,a>,<b,c,d,e,h,l,a> (3456 cycles)
+// DocLD8RR - ld <b,c,d,e,h,l,a>,<b,c,d,e,h,l,a> (3456 cycles)
 var DocLD8RR = Case{
 	0xd7,
 	Status{
@@ -950,7 +950,7 @@ var DocLD8RR = Case{
 	"ld <bcdehla>,<bcdehla>",
 }
 
-// DocLD8RRX: ld <b,c,d,e,ixy,a>,<b,c,d,e,ixy,a> (6912 cycles)
+// DocLD8RRX - ld <b,c,d,e,ixy,a>,<b,c,d,e,ixy,a> (6912 cycles)
 var DocLD8RRX = Case{
 	0xd7,
 	Status{
@@ -969,7 +969,7 @@ var DocLD8RRX = Case{
 	"ld <bcdexya>,<bcdexya>",
 }
 
-// DocLDA: ld a,(nnnn) / ld (nnnn),a (44 cycles)
+// DocLDA - ld a,(nnnn) / ld (nnnn),a (44 cycles)
 var DocLDA = Case{
 	0xd7,
 	Status{
@@ -988,7 +988,7 @@ var DocLDA = Case{
 	"ld a,(nnnn) / ld (nnnn),a",
 }
 
-// DocLDD1: ldd<r> (1) (44 cycles)
+// DocLDD1 - ldd<r> (1) (44 cycles)
 var DocLDD1 = Case{
 	0xd7,
 	Status{
@@ -1007,7 +1007,7 @@ var DocLDD1 = Case{
 	"ldd<r> (1)",
 }
 
-// DocLDD2: ldd<r> (2) (44 cycles)
+// DocLDD2 - ldd<r> (2) (44 cycles)
 var DocLDD2 = Case{
 	0xd7,
 	Status{
@@ -1026,7 +1026,7 @@ var DocLDD2 = Case{
 	"ldd<r> (2)",
 }
 
-// DocLDI1: ldi<r> (1) (44 cycles)
+// DocLDI1 - ldi<r> (1) (44 cycles)
 var DocLDI1 = Case{
 	0xd7,
 	Status{
@@ -1045,7 +1045,7 @@ var DocLDI1 = Case{
 	"ldi<r> (1)",
 }
 
-// DocLDI2: ldi<r> (2) (44 cycles)
+// DocLDI2 - ldi<r> (2) (44 cycles)
 var DocLDI2 = Case{
 	0xd7,
 	Status{
@@ -1064,7 +1064,7 @@ var DocLDI2 = Case{
 	"ldi<r> (2)",
 }
 
-// DocNEGOP: neg (16,384 cycles)
+// DocNEGOP - neg (16,384 cycles)
 var DocNEGOP = Case{
 	0xd7,
 	Status{
@@ -1083,7 +1083,7 @@ var DocNEGOP = Case{
 	"neg",
 }
 
-// DocRLDOP: <rld,rrd> (7168 cycles)
+// DocRLDOP - <rld,rrd> (7168 cycles)
 var DocRLDOP = Case{
 	0xd7,
 	Status{
@@ -1102,7 +1102,7 @@ var DocRLDOP = Case{
 	"<rrd,rld>",
 }
 
-// DocROT8080: <rlca,rrca,rla,rra> (6144 cycles)
+// DocROT8080 - <rlca,rrca,rla,rra> (6144 cycles)
 var DocROT8080 = Case{
 	0xd7,
 	Status{
@@ -1121,7 +1121,7 @@ var DocROT8080 = Case{
 	"<rlca,rrca,rla,rra>",
 }
 
-// DocROTXY: shift/rotate (<ix,iy>+1) (416 cycles)
+// DocROTXY - shift/rotate (<ix,iy>+1) (416 cycles)
 var DocROTXY = Case{
 	0xd7,
 	Status{
@@ -1140,7 +1140,7 @@ var DocROTXY = Case{
 	"shf/rot (<ix,iy>+1)",
 }
 
-// DocROTZ80: shift/rotate <b,c,d,e,h,l,(hl),a> (6784 cycles)
+// DocROTZ80 - shift/rotate <b,c,d,e,h,l,(hl),a> (6784 cycles)
 var DocROTZ80 = Case{
 	0xd7,
 	Status{
@@ -1159,7 +1159,7 @@ var DocROTZ80 = Case{
 	"shf/rot <b,c,d,e,h,l,(hl),a>",
 }
 
-// DocSRZ80: <set,res> n,<b,c,d,e,h,l,(hl),a> (7936 cycles)
+// DocSRZ80 - <set,res> n,<b,c,d,e,h,l,(hl),a> (7936 cycles)
 var DocSRZ80 = Case{
 	0xd7,
 	Status{
@@ -1178,7 +1178,7 @@ var DocSRZ80 = Case{
 	"<set,res> n,<bcdehl(hl)a>",
 }
 
-// DocSRZX: <set,res> n,(<ix,iy>+1) (1792 cycles)
+// DocSRZX - <set,res> n,(<ix,iy>+1) (1792 cycles)
 var DocSRZX = Case{
 	0xd7,
 	Status{
@@ -1197,7 +1197,7 @@ var DocSRZX = Case{
 	"<set,res> n,(<ix,iy>+1)",
 }
 
-// DocST8IX1: ld (<ix,iy>+1),<b,c,d,e> (1024 cycles)
+// DocST8IX1 - ld (<ix,iy>+1),<b,c,d,e> (1024 cycles)
 var DocST8IX1 = Case{
 	0xd7,
 	Status{
@@ -1216,7 +1216,7 @@ var DocST8IX1 = Case{
 	"ld (<ix,iy>+1),<b,c,d,e>",
 }
 
-// DocST8IX2: ld (<ix,iy>+1),<h,l> (256 cycles)
+// DocST8IX2 - ld (<ix,iy>+1),<h,l> (256 cycles)
 var DocST8IX2 = Case{
 	0xd7,
 	Status{
@@ -1235,7 +1235,7 @@ var DocST8IX2 = Case{
 	"ld (<ix,iy>+1),<h,l>",
 }
 
-// DocST8IX3: ld (<ix,iy>+1),a (64 cycles)
+// DocST8IX3 - ld (<ix,iy>+1),a (64 cycles)
 var DocST8IX3 = Case{
 	0xd7,
 	Status{
@@ -1254,7 +1254,7 @@ var DocST8IX3 = Case{
 	"ld (<ix,iy>+1),a",
 }
 
-// DocSTABD: ld (<bc,de>),a (96 cycles)
+// DocSTABD - ld (<bc,de>),a (96 cycles)
 var DocSTABD = Case{
 	0xd7,
 	Status{

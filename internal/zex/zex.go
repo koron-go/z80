@@ -10,8 +10,10 @@ import (
 	"math/bits"
 )
 
+// CRC32 has inverted CRC32 (IEEE) value.
 type CRC32 uint32
 
+// Status is Z80 machine status for test.
 type Status struct {
 	Inst0 uint8
 	Inst1 uint8
@@ -58,6 +60,7 @@ func newStatus(b []uint8) Status {
 	}
 }
 
+// Bytes returns []byte representaion of status.
 func (s Status) Bytes() []byte {
 	buf := make([]byte, 20)
 	buf[0] = s.Inst0
@@ -83,6 +86,7 @@ func (s Status) String() string {
 		s.BC, s.Flags, s.Accum, s.SP)
 }
 
+// OnesCount returns count of 1 bits in Status.
 func (s Status) OnesCount() int {
 	return bits.OnesCount8(s.Inst0) +
 		bits.OnesCount8(s.Inst1) +
@@ -99,6 +103,7 @@ func (s Status) OnesCount() int {
 		bits.OnesCount16(s.SP)
 }
 
+// Case defines a test case.
 type Case struct {
 	FlagMask uint8
 	BaseCase Status
@@ -115,6 +120,7 @@ func (c Case) Maxes() (shiftMax, countMax uint64) {
 	return
 }
 
+// Iter creates new states iterator.
 func (c Case) Iter() Iter {
 	return Iter{
 		base:  c.BaseCase.Bytes(),
@@ -123,6 +129,7 @@ func (c Case) Iter() Iter {
 	}
 }
 
+// Iter is states iterator/generator.
 type Iter struct {
 	base  []uint8
 	inc   []uint8
@@ -164,5 +171,9 @@ func (it Iter) Status(shift, count uint64) Status {
 
 // Msbt means machine state before test.
 const Msbt = 0x0103
+
+// MsbtLo has low 8 bits of Msbt.
 const MsbtLo = Msbt & 0xff
+
+// MsbtHi has high 8 bits of Msbt.
 const MsbtHi = (Msbt >> 8) & 0xff
