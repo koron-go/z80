@@ -7,7 +7,7 @@ profile: zexdoc.cim
 	go run . -cpuprof cpu.pprof -memprof mem.pprof
 	go tool pprof -svg ./cpu.pprof > cpuprof.svg
 
-%.cim: %.asm
+%.cim: ../../_z80/%.asm
 	go generate
 
 .PHONY: clean

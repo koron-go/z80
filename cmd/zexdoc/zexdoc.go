@@ -16,7 +16,7 @@ import (
 var cpuprof string
 var memprof string
 
-//go:generate zmac -o zexdoc.cim -o zexdoc.lst zexdoc.asm
+//go:generate zmac -o zexdoc.cim -o zexdoc.lst ../../_z80/zexdoc.asm
 
 func main() {
 	flag.StringVar(&cpuprof, "cpuprof", "", "profile CPU, output filename")
