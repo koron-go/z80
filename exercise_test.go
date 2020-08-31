@@ -103,6 +103,8 @@ func zexSetStatus(cpu *CPU, s zex.Status) {
 	for i, u8 := range s.Bytes()[4:] {
 		mem.Set(zex.Msbt+uint16(i), u8)
 	}
+	mem.Set(zex.Msbt+16, 0x2a)
+	mem.Set(zex.Msbt+17, 0x06)
 }
 
 func zexGetStatus(cpu *CPU) zex.Status {
@@ -141,36 +143,33 @@ func zexUpdateCRC(sum uint32, v uint8) uint32 {
 
 func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, crc uint32) uint32 {
 	before := iter.Status(shift, count)
-	beforeBytes := before.Bytes()
-	fmt.Printf("\n%08x %032x\n", beforeBytes[:4], beforeBytes[4:])
 	zexSetStatus(cpu, before)
-	if !zexIsHalt(cpu) {
-		err := cpu.Run(context.Background())
-		if err != ErrBreakPoint {
-			panic(fmt.Sprintf("unexpected termination: %v", err))
-		}
+	// nothing for HALT
+	if zexIsHalt(cpu) {
+		return crc
 	}
+	//beforeBytes := before.Bytes()
+	//fmt.Printf("\n# %d, %d", shift, count)
+	//fmt.Printf("\n%08x %032x\n", beforeBytes[:4], beforeBytes[4:])
+	err := cpu.Run(context.Background())
+	if err != ErrBreakPoint {
+		panic(fmt.Sprintf("unexpected termination: %v", err))
+	}
+	// capture after status
 	after := zexGetStatus(cpu)
 	after.Flags &= flagMask
 	afterBytes := after.Bytes()[4:] // skip instruction 4 bytes.
 	for _, b := range afterBytes {
 		crc = zexUpdateCRC(crc, b)
 	}
-	fmt.Printf("%08x %032x\n", crc, afterBytes)
+	//fmt.Printf("%08x %032x\n", crc, afterBytes)
 	return crc
 }
 
-var zexCases []zex.Case 
-
-func init() {
-	//zexCases = zex.DocCases
-	zexCases = append(zexCases, zex.DocCPD1)
-}
-
 func testRunZexdoc(t *testing.T) {
-	for _, c := range zexCases {
+	for _, c := range zex.DocCases {
 		t.Run(c.Desc, func(t *testing.T) {
-			//t.Parallel()
+			t.Parallel()
 			testRunZexCase(t, c)
 		})
 	}
@@ -188,10 +187,11 @@ func testRunZexCase(t *testing.T, c zex.Case) {
 	}
 
 	var crc uint32 = 0xffffffff
-	shiftMax, countMax := c.Maxes()
 	iter := c.Iter()
 
 	crc = zexRunIter(cpu, iter, 0, 0, c.FlagMask, crc)
+
+	shiftMax, countMax := c.Maxes()
 	for j := uint64(1); j < countMax; j++ {
 		crc = zexRunIter(cpu, iter, 1, j, c.FlagMask, crc)
 	}
