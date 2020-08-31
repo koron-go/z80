@@ -1,5 +1,9 @@
 package z80
 
+type fetcher interface {
+	fetch() uint8
+}
+
 // executeOne executes only an op-code.
 func (cpu *CPU) executeOne(f fetcher) {
 	if cpu.HALT {
@@ -69,6 +73,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 	case 0x3d:
 		xopDECa(cpu)
 
+	// LD r, n
 	case 0x06:
 		n := f.fetch()
 		xopLDbn(cpu, n)
@@ -300,19 +305,19 @@ func (cpu *CPU) executeOne(f fetcher) {
 		//cpu.AF.Hi = cpu.AF.Hi
 
 	case 0x46:
-		xopLDbchHLP(cpu)
+		xopLDbHLP(cpu)
 	case 0x4e:
-		xopLDbclHLP(cpu)
+		xopLDcHLP(cpu)
 	case 0x56:
-		xopLDdehHLP(cpu)
+		xopLDdHLP(cpu)
 	case 0x5e:
-		xopLDdelHLP(cpu)
+		xopLDeHLP(cpu)
 	case 0x66:
-		xopLDhlhHLP(cpu)
+		xopLDhHLP(cpu)
 	case 0x6e:
-		xopLDhllHLP(cpu)
+		xopLDlHLP(cpu)
 	case 0x7e:
-		xopLDafhHLP(cpu)
+		xopLDaHLP(cpu)
 
 	case 0x70:
 		xopLDHLPb(cpu)

@@ -1,20 +1,6 @@
 package z80
 
-import (
-	"reflect"
-)
-
-// Memory is requirements interface for memory.
-type Memory interface {
-	Get(addr uint16) uint8
-	Set(addr uint16, value uint8)
-}
-
-// IO is requirements interface for I/O.
-type IO interface {
-	In(addr uint8) uint8
-	Out(addr uint8, value uint8)
-}
+import "reflect"
 
 // DumbMemory provides Memory interface as wrapper of []uint8
 type DumbMemory []uint8
