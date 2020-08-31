@@ -67,4 +67,3 @@ func oopSL1IYdP(cpu *CPU, d uint8) {
 	v := cpu.sl1U8(cpu.Memory.Get(p))
 	cpu.Memory.Set(p, v)
 }
-

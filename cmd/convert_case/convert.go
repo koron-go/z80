@@ -37,7 +37,7 @@ func convert(w io.Writer, r io.Reader) error {
 		}
 		all = append(all, tc)
 	}
-	if len(all) == 0{
+	if len(all) == 0 {
 		return nil
 	}
 	fmt.Fprintf(w, "\n// DocCases has all test cases in zexdoc.asm\n")
