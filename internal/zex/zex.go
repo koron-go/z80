@@ -60,7 +60,7 @@ func newStatus(b []uint8) Status {
 	}
 }
 
-// Bytes returns []byte representaion of status.
+// Bytes returns []byte representation of status.
 func (s Status) Bytes() []byte {
 	buf := make([]byte, 20)
 	buf[0] = s.Inst0
