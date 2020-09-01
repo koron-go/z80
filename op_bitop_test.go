@@ -23,7 +23,7 @@ func TestBitop_BITbr(t *testing.T) {
 					*p = uint8(v)
 					mem := MapMemory{}.Put(0, 0xcb, uint8(0x40|b<<3|r))
 					wantGPR = gpr
-					FlagOp{}.Put(Z, v&(1<<b) == 0).Set(H).Reset(N).
+					flagOp{}.Put(Z, v&(1<<b) == 0).Set(H).Reset(N).
 						ApplyOn(&wantGPR.AF.Lo)
 					tOneStep(t,
 						States{GPR: gpr, SPR: SPR{IX: 0x1000}},
@@ -54,7 +54,7 @@ func TestBitop_BITbIXd(t *testing.T) {
 						Put(0x1000+uint16(d), uint8(v))
 					wantZ := v&(1<<b) == 0
 					var flag uint8
-					FlagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
+					flagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
 					tOneStep(t,
 						States{GPR: GPR{}, SPR: SPR{IX: 0x1000}},
 						mem,
@@ -84,7 +84,7 @@ func TestBitop_BITbIYd(t *testing.T) {
 						Put(0x4180+uint16(d), uint8(v))
 					wantZ := v&(1<<b) == 0
 					var flag uint8
-					FlagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
+					flagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
 					tOneStep(t,
 						States{GPR: GPR{}, SPR: SPR{IY: 0x4180}},
 						mem,

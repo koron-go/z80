@@ -474,7 +474,7 @@ func tADDAIXd(t *testing.T, av, dv uint8, ix uint16, mem MapMemory) {
 	r := av + xv
 	hc := av&0x0f+xv&0x0f > 0x0f
 	pv := isOverflowS8(int32(int8(av)) + int32(int8(xv)))
-	fo := FlagOp{}.
+	fo := flagOp{}.
 		Put(S, r&0x80 != 0). // S is set if result is negative
 		Put(Z, r&0xff == 0). // Z is set if result is 0
 		Put(H, hc).          // H is set if carry for bit3
@@ -518,7 +518,7 @@ func tADDAIYd(t *testing.T, av, dv uint8, iy uint16, mem MapMemory) {
 	r := av + yv
 	hc := av&0x0f+yv&0x0f > 0x0f
 	pv := isOverflowS8(int32(int8(av)) + int32(int8(yv)))
-	fo := FlagOp{}.
+	fo := flagOp{}.
 		Put(S, r&0x80 != 0). // S is set if result is negative
 		Put(Z, r&0xff == 0). // Z is set if result is 0
 		Put(H, hc).          // H is set if carry for bit3

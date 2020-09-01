@@ -55,7 +55,7 @@ func (cpu *CPU) addU8(a, b uint8) uint8 {
 func (cpu *CPU) adcU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	r := a16 + b16
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		r++
 	}
 	cpu.updateFlagArith8(r, a16, b16, false)
@@ -72,7 +72,7 @@ func (cpu *CPU) subU8(a, b uint8) uint8 {
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	r := a16 - b16
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		r--
 	}
 	cpu.updateFlagArith8(r, a16, b16, true)
@@ -167,7 +167,7 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 func (cpu *CPU) adcU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		r++
 	}
 	c := r ^ a32 ^ b32
@@ -187,7 +187,7 @@ func (cpu *CPU) adcU16(a, b uint16) uint16 {
 func (cpu *CPU) sbcU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 - b32
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		r--
 	}
 	c := r ^ a32 ^ b32
@@ -223,7 +223,7 @@ func (cpu *CPU) rlcU8(a uint8) uint8 {
 
 func (cpu *CPU) rlU8(a uint8) uint8 {
 	r := a << 1
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		r |= 0x01
 	}
 	cpu.updateFlagBitop(r, a>>7)
@@ -238,7 +238,7 @@ func (cpu *CPU) rrcU8(a uint8) uint8 {
 
 func (cpu *CPU) rrU8(a uint8) uint8 {
 	r := a >> 1
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		r |= 0x80
 	}
 	cpu.updateFlagBitop(r, a)

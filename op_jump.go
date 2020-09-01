@@ -9,25 +9,25 @@ func oopJRe(cpu *CPU, off uint8) {
 }
 
 func oopJRCe(cpu *CPU, off uint8) {
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
 func oopJRNCe(cpu *CPU, off uint8) {
-	if !cpu.flag(C) {
+	if !cpu.flagC() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
 func oopJRZe(cpu *CPU, off uint8) {
-	if cpu.flag(Z) {
+	if cpu.flagZ() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
 func oopJRNZe(cpu *CPU, off uint8) {
-	if !cpu.flag(Z) {
+	if !cpu.flagZ() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }

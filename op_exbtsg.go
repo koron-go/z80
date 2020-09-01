@@ -32,33 +32,29 @@ func oopEXSPPIY(cpu *CPU) {
 	cpu.IY = v
 }
 
+func (cpu *CPU) updateFlagLDID() {
+	var nand uint8 = maskH | maskPV | maskN
+	var or uint8
+	if cpu.BC.Lo != 0 || cpu.BC.Hi != 0 {
+		or |= maskPV
+	}
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func oopLDI(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
+	bc := cpu.BC.U16()
 	cpu.Memory.Set(de, cpu.Memory.Get(hl))
 	cpu.DE.SetU16(de + 1)
 	cpu.HL.SetU16(hl + 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Put(PV, bc != 0).
-		Reset(N))
+	cpu.BC.SetU16(bc - 1)
+	cpu.updateFlagLDID()
 }
 
 func oopLDIR(cpu *CPU) {
-	de := cpu.DE.U16()
-	hl := cpu.HL.U16()
-	cpu.Memory.Set(de, cpu.Memory.Get(hl))
-	cpu.DE.SetU16(de + 1)
-	cpu.HL.SetU16(hl + 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Put(PV, bc != 0).
-		Reset(N))
-	if bc != 0 {
+	oopLDI(cpu)
+	if cpu.AF.Lo&maskPV != 0 { // cpu.BC != 0
 		cpu.PC -= 2
 	}
 }
@@ -66,100 +62,71 @@ func oopLDIR(cpu *CPU) {
 func oopLDD(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
+	bc := cpu.BC.U16()
 	cpu.Memory.Set(de, cpu.Memory.Get(hl))
 	cpu.DE.SetU16(de - 1)
 	cpu.HL.SetU16(hl - 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Put(PV, bc != 0).
-		Reset(N))
+	cpu.BC.SetU16(bc - 1)
+	cpu.updateFlagLDID()
 }
 
 func oopLDDR(cpu *CPU) {
-	de := cpu.DE.U16()
-	hl := cpu.HL.U16()
-	cpu.Memory.Set(de, cpu.Memory.Get(hl))
-	cpu.DE.SetU16(de - 1)
-	cpu.HL.SetU16(hl - 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Put(PV, bc != 0).
-		Reset(N))
-	if bc != 0 {
+	oopLDD(cpu)
+	if cpu.AF.Lo&maskPV != 0 { // cpu.BC != 0
 		cpu.PC -= 2
 	}
 }
 
+func (cpu *CPU) updateFlagCPx(r, a, b uint8) {
+	c := r ^ a ^ b
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	or |= c & maskH
+	if cpu.BC.Lo != 0 || cpu.BC.Hi != 0 {
+		or |= maskPV
+	}
+	or |= maskN
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func oopCPI(cpu *CPU) {
-	a := cpu.AF.Hi
 	hl := cpu.HL.U16()
+	bc := cpu.BC.U16()
+	a := cpu.AF.Hi
 	x := cpu.Memory.Get(hl)
-	v := a - x
+	r := a - x
 	cpu.HL.SetU16(hl + 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f < x&0x0f).
-		Put(PV, bc != 0).
-		Set(N))
+	cpu.BC.SetU16(bc - 1)
+	cpu.updateFlagCPx(r, a, x)
 }
 
 func oopCPIR(cpu *CPU) {
-	a := cpu.AF.Hi
-	hl := cpu.HL.U16()
-	x := cpu.Memory.Get(hl)
-	v := a - x
-	cpu.HL.SetU16(hl + 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f < x&0x0f).
-		Put(PV, bc != 0).
-		Set(N))
-	if bc != 0 && v != 0 {
+	oopCPI(cpu)
+	// cpu.BC != 0 && A - (HL) != 0
+	if cpu.AF.Lo&maskPV != 0 && cpu.AF.Lo&maskZ == 0 {
 		cpu.PC -= 2
 	}
 }
 
 func oopCPD(cpu *CPU) {
-	a := cpu.AF.Hi
 	hl := cpu.HL.U16()
+	bc := cpu.BC.U16()
+	a := cpu.AF.Hi
 	x := cpu.Memory.Get(hl)
-	v := a - x
+	r := a - x
 	cpu.HL.SetU16(hl - 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f < x&0x0f).
-		Put(PV, bc != 0).
-		Set(N))
+	cpu.BC.SetU16(bc - 1)
+	cpu.updateFlagCPx(r, a, x)
 }
 
 func oopCPDR(cpu *CPU) {
-	a := cpu.AF.Hi
-	hl := cpu.HL.U16()
-	x := cpu.Memory.Get(hl)
-	v := a - x
-	cpu.HL.SetU16(hl - 1)
-	bc := cpu.BC.U16() - 1
-	cpu.BC.SetU16(bc)
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, v&0x80 != 0).
-		Put(Z, v == 0).
-		Put(H, a&0x0f < x&0x0f).
-		Put(PV, bc != 0).
-		Set(N))
-	if bc != 0 && v != 0 {
+	oopCPD(cpu)
+	// cpu.BC != 0 && A - (HL) != 0
+	if cpu.AF.Lo&maskPV != 0 && cpu.AF.Lo&maskZ == 0 {
 		cpu.PC -= 2
 	}
 }

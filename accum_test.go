@@ -15,7 +15,7 @@ func carry2n(c bool) int {
 	return 0
 }
 
-func tCheckFlags(t *testing.T, name string, cpu *CPU, fo FlagOp) {
+func tCheckFlags(t *testing.T, name string, cpu *CPU, fo flagOp) {
 	t.Helper()
 	exp := fo.Or & ^uint8(maskDefault)
 	act := cpu.States.GPR.AF.Lo & ^uint8(maskDefault)
@@ -24,7 +24,7 @@ func tCheckFlags(t *testing.T, name string, cpu *CPU, fo FlagOp) {
 	}
 }
 
-func tCheckFlags2(t *testing.T, name func() string, cpu *CPU, fo FlagOp) {
+func tCheckFlags2(t *testing.T, name func() string, cpu *CPU, fo flagOp) {
 	t.Helper()
 	exp := fo.Or & ^uint8(maskDefault)
 	act := cpu.States.GPR.AF.Lo & ^uint8(maskDefault)
@@ -41,7 +41,7 @@ func TestAccum_addU8(t *testing.T) {
 			r := a + b
 			hc := a&0x0f+b&0x0f > 0x0f
 			pv := isOverflowS8(int32(int8(a)) + int32(int8(b)))
-			fo := FlagOp{}.
+			fo := flagOp{}.
 				Put(S, r&0x80 != 0). // S is set if result is negative
 				Put(Z, r&0xff == 0). // Z is set if result is 0
 				Put(H, hc).          // H is set if carry for bit3
@@ -68,7 +68,7 @@ func TestAccum_adcU8(t *testing.T) {
 				r := a + b + c
 				hc := a&0x0f+b&0x0f+c > 0x0f
 				pv := isOverflowS8(int32(int8(a)) + int32(int8(b)) + int32(c))
-				fo := FlagOp{}.
+				fo := flagOp{}.
 					Put(S, r&0x80 != 0). // S is set if result is negative
 					Put(Z, r&0xff == 0). // Z is set if result is 0
 					Put(H, hc).          // H is set if carry for bit3
@@ -95,7 +95,7 @@ func TestAccum_subU8(t *testing.T) {
 			r := a - b
 			hc := a&0x0f < b&0x0f
 			pv := isOverflowS8(int32(int8(a)) - int32(int8(b)))
-			fo := FlagOp{}.
+			fo := flagOp{}.
 				Put(S, r&0x80 != 0). // S is set if result is negative
 				Put(Z, r&0xff == 0). // Z is set if result is 0
 				Put(H, hc).          // H is set if carry for bit3
@@ -122,7 +122,7 @@ func TestAccum_sbcU8(t *testing.T) {
 				r := a - b - c
 				hc := a&0x0f < b&0x0f+c
 				pv := isOverflowS8(int32(int8(a)) - int32(int8(b)) - int32(c))
-				fo := FlagOp{}.
+				fo := flagOp{}.
 					Put(S, r&0x80 != 0). // S is set if result is negative
 					Put(Z, r&0xff == 0). // Z is set if result is 0
 					Put(H, hc).          // H is set if carry for bit3
@@ -148,7 +148,7 @@ func TestAccum_andU8(t *testing.T) {
 			name := fmt.Sprintf("andU8(%02x, %02x)", a, b)
 			r := a & b
 			pv := bits.OnesCount8(uint8(r))%2 == 0
-			fo := FlagOp{}.
+			fo := flagOp{}.
 				Put(S, r&0x80 != 0). // S is set if result is negative
 				Put(Z, r&0xff == 0). // Z is set if result is 0
 				Set(H).              // H is set
@@ -172,7 +172,7 @@ func TestAccum_orU8(t *testing.T) {
 			name := fmt.Sprintf("orU8(%02x, %02x)", a, b)
 			r := a | b
 			pv := bits.OnesCount8(uint8(r))%2 == 0
-			fo := FlagOp{}.
+			fo := flagOp{}.
 				Put(S, r&0x80 != 0). // S is set if result is negative
 				Put(Z, r&0xff == 0). // Z is set if result is 0
 				Reset(H).            // H is reset
@@ -196,7 +196,7 @@ func TestAccum_xorU8(t *testing.T) {
 			name := fmt.Sprintf("xorU8(%02x, %02x)", a, b)
 			r := a ^ b
 			pv := bits.OnesCount8(uint8(r))%2 == 0
-			fo := FlagOp{}.
+			fo := flagOp{}.
 				Put(S, r&0x80 != 0). // S is set if result is negative
 				Put(Z, r&0xff == 0). // Z is set if result is 0
 				Reset(H).            // H is reset
@@ -220,7 +220,7 @@ func TestAccum_bitchk8(t *testing.T) {
 			cpu := &CPU{}
 			cpu.bitchk8(uint8(b), uint8(v))
 			wantZ := v&(1<<b) == 0
-			if gotZ := cpu.flag(Z); gotZ != wantZ {
+			if gotZ := cpu.flagZ(); gotZ != wantZ {
 				t.Fatalf("flag Z mismatch: want=%t got=%t b=%d v=%02x", wantZ, gotZ, b, v)
 			}
 		}
@@ -306,7 +306,7 @@ func TestAccum_addU16(t *testing.T) {
 			}
 			r := a + b
 			hc := a&0x0fff+b&0x0fff > 0x0fff
-			fo := FlagOp{}.
+			fo := flagOp{}.
 				Put(H, hc).        // H is set if carry for bit11
 				Reset(N).          // N is reset
 				Put(C, r > 0xffff) // C is set if carry from bit 15

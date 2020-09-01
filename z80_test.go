@@ -169,7 +169,7 @@ func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, cr
 func testRunZexdoc(t *testing.T) {
 	for _, c := range zex.DocCases {
 		t.Run(c.Desc, func(t *testing.T) {
-			t.Parallel()
+			//t.Parallel()
 			testRunZexCase(t, c)
 		})
 	}

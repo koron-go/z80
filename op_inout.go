@@ -2,37 +2,32 @@ package z80
 
 import "math/bits"
 
-func (cpu *CPU) updateIOIn(r uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
-	var or uint8
-	or |= r & maskStd
-	if r == 0 {
-		or |= maskZ
-	}
-	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
-	cpu.AF.Lo = cpu.AF.Lo&^nand | or
-}
-
 func oopINAnP(cpu *CPU, n uint8) {
 	cpu.AF.Hi = cpu.ioIn(n)
+}
+
+func (cpu *CPU) updateFlagIObZ() {
+	var nand uint8 = maskZ
+	var or uint8
+	if cpu.BC.Hi == 0 {
+		or |= maskZ
+	}
+	or |= maskN
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func oopINI(cpu *CPU) {
 	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() + 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 }
 
 func oopINIR(cpu *CPU) {
 	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() + 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 	if cpu.BC.Hi != 0 {
 		cpu.PC -= 2
 	}
@@ -42,18 +37,14 @@ func oopIND(cpu *CPU) {
 	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() - 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 }
 
 func oopINDR(cpu *CPU) {
 	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() - 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 	if cpu.BC.Hi != 0 {
 		cpu.PC -= 2
 	}
@@ -67,18 +58,14 @@ func oopOUTI(cpu *CPU) {
 	cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() + 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 }
 
 func oopOTIR(cpu *CPU) {
 	cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() + 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 	if cpu.BC.Hi != 0 {
 		cpu.PC -= 2
 	}
@@ -88,18 +75,14 @@ func oopOUTD(cpu *CPU) {
 	cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() - 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 }
 
 func oopOTDR(cpu *CPU) {
 	cpu.ioOut(cpu.BC.Lo, cpu.Memory.Get(cpu.HL.U16()))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() - 1)
-	cpu.flagUpdate(FlagOp{}.
-		Put(Z, cpu.BC.Hi == 0).
-		Set(N))
+	cpu.updateFlagIObZ()
 	if cpu.BC.Hi != 0 {
 		cpu.PC -= 2
 	}
@@ -107,6 +90,17 @@ func oopOTDR(cpu *CPU) {
 
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
+
+func (cpu *CPU) updateIOIn(r uint8) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= r & maskStd
+	if r == 0 {
+		or |= maskZ
+	}
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
 
 func xopINbCP(cpu *CPU) {
 	r := cpu.ioIn(cpu.BC.Lo)

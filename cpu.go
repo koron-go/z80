@@ -61,6 +61,22 @@ func (cpu *CPU) warnf(msg string, args ...interface{}) {
 //	log.Printf("Z80 debug: "+msg, args...)
 //}
 
+func (cpu *CPU) flagC() bool {
+	return cpu.AF.Lo&maskC != 0
+}
+
+func (cpu *CPU) flagN() bool {
+	return cpu.AF.Lo&maskN != 0
+}
+
+func (cpu *CPU) flagH() bool {
+	return cpu.AF.Lo&maskH != 0
+}
+
+func (cpu *CPU) flagZ() bool {
+	return cpu.AF.Lo&maskZ != 0
+}
+
 func (cpu *CPU) readU16(addr uint16) uint16 {
 	l := cpu.Memory.Get(addr)
 	h := cpu.Memory.Get(addr + 1)
@@ -77,10 +93,6 @@ func (cpu *CPU) fetch() uint8 {
 	v := cpu.Memory.Get(cpu.PC)
 	cpu.PC++
 	return v
-}
-
-func (cpu *CPU) flag(n int) bool {
-	return Flag(cpu.AF.Lo, n)
 }
 
 func (cpu *CPU) ioIn(addr uint8) uint8 {

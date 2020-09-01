@@ -6,29 +6,36 @@ import "math/bits"
 // See https://github.com/ppeccin/WebMSX/blob/654e3aa303e84404fba4a89d5fa21fae32753cf5/src/main/msx/cpu/CPU.js#L1010-L1030
 func oopDAA(cpu *CPU) {
 	r := cpu.AF.Hi
-	c := cpu.flag(C)
-	if cpu.flag(N) {
-		if cpu.flag(H) || (cpu.AF.Hi&0x0f) > 9 {
+	c := cpu.flagC()
+	if cpu.flagN() {
+		if cpu.flagH() || (cpu.AF.Hi&0x0f) > 9 {
 			r -= 0x06
 		}
 		if c || (cpu.AF.Hi > 0x99) {
 			r -= 0x60
 		}
 	} else {
-		if cpu.flag(H) || (cpu.AF.Hi&0x0f) > 9 {
+		if cpu.flagH() || (cpu.AF.Hi&0x0f) > 9 {
 			r += 0x06
 		}
 		if c || (cpu.AF.Hi > 0x99) {
 			r += 0x60
 		}
 	}
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, r&0x80 != 0).
-		Put(Z, r == 0).
-		Put(H, (cpu.AF.Hi^r)&0x10 != 0).
-		Put(PV, bits.OnesCount8(r)%2 == 0).
-		Keep(N).
-		Put(C, c || cpu.AF.Hi > 0x99))
+
+	var nand uint8 = maskStd | maskZ | maskH | maskPV
+	var or uint8
+	or |= uint8(r) & maskStd
+	if uint8(r) == 0 {
+		or |= maskZ
+	}
+	or |= (cpu.AF.Hi ^ r) & maskH
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	if cpu.AF.Hi > 0x99 {
+		or |= maskC
+	}
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+
 	cpu.AF.Hi = r
 }
 
@@ -43,13 +50,14 @@ func oopEI(cpu *CPU) {
 
 func oopCPL(cpu *CPU) {
 	cpu.AF.Hi = ^cpu.AF.Hi
-	cpu.flagUpdate(FlagOp{}.Set(H).Set(N))
+	cpu.AF.Lo |= maskH | maskN
 }
 
 func oopNEG(cpu *CPU) {
 	a := cpu.AF.Hi
 	r := ^a + 1
 	cpu.AF.Hi = r
+
 	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
 	or |= r & maskStd
@@ -70,12 +78,20 @@ func oopNEG(cpu *CPU) {
 }
 
 func oopCCF(cpu *CPU) {
-	c := cpu.flag(C)
-	cpu.flagUpdate(FlagOp{}.Put(H, c).Reset(N).Put(C, !c))
+	var nand uint8 = maskH | maskN | maskC
+	var or uint8
+	if cpu.flagC() {
+		or |= maskH
+	} else {
+		or |= maskC
+	}
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func oopSCF(cpu *CPU) {
-	cpu.flagUpdate(FlagOp{}.Reset(H).Reset(N).Set(C))
+	var nand uint8 = maskH | maskN | maskC
+	var or uint8 = maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func oopNOP(cpu *CPU) {

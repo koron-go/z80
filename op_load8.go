@@ -45,6 +45,19 @@ func oopLDnnPA(cpu *CPU, l, h uint8) {
 	cpu.Memory.Set(p, cpu.AF.Hi)
 }
 
+func (cpu *CPU) updateFlagIR(d uint8) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= d & maskStd
+	if d == 0 {
+		or |= maskZ
+	}
+	if cpu.IFF2 {
+		or |= maskPV
+	}
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func oopLDAI(cpu *CPU) {
 	d := cpu.IR.Hi
 	cpu.AF.Hi = d
@@ -58,13 +71,7 @@ func oopLDAI(cpu *CPU) {
 	// - C is not affected.
 	// - If an interrupt occurs during execution of this instruction,
 	//   the Parity flag contains a 0.
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, d&0x80 != 0).
-		Put(Z, d == 0).
-		Reset(H).
-		Put(PV, cpu.IFF2).
-		Reset(N).
-		Keep(C))
+	cpu.updateFlagIR(d)
 }
 
 func oopLDAR(cpu *CPU) {
@@ -79,13 +86,7 @@ func oopLDAR(cpu *CPU) {
 	// - C is not affected.
 	// - If an interrupt occurs during execution of this instruction,
 	//	 the parity flag contains a 0.
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, d&0x80 != 0).
-		Put(Z, d == 0).
-		Reset(H).
-		Put(PV, cpu.IFF2).
-		Reset(N).
-		Keep(C))
+	cpu.updateFlagIR(d)
 }
 
 func oopLDIA(cpu *CPU) {

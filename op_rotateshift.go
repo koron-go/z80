@@ -2,50 +2,50 @@ package z80
 
 import "math/bits"
 
+func (cpu *CPU) updateFlagRL(r uint8) {
+	var nand uint8 = maskH | maskN | maskC
+	var or uint8 = (r >> 7) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func oopRLCA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a<<1 | a>>7
 	cpu.AF.Hi = a2
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Reset(N).
-		Put(C, a&0x80 != 0))
+	cpu.updateFlagRL(a)
 }
 
 func oopRLA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a << 1
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		a2 |= 0x01
 	}
 	cpu.AF.Hi = a2
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Reset(N).
-		Put(C, a&0x80 != 0))
+	cpu.updateFlagRL(a)
+}
+
+func (cpu *CPU) updateFlagRR(r uint8) {
+	var nand uint8 = maskH | maskN | maskC
+	var or uint8 = r & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func oopRRCA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a>>1 | a<<7
 	cpu.AF.Hi = a2
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Reset(N).
-		Put(C, a&0x01 != 0))
+	cpu.updateFlagRR(a)
 }
 
 func oopRRA(cpu *CPU) {
 	a := cpu.AF.Hi
 	a2 := a >> 1
-	if cpu.flag(C) {
+	if cpu.flagC() {
 		a2 |= 0x80
 	}
 	cpu.AF.Hi = a2
-	cpu.flagUpdate(FlagOp{}.
-		Reset(H).
-		Reset(N).
-		Put(C, a&0x01 != 0))
+	cpu.updateFlagRR(a)
 }
 
 func oopRLCIXdP(cpu *CPU, d uint8) {
@@ -118,6 +118,17 @@ func oopSRLIYdP(cpu *CPU, d uint8) {
 	cpu.Memory.Set(p, cpu.srlU8(cpu.Memory.Get(p)))
 }
 
+func (cpu *CPU) updateFlagRxD(r uint8) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	or |= uint8(r) & maskStd
+	if uint8(r) == 0 {
+		or |= maskZ
+	}
+	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func oopRLD(cpu *CPU) {
 	p := cpu.HL.U16()
 	a := cpu.AF.Hi
@@ -126,12 +137,7 @@ func oopRLD(cpu *CPU) {
 	b2 := b<<4 | a&0x0f
 	cpu.Memory.Set(p, b2)
 	cpu.AF.Hi = a2
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, a2&0x80 != 0).
-		Put(Z, a2 == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(a2)%2 == 0).
-		Reset(N))
+	cpu.updateFlagRxD(a2)
 }
 
 func oopRRD(cpu *CPU) {
@@ -142,12 +148,7 @@ func oopRRD(cpu *CPU) {
 	b2 := a<<4 | b>>4
 	cpu.Memory.Set(p, b2)
 	cpu.AF.Hi = a2
-	cpu.flagUpdate(FlagOp{}.
-		Put(S, a2&0x80 != 0).
-		Put(Z, a2 == 0).
-		Reset(H).
-		Put(PV, bits.OnesCount8(a2)%2 == 0).
-		Reset(N))
+	cpu.updateFlagRxD(a2)
 }
 
 func oopSL1IXdP(cpu *CPU, d uint8) {
