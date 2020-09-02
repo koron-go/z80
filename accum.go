@@ -150,8 +150,9 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32
 	c := r ^ a32 ^ b32
-	var nand uint8 = maskH | maskN | maskC
+	var nand uint8 = maskH | maskN | maskC | mask5 | mask3
 	var or uint8
+	or |= uint8(r>>8) & (mask5 | mask3)
 	or |= uint8(c>>8) & maskH
 	or |= uint8(r>>16) & maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
