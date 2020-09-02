@@ -13,24 +13,31 @@ import (
 	"github.com/koron-go/z80/internal/tinycpm"
 )
 
+var all bool
 var cpuprof string
 var memprof string
 
 //go:generate zmac -o zexdoc.cim -o zexdoc.lst ../../_z80/zexdoc.asm
+//go:generate zmac -o zexall.cim -o zexall.lst ../../_z80/zexall.asm
 
 func main() {
+	flag.BoolVar(&all, "all", false, "run zexall")
 	flag.StringVar(&cpuprof, "cpuprof", "", "profile CPU, output filename")
 	flag.StringVar(&memprof, "memprof", "", "profile memory, output filename")
 	flag.Parse()
-	err := runZexdoc()
+	name := "zexdoc.cim"
+	if all {
+		name = "zexall.cim"
+	}
+	err := runZexdoc(name)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func runZexdoc() error {
+func runZexdoc(name string) error {
 	mem, io := tinycpm.New()
-	err := mem.LoadFile("zexdoc.cim")
+	err := mem.LoadFile(name)
 	if err != nil {
 		return err
 	}
