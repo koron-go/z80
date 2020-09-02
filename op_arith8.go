@@ -177,27 +177,27 @@ func oopXORIYdP(cpu *CPU, d uint8) {
 
 func oopCPn(cpu *CPU, n uint8) {
 	a := cpu.AF.Hi
-	cpu.subU8(a, n)
+	cpu.cpU8(a, n)
 }
 
 func oopCPHLP(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.Memory.Get(cpu.HL.U16())
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func oopCPIXdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
 	p := addrOff(cpu.IX, d)
 	x := cpu.Memory.Get(p)
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func oopCPIYdP(cpu *CPU, d uint8) {
 	a := cpu.AF.Hi
 	p := addrOff(cpu.IY, d)
 	x := cpu.Memory.Get(p)
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func oopINCHLP(cpu *CPU) {
@@ -723,67 +723,67 @@ func xopORiyl(cpu *CPU) {
 func xopCPb(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.BC.Hi
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPc(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.BC.Lo
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPd(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.DE.Hi
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPe(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.DE.Lo
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPh(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.HL.Hi
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPl(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.HL.Lo
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPa(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := cpu.AF.Hi
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPixh(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := uint8(cpu.IX >> 8)
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPixl(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := uint8(cpu.IX)
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPiyh(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := uint8(cpu.IY >> 8)
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopCPiyl(cpu *CPU) {
 	a := cpu.AF.Hi
 	x := uint8(cpu.IY)
-	cpu.subU8(a, x)
+	cpu.cpU8(a, x)
 }
 
 func xopINCb(cpu *CPU) {

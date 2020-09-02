@@ -66,6 +66,27 @@ func (cpu *CPU) subU8(a, b uint8) uint8 {
 	return uint8(r)
 }
 
+func (cpu *CPU) cpU8(a, b uint8) uint8 {
+	a16, b16 := uint16(a), uint16(b)
+	r := a16 - b16
+
+	c := r ^ a16 ^ b16
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= uint8(r) & maskS
+	or |= b & (mask5 | mask3)
+	if uint8(r) == 0 {
+		or |= maskZ
+	}
+	or |= uint8(c) & maskH
+	or |= uint8((c>>6)^(c>>5)) & maskPV
+	or |= maskN
+	or |= uint8(r>>8) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+
+	return uint8(r)
+}
+
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	r := a16 - b16 - uint16(cpu.AF.Lo&maskC)
