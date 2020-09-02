@@ -17,10 +17,7 @@ func oopRLCA(cpu *CPU) {
 
 func oopRLA(cpu *CPU) {
 	a := cpu.AF.Hi
-	a2 := a << 1
-	if cpu.flagC() {
-		a2 |= 0x01
-	}
+	a2 := a<<1 | cpu.AF.Lo&maskC
 	cpu.AF.Hi = a2
 	cpu.updateFlagRL(a)
 }
