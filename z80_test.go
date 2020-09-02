@@ -69,16 +69,16 @@ func tRunMinibios(t *testing.T, name, expOut string, breakpoints ...uint16) {
 }
 
 func TestExerciser(t *testing.T) {
-	t.Run("test function call 02h", func(t *testing.T) {
+	t.Run("funccall 02h", func(t *testing.T) {
 		tRunMinibios(t, "testdata/testfn02.cim", "OK")
 	})
-	t.Run("test function call 09h", func(t *testing.T) {
+	t.Run("funccall 09h", func(t *testing.T) {
 		tRunMinibios(t, "testdata/testfn09.cim", "Hello 09h")
 	})
-	t.Run("run testdata/prelim.cim", func(t *testing.T) {
+	t.Run("Preliminary", func(t *testing.T) {
 		tRunMinibios(t, "testdata/prelim.cim", "Preliminary tests complete")
 	})
-	t.Run("run zexdoc", testRunZexdoc)
+	t.Run("Z80 documented", testRunZexdoc)
 }
 
 func zexSetStatus(cpu *CPU, s zex.Status) {
@@ -167,9 +167,10 @@ func zexRunIter(cpu *CPU, iter zex.Iter, shift, count uint64, flagMask uint8, cr
 }
 
 func testRunZexdoc(t *testing.T) {
-	for _, c := range zex.DocCases {
+	for _, c0 := range zex.DocCases {
+		c := c0
 		t.Run(c.Desc, func(t *testing.T) {
-			//t.Parallel()
+			t.Parallel()
 			testRunZexCase(t, c)
 		})
 	}
