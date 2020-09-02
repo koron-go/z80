@@ -4,7 +4,7 @@ import "math/bits"
 
 func (cpu *CPU) updateFlagRL(r uint8) {
 	var nand uint8 = maskH | maskN | maskC
-	var or uint8 = (r >> 7) & maskC
+	var or = (r >> 7) & maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
@@ -27,7 +27,7 @@ func oopRLA(cpu *CPU) {
 
 func (cpu *CPU) updateFlagRR(r uint8) {
 	var nand uint8 = maskH | maskN | maskC
-	var or uint8 = r & maskC
+	var or = r & maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
