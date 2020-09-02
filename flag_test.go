@@ -13,13 +13,13 @@ const (
 	PV = 2
 
 	// X3 is reserved index for unused flag.
-	X3 = 3
+	//X3 = 3
 
 	// H is an index for half carry flag.
 	H = 4
 
 	// X5 is reserved index for unused flag.
-	X5 = 5
+	//X5 = 5
 
 	// Z is an index for zero flag.
 	Z = 6

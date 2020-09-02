@@ -54,10 +54,7 @@ func (cpu *CPU) addU8(a, b uint8) uint8 {
 
 func (cpu *CPU) adcU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
-	r := a16 + b16
-	if cpu.flagC() {
-		r++
-	}
+	r := a16 + b16 + uint16(cpu.AF.Lo&maskC)
 	cpu.updateFlagArith8(r, a16, b16, false)
 	return uint8(r)
 }
@@ -71,10 +68,7 @@ func (cpu *CPU) subU8(a, b uint8) uint8 {
 
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
-	r := a16 - b16
-	if cpu.flagC() {
-		r--
-	}
+	r := a16 - b16 - uint16(cpu.AF.Lo&maskC)
 	cpu.updateFlagArith8(r, a16, b16, true)
 	return uint8(r)
 }
@@ -166,10 +160,7 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 
 func (cpu *CPU) adcU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
-	r := a32 + b32
-	if cpu.flagC() {
-		r++
-	}
+	r := a32 + b32 + uint32(cpu.AF.Lo&maskC)
 	c := r ^ a32 ^ b32
 	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
@@ -186,10 +177,7 @@ func (cpu *CPU) adcU16(a, b uint16) uint16 {
 
 func (cpu *CPU) sbcU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
-	r := a32 - b32
-	if cpu.flagC() {
-		r--
-	}
+	r := a32 - b32 - uint32(cpu.AF.Lo&maskC)
 	c := r ^ a32 ^ b32
 	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
@@ -222,10 +210,7 @@ func (cpu *CPU) rlcU8(a uint8) uint8 {
 }
 
 func (cpu *CPU) rlU8(a uint8) uint8 {
-	r := a << 1
-	if cpu.flagC() {
-		r |= 0x01
-	}
+	r := a<<1 | cpu.AF.Lo&maskC
 	cpu.updateFlagBitop(r, a>>7)
 	return r
 }
@@ -237,10 +222,7 @@ func (cpu *CPU) rrcU8(a uint8) uint8 {
 }
 
 func (cpu *CPU) rrU8(a uint8) uint8 {
-	r := a >> 1
-	if cpu.flagC() {
-		r |= 0x80
-	}
+	r := a>>1 | (cpu.AF.Lo&maskC)<<7
 	cpu.updateFlagBitop(r, a)
 	return r
 }
