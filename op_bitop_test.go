@@ -91,7 +91,7 @@ func TestBitop_BITbIYd(t *testing.T) {
 					wantZ := v&(1<<b) == 0
 					var flag uint8
 					flagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
-					tSteps(t,"",
+					tSteps(t, "",
 						States{GPR: GPR{}, SPR: SPR{IY: 0x4180}},
 						mem,
 						1,
