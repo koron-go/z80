@@ -288,7 +288,7 @@ bitz80:	db	0ffh		; flag mask
 ; cpd<r> (1) (6144 cycles)
 cpd1:	db	0ffh		; flag mask
 	tstr	0edh,0a9h,0,0,0c7b6h,072b4h,018f6h,msbt+17,08dbdh,1,0c0h,030h,094a3h
-	tstr	0,010h,0,0,0,0,0,0,0,010,0,-1,0		; (1024 cycles)
+	tstr	0,010h,0,0,0,0,0,0,0,00ah,0,-1,0	; (1024 cycles)
 	tstr	0,0,0,0,0,0,0,0,0,0,0d7h,0,0		; (6 cycles)
 	db	013h,04bh,062h,02dh			; expected crc
 	tmsg	'cpd<r>........................'
@@ -296,7 +296,7 @@ cpd1:	db	0ffh		; flag mask
 ; cpi<r> (1) (6144 cycles)
 cpi1:	db	0ffh		; flag mask
 	tstr	0edh,0a1h,0,0,04d48h,0af4ah,0906bh,msbt,04e71h,1,093h,06ah,0907ch
-	tstr	0,010h,0,0,0,0,0,0,0,010,0,-1,0		; (1024 cycles)
+	tstr	0,010h,0,0,0,0,0,0,0,00ah,0,-1,0	; (1024 cycles)
 	tstr	0,0,0,0,0,0,0,0,0,0,0d7h,0,0		; (6 cycles)
 	db	02dh,0a4h,02dh,019h			; expected crc
 	tmsg	'cpi<r>........................'
