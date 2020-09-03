@@ -15,11 +15,13 @@ import (
 const Start = 0x0100
 
 // Memory provides 64K bytes array memory.
-type Memory []uint8
+type Memory struct {
+	buf [65536]uint8
+}
 
 // NewMemory creates a new memory which includes minimal CP/M.
-func NewMemory() Memory {
-	m := make(Memory, 65536)
+func NewMemory() *Memory {
+	m := new(Memory)
 	m.put(0x0000, bios0000...)
 	m.put(0xfe06, biosFE06...)
 	m.put(0xff03, biosFF03...)
@@ -44,28 +46,22 @@ var biosFF03 = []byte{
 }
 
 // Get gets a byte at addr of memory.
-func (m Memory) Get(addr uint16) uint8 {
-	if int(addr) >= len(m) {
-		return 0
-	}
-	return m[addr]
+func (m *Memory) Get(addr uint16) uint8 {
+	return m.buf[addr]
 }
 
 // Set sets a byte at addr of memory.
-func (m Memory) Set(addr uint16, value uint8) {
-	if int(addr) >= len(m) {
-		return
-	}
-	m[addr] = value
+func (m *Memory) Set(addr uint16, value uint8) {
+	m.buf[addr] = value
 }
 
 // put puts "data" block from addr.
-func (m Memory) put(addr uint16, data ...uint8) {
-	copy(m[int(addr):int(addr)+len(data)], data)
+func (m *Memory) put(addr uint16, data ...uint8) {
+	copy(m.buf[int(addr):int(addr)+len(data)], data)
 }
 
 // LoadFile loads a file from "Start" (0x0100) as program.
-func (m Memory) LoadFile(name string) error {
+func (m *Memory) LoadFile(name string) error {
 	prog, err := ioutil.ReadFile(name)
 	if err != nil {
 		return err
@@ -117,6 +113,6 @@ func (io *IO) SetWarnLogger(l *log.Logger) {
 }
 
 // New creates Memory and IO.
-func New() (Memory, *IO) {
+func New() (*Memory, *IO) {
 	return NewMemory(), NewIO()
 }
