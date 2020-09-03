@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"hash/crc32"
 	"log"
-	"os"
-	"strconv"
 	"testing"
 
 	"github.com/koron-go/z80/internal/tinycpm"
@@ -179,9 +177,7 @@ func testRunZexdoc(t *testing.T) {
 }
 
 func TestExerciserAll(t *testing.T) {
-	if ok, _ := strconv.ParseBool(os.Getenv("ZEXALL_ENABLED")); !ok {
-		t.Skip("to enable set ZEXALL_ENABLED=1 env. var.")
-	}
+	t.Parallel()
 	for _, c0 := range zex.AllCases {
 		c := c0
 		t.Run(c.Desc, func(t *testing.T) {
