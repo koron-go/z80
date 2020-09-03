@@ -32,12 +32,14 @@ func oopEXSPPIY(cpu *CPU) {
 	cpu.IY = v
 }
 
-func (cpu *CPU) updateFlagLDID() {
-	var nand uint8 = maskH | maskPV | maskN
+func (cpu *CPU) updateFlagLDID(a uint8) {
+	var nand uint8 = maskH | maskPV | maskN | mask5 | mask3
 	var or uint8
 	if cpu.BC.Lo != 0 || cpu.BC.Hi != 0 {
 		or |= maskPV
 	}
+	a += cpu.AF.Hi
+	or |= a&mask3 | (a<<4)&mask5
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
@@ -45,11 +47,12 @@ func oopLDI(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
 	bc := cpu.BC.U16()
-	cpu.Memory.Set(de, cpu.Memory.Get(hl))
+	a := cpu.Memory.Get(hl)
+	cpu.Memory.Set(de, a)
 	cpu.DE.SetU16(de + 1)
 	cpu.HL.SetU16(hl + 1)
 	cpu.BC.SetU16(bc - 1)
-	cpu.updateFlagLDID()
+	cpu.updateFlagLDID(a)
 }
 
 func oopLDIR(cpu *CPU) {
@@ -63,11 +66,12 @@ func oopLDD(cpu *CPU) {
 	de := cpu.DE.U16()
 	hl := cpu.HL.U16()
 	bc := cpu.BC.U16()
-	cpu.Memory.Set(de, cpu.Memory.Get(hl))
+	a := cpu.Memory.Get(hl)
+	cpu.Memory.Set(de, a)
 	cpu.DE.SetU16(de - 1)
 	cpu.HL.SetU16(hl - 1)
 	cpu.BC.SetU16(bc - 1)
-	cpu.updateFlagLDID()
+	cpu.updateFlagLDID(a)
 }
 
 func oopLDDR(cpu *CPU) {
