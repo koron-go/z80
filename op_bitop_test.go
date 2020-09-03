@@ -25,15 +25,18 @@ func TestBitop_BITbr(t *testing.T) {
 					wantGPR = gpr
 					flagOp{}.Put(Z, v&(1<<b) == 0).Set(H).Reset(N).
 						ApplyOn(&wantGPR.AF.Lo)
-					tOneStep(t,
+					tSteps(t, "",
 						States{GPR: gpr, SPR: SPR{IX: 0x1000}},
 						mem,
+						1,
 						States{
 							GPR: wantGPR,
 							SPR: SPR{PC: 2, IR: Register{Lo: 0x01},
 								IX: 0x1000,
 							}},
-						mem.Clone())
+						mem.Clone(),
+						maskS|maskPV|mask5|mask3|maskC,
+					)
 				}
 			})
 		}
@@ -55,15 +58,18 @@ func TestBitop_BITbIXd(t *testing.T) {
 					wantZ := v&(1<<b) == 0
 					var flag uint8
 					flagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
-					tOneStep(t,
+					tSteps(t, "",
 						States{GPR: GPR{}, SPR: SPR{IX: 0x1000}},
 						mem,
+						1,
 						States{
 							GPR: GPR{AF: Register{Lo: flag}},
 							SPR: SPR{PC: 4, IR: Register{Lo: 0x01},
 								IX: 0x1000,
 							}},
-						mem.Clone())
+						mem.Clone(),
+						maskS|maskPV|mask5|mask3|maskC,
+					)
 				}
 			}
 		})
@@ -85,15 +91,18 @@ func TestBitop_BITbIYd(t *testing.T) {
 					wantZ := v&(1<<b) == 0
 					var flag uint8
 					flagOp{}.Put(Z, wantZ).Set(H).Reset(N).ApplyOn(&flag)
-					tOneStep(t,
+					tSteps(t,"",
 						States{GPR: GPR{}, SPR: SPR{IY: 0x4180}},
 						mem,
+						1,
 						States{
 							GPR: GPR{AF: Register{Lo: flag}},
 							SPR: SPR{PC: 4, IR: Register{Lo: 0x01},
 								IY: 0x4180,
 							}},
-						mem.Clone())
+						mem.Clone(),
+						maskS|maskPV|mask5|mask3|maskC,
+					)
 				}
 			}
 		})

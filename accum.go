@@ -274,13 +274,15 @@ func (cpu *CPU) srlU8(a uint8) uint8 {
 }
 
 func (cpu *CPU) bitchk8(b, v uint8) {
-	r := v&(0x01<<b) != 0
-	var nand uint8 = maskZ | maskH | maskN
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
 	var or uint8
-	if !r {
-		or |= maskZ
+	if v&(0x01<<b) == 0 {
+		or |= maskZ | maskPV
+	} else if b == 7 {
+		or |= maskS
 	}
 	or |= maskH
+	or |= v & (mask5 | mask3)
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
