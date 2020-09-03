@@ -1,15 +1,27 @@
 package z80
 
+func (cpu *CPU) bitchk8b(b, v uint8) {
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var or uint8
+	if v&(0x01<<b) == 0 {
+		or |= maskZ | maskPV
+	} else if b == 7 {
+		or |= maskS
+	}
+	or |= maskH
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+}
+
 func xopBITbIXdP(cpu *CPU, b, d uint8) {
 	p := addrOff(cpu.IX, d)
 	v := cpu.Memory.Get(p)
-	cpu.bitchk8(b, v)
+	cpu.bitchk8b(b, v)
 }
 
 func xopBITbIYdP(cpu *CPU, b, d uint8) {
 	p := addrOff(cpu.IY, d)
 	v := cpu.Memory.Get(p)
-	cpu.bitchk8(b, v)
+	cpu.bitchk8b(b, v)
 }
 
 func xopSETbIXdP(cpu *CPU, b, d uint8) {

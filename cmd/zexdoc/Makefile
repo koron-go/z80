@@ -2,6 +2,9 @@
 run: zexdoc.cim
 	go run .
 
+run-all: zexall.cim
+	go run . -all
+
 .PHONY: profile
 profile: zexdoc.cim
 	go run . -cpuprof cpu.pprof -memprof mem.pprof
@@ -12,6 +15,6 @@ profile: zexdoc.cim
 
 .PHONY: clean
 clean:
-	rm -f zexdoc.lst
+	rm -f zexdoc.lst zexall.lst
 	rm -f *.pprof
 	rm -f cpuprof.svg

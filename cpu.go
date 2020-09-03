@@ -7,8 +7,6 @@ import (
 )
 
 const (
-	maskStd = 0xa8
-
 	maskNone = 0x00
 	maskC    = 0x01
 	maskN    = 0x02
@@ -17,6 +15,10 @@ const (
 	maskZ    = 0x40
 	maskS    = 0x80
 
+	mask3 = 0x08
+	mask5 = 0x20
+
+	maskStd     = maskS | mask5 | mask3
 	maskDefault = 0x28
 )
 

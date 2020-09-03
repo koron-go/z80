@@ -66,6 +66,27 @@ func (cpu *CPU) subU8(a, b uint8) uint8 {
 	return uint8(r)
 }
 
+func (cpu *CPU) cpU8(a, b uint8) uint8 {
+	a16, b16 := uint16(a), uint16(b)
+	r := a16 - b16
+
+	c := r ^ a16 ^ b16
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var or uint8
+	or |= uint8(r) & maskS
+	or |= b & (mask5 | mask3)
+	if uint8(r) == 0 {
+		or |= maskZ
+	}
+	or |= uint8(c) & maskH
+	or |= uint8((c>>6)^(c>>5)) & maskPV
+	or |= maskN
+	or |= uint8(r>>8) & maskC
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+
+	return uint8(r)
+}
+
 func (cpu *CPU) sbcU8(a, b uint8) uint8 {
 	a16, b16 := uint16(a), uint16(b)
 	r := a16 - b16 - uint16(cpu.AF.Lo&maskC)
@@ -150,8 +171,9 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32
 	c := r ^ a32 ^ b32
-	var nand uint8 = maskH | maskN | maskC
+	var nand uint8 = maskH | maskN | maskC | mask5 | mask3
 	var or uint8
+	or |= uint8(r>>8) & (mask5 | mask3)
 	or |= uint8(c>>8) & maskH
 	or |= uint8(r>>16) & maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
@@ -252,13 +274,15 @@ func (cpu *CPU) srlU8(a uint8) uint8 {
 }
 
 func (cpu *CPU) bitchk8(b, v uint8) {
-	r := v&(0x01<<b) != 0
-	var nand uint8 = maskZ | maskH | maskN
+	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
 	var or uint8
-	if !r {
-		or |= maskZ
+	if v&(0x01<<b) == 0 {
+		or |= maskZ | maskPV
+	} else if b == 7 {
+		or |= maskS
 	}
 	or |= maskH
+	or |= v & (mask5 | mask3)
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 

@@ -42,6 +42,10 @@ clean:
 zexdoc:
 	$(MAKE) -C cmd/zexdoc run
 
+.PHONY: zexall
+zexall:
+	$(MAKE) -C cmd/zexdoc run-all
+
 z80.asm:
 	go tool compile -o z80.o -S `go list -f '{{join .GoFiles " "}}'` > $@
 	rm -f z80.o

@@ -844,7 +844,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x45:
 			cpu.bitchk8(0, cpu.HL.Lo)
 		case 0x46:
-			cpu.bitchk8(0, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(0, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x47:
 			cpu.bitchk8(0, cpu.AF.Hi)
 
@@ -862,7 +862,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x4d:
 			cpu.bitchk8(1, cpu.HL.Lo)
 		case 0x4e:
-			cpu.bitchk8(1, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(1, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x4f:
 			cpu.bitchk8(1, cpu.AF.Hi)
 
@@ -880,7 +880,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x55:
 			cpu.bitchk8(2, cpu.HL.Lo)
 		case 0x56:
-			cpu.bitchk8(2, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(2, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x57:
 			cpu.bitchk8(2, cpu.AF.Hi)
 
@@ -898,7 +898,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x5d:
 			cpu.bitchk8(3, cpu.HL.Lo)
 		case 0x5e:
-			cpu.bitchk8(3, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(3, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x5f:
 			cpu.bitchk8(3, cpu.AF.Hi)
 
@@ -916,7 +916,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x65:
 			cpu.bitchk8(4, cpu.HL.Lo)
 		case 0x66:
-			cpu.bitchk8(4, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(4, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x67:
 			cpu.bitchk8(4, cpu.AF.Hi)
 
@@ -934,7 +934,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x6d:
 			cpu.bitchk8(5, cpu.HL.Lo)
 		case 0x6e:
-			cpu.bitchk8(5, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(5, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x6f:
 			cpu.bitchk8(5, cpu.AF.Hi)
 
@@ -952,7 +952,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x75:
 			cpu.bitchk8(6, cpu.HL.Lo)
 		case 0x76:
-			cpu.bitchk8(6, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(6, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x77:
 			cpu.bitchk8(6, cpu.AF.Hi)
 
@@ -970,7 +970,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		case 0x7d:
 			cpu.bitchk8(7, cpu.HL.Lo)
 		case 0x7e:
-			cpu.bitchk8(7, cpu.Memory.Get(cpu.HL.U16()))
+			cpu.bitchk8b(7, cpu.Memory.Get(cpu.HL.U16()))
 		case 0x7f:
 			cpu.bitchk8(7, cpu.AF.Hi)
 

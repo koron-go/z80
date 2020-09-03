@@ -176,6 +176,17 @@ func testRunZexdoc(t *testing.T) {
 	}
 }
 
+func TestExerciserAll(t *testing.T) {
+	t.Parallel()
+	for _, c0 := range zex.AllCases {
+		c := c0
+		t.Run(c.Desc, func(t *testing.T) {
+			t.Parallel()
+			testRunZexCase(t, c)
+		})
+	}
+}
+
 func testRunZexCase(t *testing.T, c zex.Case) {
 	t.Helper()
 	mem, io := tinycpm.New()
