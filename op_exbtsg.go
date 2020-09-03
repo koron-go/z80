@@ -85,7 +85,7 @@ func (cpu *CPU) updateFlagCPx(r, a, b uint8) {
 	c := r ^ a ^ b
 	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS
 	if r == 0 {
 		or |= maskZ
 	}
@@ -94,6 +94,14 @@ func (cpu *CPU) updateFlagCPx(r, a, b uint8) {
 		or |= maskPV
 	}
 	or |= maskN
+
+	r2 := r - (c & 0x10 >> 4)
+	or |= r2 & 0x02 << 4 // mask5
+	or |= r2 & mask3
+	if r&0x0f == 8 && c&maskH != 0 {
+		or &= ^uint8(mask3)
+	}
+
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
