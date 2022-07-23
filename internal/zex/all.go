@@ -1287,7 +1287,7 @@ var AllCases = []Case{
 	AllBITZ80,
 	AllCPD1,
 	AllCPI1,
-	//AllDAAOP,
+	AllDAAOP,
 	AllINCA,
 	AllINCB,
 	AllINCBC,

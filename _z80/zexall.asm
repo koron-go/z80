@@ -301,7 +301,7 @@ cpi1:	db	0ffh		; flag mask
 	db	02dh,0a4h,02dh,019h			; expected crc
 	tmsg	'cpi<r>........................'
 
-; <daa,cpl,scf,ccf>
+; <daa,cpl,scf,ccf> (65,536 cycles)
 daaop:	db	0ffh		; flag mask
 	tstr	027h,0,0,0,02141h,009fah,01d60h,0a559h,08d5bh,09079h,004h,08eh,0299dh
 	tstr	018h,0,0,0,0,0,0,0,0,0,0d7h,-1,0	; (65,536 cycles)
