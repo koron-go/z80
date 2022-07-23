@@ -1,7 +1,16 @@
 # cim2bin
 
+Convert a .cim file which zmac outputed to a format which WebMSX can load with
+`DISK_FILES` or `BLOAD`.
+
 zmac が出力した .cim ファイルを
 WebMSX の `DISK_FILES` & `BLOAD` で読める形式に変換する。
+
+## How to use
+
+```
+cim2bin -cim {INPUT} -bin {OUTPUT} [-off {OFFSET}]
+```
 
 ## References
 
