@@ -74,7 +74,7 @@ func (cpu *CPU) cpU8(a, b uint8) uint8 {
 	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
 	or |= uint8(r) & maskS
-	or |= b & (mask5 | mask3)
+	or |= b & mask53
 	if uint8(r) == 0 {
 		or |= maskZ
 	}
@@ -171,9 +171,9 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32
 	c := r ^ a32 ^ b32
-	var nand uint8 = maskH | maskN | maskC | mask5 | mask3
+	var nand uint8 = mask53 | maskH | maskN | maskC
 	var or uint8
-	or |= uint8(r>>8) & (mask5 | mask3)
+	or |= uint8(r>>8) & mask53
 	or |= uint8(c>>8) & maskH
 	or |= uint8(r>>16) & maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
@@ -282,7 +282,7 @@ func (cpu *CPU) bitchk8(b, v uint8) {
 		or |= maskS
 	}
 	or |= maskH
-	or |= v & (mask5 | mask3)
+	or |= v & mask53
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 

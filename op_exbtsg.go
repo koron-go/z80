@@ -33,7 +33,7 @@ func oopEXSPPIY(cpu *CPU) {
 }
 
 func (cpu *CPU) updateFlagLDID(a uint8) {
-	var nand uint8 = maskH | maskPV | maskN | mask5 | mask3
+	var nand uint8 = mask53 | maskH | maskPV | maskN
 	var or uint8
 	if cpu.BC.Lo != 0 || cpu.BC.Hi != 0 {
 		or |= maskPV
