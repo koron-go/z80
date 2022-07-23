@@ -6,6 +6,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+const maskDefault = 0x28
+
 func TestAddrOff(t *testing.T) {
 	t.Parallel()
 	for _, c := range []struct {

@@ -46,9 +46,9 @@ func oopLDnnPA(cpu *CPU, l, h uint8) {
 }
 
 func (cpu *CPU) updateFlagIR(d uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= d & maskStd
+	or |= d & maskS53
 	if d == 0 {
 		or |= maskZ
 	}

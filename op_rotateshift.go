@@ -118,9 +118,9 @@ func oopSRLIYdP(cpu *CPU, d uint8) {
 }
 
 func (cpu *CPU) updateFlagRxD(r uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= uint8(r) & maskStd
+	or |= uint8(r) & maskS53
 	if uint8(r) == 0 {
 		or |= maskZ
 	}
