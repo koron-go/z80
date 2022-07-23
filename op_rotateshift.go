@@ -3,9 +3,9 @@ package z80
 import "math/bits"
 
 func (cpu *CPU) updateFlagRL(r uint8) {
-	var nand uint8 = maskH | maskN | maskC | mask5 | mask3
+	var nand uint8 = mask53 | maskH | maskN | maskC
 	var or = (r >> 7) & maskC
-	or |= r << 1 & (mask5 | mask3)
+	or |= r << 1 & mask53
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
@@ -24,9 +24,9 @@ func oopRLA(cpu *CPU) {
 }
 
 func (cpu *CPU) updateFlagRR(r uint8) {
-	var nand uint8 = maskH | maskN | maskC | mask5 | mask3
+	var nand uint8 = mask53 | maskH | maskN | maskC
 	var or = r & maskC
-	or |= r >> 1 & (mask5 | mask3)
+	or |= r >> 1 & mask53
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
@@ -118,9 +118,9 @@ func oopSRLIYdP(cpu *CPU, d uint8) {
 }
 
 func (cpu *CPU) updateFlagRxD(r uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= uint8(r) & maskStd
+	or |= uint8(r) & maskS53
 	if uint8(r) == 0 {
 		or |= maskZ
 	}

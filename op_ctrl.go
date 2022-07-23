@@ -23,9 +23,9 @@ func oopDAA(cpu *CPU) {
 		}
 	}
 
-	var nand uint8 = maskStd | maskZ | maskH | maskPV
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV
 	var or uint8
-	or |= uint8(r) & maskStd
+	or |= uint8(r) & maskS53
 	if uint8(r) == 0 {
 		or |= maskZ
 	}
@@ -50,7 +50,11 @@ func oopEI(cpu *CPU) {
 
 func oopCPL(cpu *CPU) {
 	cpu.AF.Hi = ^cpu.AF.Hi
-	cpu.AF.Lo |= maskH | maskN
+	var nand uint8 = mask53
+	var or uint8
+	or |= cpu.AF.Hi & mask53
+	or |= maskH | maskN
+	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 
 func oopNEG(cpu *CPU) {
@@ -58,9 +62,9 @@ func oopNEG(cpu *CPU) {
 	r := ^a + 1
 	cpu.AF.Hi = r
 
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS53
 	if r == 0 {
 		or |= maskZ
 	}
@@ -78,8 +82,9 @@ func oopNEG(cpu *CPU) {
 }
 
 func oopCCF(cpu *CPU) {
-	var nand uint8 = maskH | maskN | maskC
+	var nand uint8 = mask53 | maskH | maskN | maskC
 	var or uint8
+	or |= cpu.AF.Hi & mask53
 	if cpu.flagC() {
 		or |= maskH
 	} else {
@@ -89,8 +94,10 @@ func oopCCF(cpu *CPU) {
 }
 
 func oopSCF(cpu *CPU) {
-	var nand uint8 = maskH | maskN | maskC
-	var or uint8 = maskC
+	var nand uint8 = mask53 | maskH | maskN | maskC
+	var or uint8
+	or |= cpu.AF.Hi & mask53
+	or |= maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 

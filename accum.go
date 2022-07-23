@@ -4,9 +4,9 @@ import "math/bits"
 
 func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
 	c := r ^ a ^ b
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
-	or |= uint8(r) & maskStd
+	or |= uint8(r) & maskS53
 	if uint8(r) == 0 {
 		or |= maskZ
 	}
@@ -20,9 +20,9 @@ func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
 }
 
 func (cpu *CPU) updateFlagLogic8(r uint8, and bool) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS53
 	if r == 0 {
 		or |= maskZ
 	}
@@ -34,9 +34,9 @@ func (cpu *CPU) updateFlagLogic8(r uint8, and bool) {
 }
 
 func (cpu *CPU) updateFlagBitop(r uint8, carry uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS53
 	if r == 0 {
 		or |= maskZ
 	}
@@ -71,10 +71,10 @@ func (cpu *CPU) cpU8(a, b uint8) uint8 {
 	r := a16 - b16
 
 	c := r ^ a16 ^ b16
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
 	or |= uint8(r) & maskS
-	or |= b & (mask5 | mask3)
+	or |= b & mask53
 	if uint8(r) == 0 {
 		or |= maskZ
 	}
@@ -114,9 +114,9 @@ func (cpu *CPU) xorU8(a, b uint8) uint8 {
 
 func (cpu *CPU) incU8(a uint8) uint8 {
 	r := a + 1
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS53
 	if r == 0 {
 		or |= maskZ
 	}
@@ -132,9 +132,9 @@ func (cpu *CPU) incU8(a uint8) uint8 {
 
 func (cpu *CPU) decU8(a uint8) uint8 {
 	r := a - 1
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS53
 	if r == 0 {
 		or |= maskZ
 	}
@@ -151,9 +151,9 @@ func (cpu *CPU) decU8(a uint8) uint8 {
 
 func (cpu *CPU) decP8(p *uint8) {
 	*p--
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= *p & maskStd
+	or |= *p & maskS53
 	if *p == 0 {
 		or |= maskZ
 	}
@@ -171,9 +171,9 @@ func (cpu *CPU) addU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32
 	c := r ^ a32 ^ b32
-	var nand uint8 = maskH | maskN | maskC | mask5 | mask3
+	var nand uint8 = mask53 | maskH | maskN | maskC
 	var or uint8
-	or |= uint8(r>>8) & (mask5 | mask3)
+	or |= uint8(r>>8) & mask53
 	or |= uint8(c>>8) & maskH
 	or |= uint8(r>>16) & maskC
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
@@ -184,9 +184,9 @@ func (cpu *CPU) adcU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 + b32 + uint32(cpu.AF.Lo&maskC)
 	c := r ^ a32 ^ b32
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
-	or |= uint8(r>>8) & maskStd
+	or |= uint8(r>>8) & maskS53
 	if uint16(r) == 0 {
 		or |= maskZ
 	}
@@ -201,9 +201,9 @@ func (cpu *CPU) sbcU16(a, b uint16) uint16 {
 	a32, b32 := uint32(a), uint32(b)
 	r := a32 - b32 - uint32(cpu.AF.Lo&maskC)
 	c := r ^ a32 ^ b32
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN | maskC
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
 	var or uint8
-	or |= uint8(r>>8) & maskStd
+	or |= uint8(r>>8) & maskS53
 	if uint16(r) == 0 {
 		or |= maskZ
 	}
@@ -274,7 +274,7 @@ func (cpu *CPU) srlU8(a uint8) uint8 {
 }
 
 func (cpu *CPU) bitchk8(b, v uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
 	if v&(0x01<<b) == 0 {
 		or |= maskZ | maskPV
@@ -282,7 +282,7 @@ func (cpu *CPU) bitchk8(b, v uint8) {
 		or |= maskS
 	}
 	or |= maskH
-	or |= v & (mask5 | mask3)
+	or |= v & mask53
 	cpu.AF.Lo = cpu.AF.Lo&^nand | or
 }
 

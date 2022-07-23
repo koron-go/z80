@@ -1,7 +1,7 @@
 package z80
 
 func (cpu *CPU) bitchk8b(b, v uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
 	if v&(0x01<<b) == 0 {
 		or |= maskZ | maskPV

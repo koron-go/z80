@@ -33,7 +33,7 @@ func oopEXSPPIY(cpu *CPU) {
 }
 
 func (cpu *CPU) updateFlagLDID(a uint8) {
-	var nand uint8 = maskH | maskPV | maskN | mask5 | mask3
+	var nand uint8 = mask53 | maskH | maskPV | maskN
 	var or uint8
 	if cpu.BC.Lo != 0 || cpu.BC.Hi != 0 {
 		or |= maskPV
@@ -83,7 +83,7 @@ func oopLDDR(cpu *CPU) {
 
 func (cpu *CPU) updateFlagCPx(r, a, b uint8) {
 	c := r ^ a ^ b
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
 	or |= r & maskS
 	if r == 0 {

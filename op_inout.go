@@ -92,9 +92,9 @@ func oopOTDR(cpu *CPU) {
 // eXpanded OPration codes
 
 func (cpu *CPU) updateIOIn(r uint8) {
-	var nand uint8 = maskStd | maskZ | maskH | maskPV | maskN
+	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN
 	var or uint8
-	or |= r & maskStd
+	or |= r & maskS53
 	if r == 0 {
 		or |= maskZ
 	}
