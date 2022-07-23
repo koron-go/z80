@@ -18,8 +18,8 @@ const (
 	mask3 = 0x08
 	mask5 = 0x20
 
-	maskS53     = maskS | mask5 | mask3
-	mask53      = mask5 | mask3
+	maskS53 = maskS | mask5 | mask3
+	mask53  = mask5 | mask3
 )
 
 // addrOff apply offset to address.
