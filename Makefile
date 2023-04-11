@@ -8,7 +8,7 @@ test:
 
 .PHONY: bench
 bench:
-	go test -bench ./...
+	go test -bench .
 
 .PHONY: tags
 tags:

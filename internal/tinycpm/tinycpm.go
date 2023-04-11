@@ -6,7 +6,6 @@ package tinycpm
 
 import (
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -62,7 +61,7 @@ func (m *Memory) put(addr uint16, data ...uint8) {
 
 // LoadFile loads a file from "Start" (0x0100) as program.
 func (m *Memory) LoadFile(name string) error {
-	prog, err := ioutil.ReadFile(name)
+	prog, err := os.ReadFile(name)
 	if err != nil {
 		return err
 	}

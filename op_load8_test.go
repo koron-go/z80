@@ -103,9 +103,10 @@ func TestLoad8_LDrHL(t *testing.T) {
 		c := uint8(0x46 | r<<3)
 		var beforeGPR, afterGPR GPR
 		p := rGet(t, &afterGPR, r)
+		r2 := r // capture loop variable r explicitly
 		t.Run(n, func(t *testing.T) {
 			t.Parallel()
-			rnd := rand.New(rand.NewSource(time.Now().UnixNano() * int64(r)))
+			rnd := rand.New(rand.NewSource(time.Now().UnixNano() * int64(r2)))
 			for hl := 0; hl <= 0xffff; hl++ {
 				memory := MapMemory{}.Put(0, c)
 				if hl != 0 {
