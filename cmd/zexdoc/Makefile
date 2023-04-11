@@ -1,3 +1,6 @@
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S%z)
+PROFILE_NAME=tmp/profile/zexdoc-$(TIMESTAMP)
+
 .PHONY: run
 run: zexdoc.cim
 	go run .
@@ -7,8 +10,13 @@ run-all: zexall.cim
 
 .PHONY: profile
 profile: zexdoc.cim
-	go run . -cpuprof cpu.pprof -memprof mem.pprof
-	go tool pprof -svg ./cpu.pprof > cpuprof.svg
+	mkdir -p tmp/profile
+	date -Ins > $(PROFILE_NAME).log
+	go run . -cpuprof cpu.pprof -memprof mem.pprof | tee -a $(PROFILE_NAME).log
+	date -Ins >> $(PROFILE_NAME).log
+	go tool pprof -svg ./cpu.pprof > $(PROFILE_NAME).svg
+	cp $(PROFILE_NAME).log profile.log
+	cp $(PROFILE_NAME).svg cpuprof.svg
 
 %.cim: ../../_z80/%.asm
 	go generate

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -47,7 +46,7 @@ func run() error {
 	}
 
 	// reaad CIM
-	b, err := ioutil.ReadFile(cim)
+	b, err := os.ReadFile(cim)
 	if err != nil {
 		return err
 	}

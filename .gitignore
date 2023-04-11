@@ -1,3 +1,4 @@
+*.log
 *.lst
 *.pprof
 /z80.asm
