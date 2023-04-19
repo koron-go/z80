@@ -3,5 +3,6 @@
 *.pprof
 /z80.asm
 cpuprof.svg
+default.pgo
 tags
 tmp/
