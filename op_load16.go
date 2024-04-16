@@ -76,52 +76,26 @@ func oopPOPIY(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func xopPUSHbc(cpu *CPU) {
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, cpu.BC.Lo)
-	cpu.Memory.Set(cpu.SP+1, cpu.BC.Hi)
+func xopPUSHreg(cpu *CPU, reg Register) {
+	// Code before optimization
+	//cpu.SP -= 2
+	//cpu.Memory.Set(cpu.SP, reg.Lo)
+	//cpu.Memory.Set(cpu.SP+1, reg.Hi)
+	cpu.SP--
+	cpu.Memory.Set(cpu.SP, reg.Hi)
+	cpu.SP--
+	cpu.Memory.Set(cpu.SP, reg.Lo)
 }
 
-func xopPUSHde(cpu *CPU) {
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, cpu.DE.Lo)
-	cpu.Memory.Set(cpu.SP+1, cpu.DE.Hi)
-}
-
-func xopPUSHhl(cpu *CPU) {
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, cpu.HL.Lo)
-	cpu.Memory.Set(cpu.SP+1, cpu.HL.Hi)
-}
-
-func xopPUSHaf(cpu *CPU) {
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, cpu.AF.Lo)
-	cpu.Memory.Set(cpu.SP+1, cpu.AF.Hi)
-}
-
-func xopPOPbc(cpu *CPU) {
-	cpu.BC.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.BC.Hi = cpu.Memory.Get(cpu.SP + 1)
-	cpu.SP += 2
-}
-
-func xopPOPde(cpu *CPU) {
-	cpu.DE.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.DE.Hi = cpu.Memory.Get(cpu.SP + 1)
-	cpu.SP += 2
-}
-
-func xopPOPhl(cpu *CPU) {
-	cpu.HL.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.HL.Hi = cpu.Memory.Get(cpu.SP + 1)
-	cpu.SP += 2
-}
-
-func xopPOPaf(cpu *CPU) {
-	cpu.AF.Lo = cpu.Memory.Get(cpu.SP)
-	cpu.AF.Hi = cpu.Memory.Get(cpu.SP + 1)
-	cpu.SP += 2
+func xopPOPreg(cpu *CPU, reg *Register) {
+	// Code before optimization
+	//reg.Lo = cpu.Memory.Get(cpu.SP)
+	//reg.Hi = cpu.Memory.Get(cpu.SP + 1)
+	//cpu.SP += 2
+	reg.Lo = cpu.Memory.Get(cpu.SP)
+	cpu.SP++
+	reg.Hi = cpu.Memory.Get(cpu.SP)
+	cpu.SP++
 }
 
 func xopLDbcnn(cpu *CPU, l, h uint8) {

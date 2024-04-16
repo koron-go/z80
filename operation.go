@@ -508,13 +508,13 @@ func (cpu *CPU) executeOne(f fetcher) {
 		xopRETfS(cpu)
 
 	case 0xc1:
-		xopPOPbc(cpu)
+		xopPOPreg(cpu, &cpu.BC)
 	case 0xd1:
-		xopPOPde(cpu)
+		xopPOPreg(cpu, &cpu.DE)
 	case 0xe1:
-		xopPOPhl(cpu)
+		xopPOPreg(cpu, &cpu.HL)
 	case 0xf1:
-		xopPOPaf(cpu)
+		xopPOPreg(cpu, &cpu.AF)
 
 	case 0xc2:
 		l := f.fetch()
@@ -588,13 +588,13 @@ func (cpu *CPU) executeOne(f fetcher) {
 		xopCALLfSnn(cpu, l, h)
 
 	case 0xc5:
-		xopPUSHbc(cpu)
+		xopPUSHreg(cpu, cpu.BC)
 	case 0xd5:
-		xopPUSHde(cpu)
+		xopPUSHreg(cpu, cpu.DE)
 	case 0xe5:
-		xopPUSHhl(cpu)
+		xopPUSHreg(cpu, cpu.HL)
 	case 0xf5:
-		xopPUSHaf(cpu)
+		xopPUSHreg(cpu, cpu.AF)
 
 	case 0xc6:
 		n := f.fetch()
