@@ -1,14 +1,16 @@
+TEST_PACKAGE ?= ./...
+
 .PHONY: build
 build:
 	go build -gcflags '-e'
 
 .PHONY: test
 test:
-	go test -gcflags '-e' ./...
+	go test $(TEST_PACKAGE)
 
 .PHONY: bench
 bench:
-	go test -bench .
+	go test -bench $(TEST_PACKAGE)
 
 .PHONY: tags
 tags:
@@ -17,7 +19,7 @@ tags:
 .PHONY: cover
 cover:
 	mkdir -p tmp
-	go test -coverprofile tmp/_cover.out ./...
+	go test -coverprofile tmp/_cover.out $(TEST_PACKAGE)
 	go tool cover -html tmp/_cover.out -o tmp/cover.html
 
 .PHONY: checkall
@@ -25,11 +27,11 @@ checkall: vet staticcheck
 
 .PHONY: vet
 vet:
-	go vet ./...
+	go vet $(TEST_PACKAGE)
 
 .PHONY: staticcheck
 staticcheck:
-	staticcheck ./...
+	staticcheck $(TEST_PACKAGE)
 
 .PHONY: clean
 clean:
