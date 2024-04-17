@@ -1,34 +1,30 @@
 package z80
 
-type fetcher interface {
-	fetch() uint8
-}
-
 // executeOne executes only an op-code.
-func (cpu *CPU) executeOne(f fetcher) {
+func (cpu *CPU) executeOne() {
 	if cpu.HALT {
 		return
 	}
-	c0 := f.fetch()
+	c0 := cpu.fetch()
 	switch c0 {
 	case 0x00:
 		oopNOP(cpu)
 
 	case 0x01:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopLDbcnn(cpu, l, h)
 	case 0x11:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopLDdenn(cpu, l, h)
 	case 0x21:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopLDhlnn(cpu, l, h)
 	case 0x31:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopLDspnn(cpu, l, h)
 
 	case 0x02:
@@ -75,25 +71,25 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 	// LD r, n
 	case 0x06:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDbn(cpu, n)
 	case 0x0e:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDcn(cpu, n)
 	case 0x16:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDdn(cpu, n)
 	case 0x1e:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDen(cpu, n)
 	case 0x26:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDhn(cpu, n)
 	case 0x2e:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDln(cpu, n)
 	case 0x3e:
-		n := f.fetch()
+		n := cpu.fetch()
 		xopLDan(cpu, n)
 
 	case 0x07:
@@ -127,7 +123,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopRRCA(cpu)
 
 	case 0x10:
-		off := f.fetch()
+		off := cpu.fetch()
 		oopDJNZe(cpu, off)
 
 	case 0x12:
@@ -137,7 +133,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopRLA(cpu)
 
 	case 0x18:
-		off := f.fetch()
+		off := cpu.fetch()
 		oopJRe(cpu, off)
 
 	case 0x1a:
@@ -147,36 +143,36 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopRRA(cpu)
 
 	case 0x20:
-		off := f.fetch()
+		off := cpu.fetch()
 		oopJRNZe(cpu, off)
 
 	case 0x22:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		oopLDnnPHL(cpu, l, h)
 
 	case 0x27:
 		oopDAA(cpu)
 
 	case 0x28:
-		off := f.fetch()
+		off := cpu.fetch()
 		oopJRZe(cpu, off)
 
 	case 0x2a:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		oopLDHLnnP(cpu, l, h)
 
 	case 0x2f:
 		oopCPL(cpu)
 
 	case 0x30:
-		off := f.fetch()
+		off := cpu.fetch()
 		oopJRNCe(cpu, off)
 
 	case 0x32:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		oopLDnnPA(cpu, l, h)
 
 	case 0x34:
@@ -186,19 +182,19 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopDECHLP(cpu)
 
 	case 0x36:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopLDHLPn(cpu, n)
 
 	case 0x37:
 		oopSCF(cpu)
 
 	case 0x38:
-		off := f.fetch()
+		off := cpu.fetch()
 		oopJRCe(cpu, off)
 
 	case 0x3a:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		oopLDAnnP(cpu, l, h)
 
 	case 0x3f:
@@ -517,74 +513,74 @@ func (cpu *CPU) executeOne(f fetcher) {
 		xopPOPreg(cpu, &cpu.AF)
 
 	case 0xc2:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPnZnn(cpu, l, h)
 	case 0xca:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPfZnn(cpu, l, h)
 	case 0xd2:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPnCnn(cpu, l, h)
 	case 0xda:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPfCnn(cpu, l, h)
 	case 0xe2:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPnPVnn(cpu, l, h)
 	case 0xea:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPfPVnn(cpu, l, h)
 	case 0xf2:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPnSnn(cpu, l, h)
 	case 0xfa:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopJPfSnn(cpu, l, h)
 
 	case 0xc3:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		oopJPnn(cpu, l, h)
 
 	case 0xc4:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLnZnn(cpu, l, h)
 	case 0xcc:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLfZnn(cpu, l, h)
 	case 0xd4:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLnCnn(cpu, l, h)
 	case 0xdc:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLfCnn(cpu, l, h)
 	case 0xe4:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLnPVnn(cpu, l, h)
 	case 0xec:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLfPVnn(cpu, l, h)
 	case 0xf4:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLnSnn(cpu, l, h)
 	case 0xfc:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLfSnn(cpu, l, h)
 
 	case 0xc5:
@@ -597,7 +593,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		xopPUSHreg(cpu, cpu.AF)
 
 	case 0xc6:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopADDAn(cpu, n)
 
 	case 0xc7:
@@ -621,38 +617,38 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopRET(cpu)
 
 	case 0xcd:
-		l := f.fetch()
-		h := f.fetch()
+		l := cpu.fetch()
+		h := cpu.fetch()
 		xopCALLnn(cpu, l, h)
 
 	case 0xce:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopADCAn(cpu, n)
 
 	case 0xd3:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopOUTnPA(cpu, n)
 
 	case 0xd6:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopSUBAn(cpu, n)
 
 	case 0xd9:
 		oopEXX(cpu)
 
 	case 0xdb:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopINAnP(cpu, n)
 
 	case 0xde:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopSBCAn(cpu, n)
 
 	case 0xe3:
 		oopEXSPPHL(cpu)
 
 	case 0xe6:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopANDn(cpu, n)
 
 	case 0xe9:
@@ -662,14 +658,14 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopEXDEHL(cpu)
 
 	case 0xee:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopXORn(cpu, n)
 
 	case 0xf3:
 		oopDI(cpu)
 
 	case 0xf6:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopORn(cpu, n)
 
 	case 0xf9:
@@ -679,11 +675,11 @@ func (cpu *CPU) executeOne(f fetcher) {
 		oopEI(cpu)
 
 	case 0xfe:
-		n := f.fetch()
+		n := cpu.fetch()
 		oopCPn(cpu, n)
 
 	case 0xcb:
-		c1 := f.fetch()
+		c1 := cpu.fetch()
 		switch c1 {
 
 		// RLC r / RLC (HL)
@@ -1267,7 +1263,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		}
 
 	case 0xdd:
-		c1 := f.fetch()
+		c1 := cpu.fetch()
 		switch c1 {
 
 		// ADD IX, pp
@@ -1281,13 +1277,13 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopADDIXsp(cpu)
 
 		case 0x21:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			oopLDIXnn(cpu, l, h)
 
 		case 0x22:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			oopLDnnPIX(cpu, l, h)
 
 		case 0x23:
@@ -1300,12 +1296,12 @@ func (cpu *CPU) executeOne(f fetcher) {
 			oopDECIXH(cpu)
 
 		case 0x26:
-			n := f.fetch()
+			n := cpu.fetch()
 			oopLDIXHn(cpu, n)
 
 		case 0x2a:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			oopLDIXnnP(cpu, l, h)
 
 		case 0x2b:
@@ -1318,20 +1314,20 @@ func (cpu *CPU) executeOne(f fetcher) {
 			oopDECIXL(cpu)
 
 		case 0x2e:
-			n := f.fetch()
+			n := cpu.fetch()
 			oopLDIXLn(cpu, n)
 
 		case 0x34:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopINCIXdP(cpu, d)
 
 		case 0x35:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopDECIXdP(cpu, d)
 
 		case 0x36:
-			d := f.fetch()
-			n := f.fetch()
+			d := cpu.fetch()
+			n := cpu.fetch()
 			oopLDIXdPn(cpu, d, n)
 
 		// LD rx1, rx2
@@ -1436,48 +1432,48 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 		// LD r, (IX+d)
 		case 0x46:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDbIXdP(cpu, d)
 		case 0x4e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDcIXdP(cpu, d)
 		case 0x56:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDdIXdP(cpu, d)
 		case 0x5e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDeIXdP(cpu, d)
 		case 0x66:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDhIXdP(cpu, d)
 		case 0x6e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDlIXdP(cpu, d)
 		case 0x7e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDaIXdP(cpu, d)
 
 		// LD (IX+d), r
 		case 0x70:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPb(cpu, d)
 		case 0x71:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPc(cpu, d)
 		case 0x72:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPd(cpu, d)
 		case 0x73:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPe(cpu, d)
 		case 0x74:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPh(cpu, d)
 		case 0x75:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPl(cpu, d)
 		case 0x77:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIXdPa(cpu, d)
 
 		// ADD A, rx (undocumented)
@@ -1497,7 +1493,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopADDAa(cpu)
 
 		case 0x86:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopADDAIXdP(cpu, d)
 
 		// ADC A, rx
@@ -1517,7 +1513,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopADCAa(cpu)
 
 		case 0x8e:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopADCAIXdP(cpu, d)
 
 		// SUB A, rx
@@ -1537,7 +1533,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopSUBAa(cpu)
 
 		case 0x96:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopSUBAIXdP(cpu, d)
 
 		// SBC A, rx
@@ -1557,7 +1553,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopSBCAa(cpu)
 
 		case 0x9e:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopSBCAIXdP(cpu, d)
 
 		// ADD rx
@@ -1578,7 +1574,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 		// AND (IX+d)
 		case 0xa6:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopANDIXdP(cpu, d)
 
 		// XOR rx
@@ -1598,7 +1594,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopXORa(cpu)
 
 		case 0xae:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopXORIXdP(cpu, d)
 
 		// OR rx
@@ -1618,7 +1614,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopORa(cpu)
 
 		case 0xb6:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopORIXdP(cpu, d)
 
 		// CP rx
@@ -1638,7 +1634,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopCPa(cpu)
 
 		case 0xbe:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopCPIXdP(cpu, d)
 
 		case 0xe1:
@@ -1657,8 +1653,8 @@ func (cpu *CPU) executeOne(f fetcher) {
 			oopLDSPIX(cpu)
 
 		case 0xcb:
-			d := f.fetch()
-			c3 := f.fetch()
+			d := cpu.fetch()
+			c3 := cpu.fetch()
 			switch c3 {
 
 			case 0x06:
@@ -1747,7 +1743,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		}
 
 	case 0xed:
-		c1 := f.fetch()
+		c1 := cpu.fetch()
 		switch c1 {
 
 		// IN r, (C)
@@ -1795,20 +1791,20 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 		// LD (nn), dd
 		case 0x43:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDnnPbc(cpu, l, h)
 		case 0x53:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDnnPde(cpu, l, h)
 		case 0x63:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDnnPhl(cpu, l, h)
 		case 0x73:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDnnPsp(cpu, l, h)
 
 		case 0x44:
@@ -1835,20 +1831,20 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 		// LD dd, (nn)
 		case 0x4b:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDbcnnP(cpu, l, h)
 		case 0x5b:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDdennP(cpu, l, h)
 		case 0x6b:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDhlnnP(cpu, l, h)
 		case 0x7b:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			xopLDspnnP(cpu, l, h)
 
 		case 0x4d:
@@ -1928,7 +1924,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 		}
 
 	case 0xfd:
-		c1 := f.fetch()
+		c1 := cpu.fetch()
 		switch c1 {
 
 		// ADD IY, pp
@@ -1942,13 +1938,13 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopADDIYsp(cpu)
 
 		case 0x21:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			oopLDIYnn(cpu, l, h)
 
 		case 0x22:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			oopLDnnPIY(cpu, l, h)
 
 		case 0x23:
@@ -1961,12 +1957,12 @@ func (cpu *CPU) executeOne(f fetcher) {
 			oopDECIYH(cpu)
 
 		case 0x26:
-			n := f.fetch()
+			n := cpu.fetch()
 			oopLDIYHn(cpu, n)
 
 		case 0x2a:
-			l := f.fetch()
-			h := f.fetch()
+			l := cpu.fetch()
+			h := cpu.fetch()
 			oopLDIYnnP(cpu, l, h)
 
 		case 0x2b:
@@ -1979,20 +1975,20 @@ func (cpu *CPU) executeOne(f fetcher) {
 			oopDECIYL(cpu)
 
 		case 0x2e:
-			n := f.fetch()
+			n := cpu.fetch()
 			oopLDIYLn(cpu, n)
 
 		case 0x34:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopINCIYdP(cpu, d)
 
 		case 0x35:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopDECIYdP(cpu, d)
 
 		case 0x36:
-			d := f.fetch()
-			n := f.fetch()
+			d := cpu.fetch()
+			n := cpu.fetch()
 			oopLDIYdPn(cpu, d, n)
 
 		// LD ry1, ry2
@@ -2097,48 +2093,48 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 		// LD r, (IY+d)
 		case 0x46:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDbIYdP(cpu, d)
 		case 0x4e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDcIYdP(cpu, d)
 		case 0x56:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDdIYdP(cpu, d)
 		case 0x5e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDeIYdP(cpu, d)
 		case 0x66:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDhIYdP(cpu, d)
 		case 0x6e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDlIYdP(cpu, d)
 		case 0x7e:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDaIYdP(cpu, d)
 
 		// LD (IY+d), r
 		case 0x70:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPb(cpu, d)
 		case 0x71:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPc(cpu, d)
 		case 0x72:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPd(cpu, d)
 		case 0x73:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPe(cpu, d)
 		case 0x74:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPh(cpu, d)
 		case 0x75:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPl(cpu, d)
 		case 0x77:
-			d := f.fetch()
+			d := cpu.fetch()
 			xopLDIYdPa(cpu, d)
 
 		// ADD A, ry (undocumented)
@@ -2158,7 +2154,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopADDAa(cpu)
 
 		case 0x86:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopADDAIYdP(cpu, d)
 
 		// ADC A, ry
@@ -2178,7 +2174,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopADCAa(cpu)
 
 		case 0x8e:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopADCAIYdP(cpu, d)
 
 		// SUB A, ry
@@ -2198,7 +2194,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopSUBAa(cpu)
 
 		case 0x96:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopSUBAIYdP(cpu, d)
 
 		// SBC A, ry
@@ -2218,7 +2214,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopSBCAa(cpu)
 
 		case 0x9e:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopSBCAIYdP(cpu, d)
 
 		// ADD rx
@@ -2239,7 +2235,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 
 		// AND (IY+d)
 		case 0xa6:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopANDIYdP(cpu, d)
 
 		// XOR rx
@@ -2259,7 +2255,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopXORa(cpu)
 
 		case 0xae:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopXORIYdP(cpu, d)
 
 		// OR ry
@@ -2279,7 +2275,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopORa(cpu)
 
 		case 0xb6:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopORIYdP(cpu, d)
 
 		// CP ry
@@ -2299,7 +2295,7 @@ func (cpu *CPU) executeOne(f fetcher) {
 			xopCPa(cpu)
 
 		case 0xbe:
-			d := f.fetch()
+			d := cpu.fetch()
 			oopCPIYdP(cpu, d)
 
 		case 0xe1:
@@ -2318,8 +2314,8 @@ func (cpu *CPU) executeOne(f fetcher) {
 			oopLDSPIY(cpu)
 
 		case 0xcb:
-			d := f.fetch()
-			c3 := f.fetch()
+			d := cpu.fetch()
+			c3 := cpu.fetch()
 			switch c3 {
 
 			case 0x06:

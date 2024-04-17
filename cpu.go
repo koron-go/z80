@@ -35,16 +35,30 @@ func fromU16(v uint16) (l, h uint8) {
 	return uint8(v & 0xff), uint8(v >> 8)
 }
 
-// memSrc implements fetcher interface.
-type memSrc []uint8
+// im0data is pseudo Memory module be used when IM0 interrupt occurred.
+type im0data struct {
+	start uint16
+	end   uint16
+	data  []uint8
+}
 
-func (m *memSrc) fetch() uint8 {
-	if len(*m) == 0 {
+func newIm0data(pc uint16, d []uint8) *im0data {
+	return &im0data{
+		start: pc,
+		end:   pc + uint16(len(d)-1),
+		data:  d,
+	}
+}
+
+func (im0 *im0data) Get(addr uint16) uint8 {
+	if addr < im0.start || addr > im0.end {
 		return 0
 	}
-	var b uint8
-	b, *m = (*m)[0], (*m)[1:]
-	return b
+	return im0.data[addr-im0.start]
+}
+
+func (im0 *im0data) Set(addr uint16, value uint8) {
+	// invalid opepration, nothing to do.
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -154,7 +168,7 @@ func (cpu *CPU) Step() {
 		return
 	}
 	// execute an op-code.
-	cpu.executeOne(cpu)
+	cpu.executeOne()
 }
 
 func (cpu *CPU) tryInterrupt() bool {
@@ -206,8 +220,10 @@ func (cpu *CPU) tryInterrupt() bool {
 		return false
 	}
 	cpu.HALT = false
-	ms := memSrc(d)
-	cpu.executeOne(&ms)
+	savedMemory := cpu.Memory
+	cpu.Memory = newIm0data(cpu.PC, d)
+	cpu.executeOne()
+	cpu.Memory = savedMemory
 	return true
 }
 
