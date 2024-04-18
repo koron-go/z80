@@ -1543,8 +1543,7 @@ func (cpu *CPU) executeOne() {
 			oopLDSPIX(cpu)
 
 		case 0xcb:
-			d := cpu.fetch()
-			c3 := cpu.fetch()
+			d, c3 := cpu.fetch2()
 			switch c3 {
 
 			case 0x06:
@@ -2154,8 +2153,7 @@ func (cpu *CPU) executeOne() {
 			oopLDSPIY(cpu)
 
 		case 0xcb:
-			d := cpu.fetch()
-			c3 := cpu.fetch()
+			d, c3 := cpu.fetch2()
 			switch c3 {
 
 			case 0x06:

@@ -99,18 +99,15 @@ func xopPOPreg(cpu *CPU, reg *Register) {
 }
 
 func xopLDbcnn(cpu *CPU) {
-	cpu.BC.Lo = cpu.fetch()
-	cpu.BC.Hi = cpu.fetch()
+	cpu.BC.Lo, cpu.BC.Hi = cpu.fetch2()
 }
 
 func xopLDdenn(cpu *CPU) {
-	cpu.DE.Lo = cpu.fetch()
-	cpu.DE.Hi = cpu.fetch()
+	cpu.DE.Lo, cpu.DE.Hi = cpu.fetch2()
 }
 
 func xopLDhlnn(cpu *CPU) {
-	cpu.HL.Lo = cpu.fetch()
-	cpu.HL.Hi = cpu.fetch()
+	cpu.HL.Lo, cpu.HL.Hi = cpu.fetch2()
 }
 
 func xopLDspnn(cpu *CPU) {

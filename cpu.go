@@ -111,6 +111,14 @@ func (cpu *CPU) fetch() uint8 {
 	return v
 }
 
+func (cpu *CPU) fetch2() (l, h uint8) {
+	l = cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	h = cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	return l, h
+}
+
 func (cpu *CPU) fetch16() uint16 {
 	l := cpu.Memory.Get(cpu.PC)
 	cpu.PC++
