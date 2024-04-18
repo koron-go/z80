@@ -1,5 +1,13 @@
 package z80
 
+func oopCALLnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	cpu.SP -= 2
+	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
+	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
+	cpu.PC = nn
+}
+
 func oopRETI(cpu *CPU) {
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
@@ -30,75 +38,46 @@ func oopRET(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func oopCALLnn(cpu *CPU, nn uint16) {
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
-	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-	cpu.PC = nn
-}
-
-func xopCALLnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
-	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-	cpu.PC = nn
+func copCALLxnn(cpu *CPU, xflag bool) {
+	l, h := cpu.fetch2()
+	if xflag {
+		cpu.SP -= 2
+		cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
+		cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
+		cpu.PC = toU16(l, h)
+	}
 }
 
 func xopCALLnZnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskZ == 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskZ == 0)
 }
 
 func xopCALLfZnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskZ != 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskZ != 0)
 }
 
 func xopCALLnCnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskC == 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskC == 0)
 }
 
 func xopCALLfCnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskC != 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskC != 0)
 }
 
 func xopCALLnPVnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskPV == 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskPV == 0)
 }
 
 func xopCALLfPVnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskPV != 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskPV != 0)
 }
 
 func xopCALLnSnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskS == 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskS == 0)
 }
 
 func xopCALLfSnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskS != 0 {
-		oopCALLnn(cpu, nn)
-	}
+	copCALLxnn(cpu, cpu.AF.Lo&maskS != 0)
 }
 
 func xopRETnZ(cpu *CPU) {

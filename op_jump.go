@@ -1,8 +1,7 @@
 package z80
 
 func oopJPnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	cpu.PC = nn
+	cpu.PC = cpu.fetch16()
 }
 
 func oopJRe(cpu *CPU) {
@@ -64,58 +63,41 @@ func oopDJNZe(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func xopJPnZnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskZ == 0 {
-		cpu.PC = nn
+func copJPxnn(cpu *CPU, xflag bool) {
+	l, h := cpu.fetch2()
+	if xflag {
+		cpu.PC = toU16(l, h)
 	}
+}
+
+func xopJPnZnn(cpu *CPU) {
+	copJPxnn(cpu, cpu.AF.Lo&maskZ == 0)
 }
 
 func xopJPfZnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskZ != 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskZ != 0)
 }
 
 func xopJPnCnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskC == 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskC == 0)
 }
 
 func xopJPfCnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskC != 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskC != 0)
 }
 
 func xopJPnPVnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskPV == 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskPV == 0)
 }
 
 func xopJPfPVnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskPV != 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskPV != 0)
 }
 
 func xopJPnSnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskS == 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskS == 0)
 }
 
 func xopJPfSnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	if cpu.AF.Lo&maskS != 0 {
-		cpu.PC = nn
-	}
+	copJPxnn(cpu, cpu.AF.Lo&maskS != 0)
 }

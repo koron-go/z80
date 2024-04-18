@@ -552,7 +552,7 @@ func (cpu *CPU) executeOne() {
 		oopRET(cpu)
 
 	case 0xcd:
-		xopCALLnn(cpu)
+		oopCALLnn(cpu)
 
 	case 0xce:
 		oopADCAn(cpu)
