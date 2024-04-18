@@ -49,8 +49,7 @@ zexall:
 	$(MAKE) -C cmd/zexdoc run-all
 
 # Generate mnemonic for Z80 emulator, which assembled by Go
-z80.asm:
-	go tool compile -o z80.o -S `go list -f '{{join .GoFiles " "}}'` > $@
-	rm -f z80.o
+z80.asm: *.go
+	go build -gcflags "-S" 2> $@
 
 # based on: github.com/koron-go/_skeleton/Makefile
