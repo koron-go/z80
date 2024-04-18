@@ -1,5 +1,5 @@
-TIMESTAMP=$(shell date +%Y%m%dT%H%M%S%z)
-PROFILE_NAME=tmp/profile/zexdoc-$(TIMESTAMP)
+TIMESTAMP = $(shell date +%Y%m%dT%H%M%S%z)
+PROFILE_NAME := tmp/profile/zexdoc-$(TIMESTAMP)
 
 .PHONY: run
 run: zexdoc.cim
