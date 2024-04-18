@@ -18,8 +18,13 @@ func oopRETN(cpu *CPU) {
 }
 
 func oopRET(cpu *CPU) {
-	cpu.PC = cpu.readU16(cpu.SP)
-	cpu.SP += 2
+	//cpu.PC = cpu.readU16(cpu.SP)
+	//cpu.SP += 2
+	l := cpu.Memory.Get(cpu.SP)
+	cpu.SP++
+	h := cpu.Memory.Get(cpu.SP)
+	cpu.SP++
+	cpu.PC= (uint16(h) << 8) | uint16(l)
 }
 
 //////////////////////////////////////////////////////////////////////////////
