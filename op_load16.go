@@ -1,59 +1,43 @@
 package z80
 
 func oopLDIXnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.IX = nn
 }
 
 func oopLDIYnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.IY = nn
 }
 
 func oopLDHLnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.HL.Lo = cpu.Memory.Get(nn)
 	cpu.HL.Hi = cpu.Memory.Get(nn + 1)
 }
 
 func oopLDIXnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.IX = cpu.readU16(nn)
 }
 
 func oopLDIYnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.IY = cpu.readU16(nn)
 }
 
 func oopLDnnPHL(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.HL.U16())
 }
 
 func oopLDnnPIX(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.IX)
 }
 
 func oopLDnnPIY(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.IY)
 }
 
@@ -130,63 +114,46 @@ func xopLDhlnn(cpu *CPU) {
 }
 
 func xopLDspnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	cpu.SP = toU16(l, h)
+	nn := cpu.fetch16()
+	cpu.SP = nn
 }
 
 func xopLDnnPbc(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.BC.U16())
 }
 
 func xopLDnnPde(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.DE.U16())
 }
 
 func xopLDnnPhl(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.HL.U16())
 }
 
 func xopLDnnPsp(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.SP)
 }
 
 func xopLDbcnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.BC.SetU16(cpu.readU16(nn))
 }
 
 func xopLDdennP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.DE.SetU16(cpu.readU16(nn))
 }
 
 func xopLDhlnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.HL.SetU16(cpu.readU16(nn))
 }
 
 func xopLDspnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	nn := toU16(l, h)
+	nn := cpu.fetch16()
 	cpu.SP = cpu.readU16(nn)
 }

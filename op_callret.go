@@ -30,83 +30,74 @@ func oopRET(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func oopCALLnn(cpu *CPU, l, h uint8) {
+func oopCALLnn(cpu *CPU, nn uint16) {
 	cpu.SP -= 2
 	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
 	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-	cpu.PC = toU16(l, h)
+	cpu.PC = nn
 }
 
 func xopCALLnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	cpu.SP -= 2
 	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
 	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-	cpu.PC = toU16(l, h)
+	cpu.PC = nn
 }
 
 func xopCALLnZnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskZ == 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLfZnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskZ != 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLnCnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskC == 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLfCnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskC != 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLnPVnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskPV == 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLfPVnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskPV != 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLnSnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskS == 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 
 func xopCALLfSnn(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
+	nn := cpu.fetch16()
 	if cpu.AF.Lo&maskS != 0 {
-		oopCALLnn(cpu, l, h)
+		oopCALLnn(cpu, nn)
 	}
 }
 

@@ -111,6 +111,15 @@ func (cpu *CPU) fetch() uint8 {
 	return v
 }
 
+func (cpu *CPU) fetch16() uint16 {
+	l := cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	h := cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	return (uint16(h) << 8) | uint16(l)
+}
+
+
 func (cpu *CPU) ioIn(addr uint8) uint8 {
 	if cpu.IO == nil {
 		return 0

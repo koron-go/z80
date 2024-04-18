@@ -31,10 +31,8 @@ func oopLDADEP(cpu *CPU) {
 }
 
 func oopLDAnnP(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	p := toU16(l, h)
-	cpu.AF.Hi = cpu.Memory.Get(p)
+	nn := cpu.fetch16()
+	cpu.AF.Hi = cpu.Memory.Get(nn)
 }
 
 func oopLDBCPA(cpu *CPU) {
@@ -48,10 +46,8 @@ func oopLDDEPA(cpu *CPU) {
 }
 
 func oopLDnnPA(cpu *CPU) {
-	l := cpu.fetch()
-	h := cpu.fetch()
-	p := toU16(l, h)
-	cpu.Memory.Set(p, cpu.AF.Hi)
+	nn := cpu.fetch16()
+	cpu.Memory.Set(nn, cpu.AF.Hi)
 }
 
 func (cpu *CPU) updateFlagIR(d uint8) {
