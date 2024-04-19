@@ -1,7 +1,8 @@
 package z80
 
 func oopCALLnn(cpu *CPU) {
-	copCALLnn(cpu, cpu.fetch16())
+	nn := cpu.fetch16()
+	copCALLnn(cpu, nn)
 }
 
 func oopRETI(cpu *CPU) {
@@ -35,7 +36,10 @@ func oopRET(cpu *CPU) {
 // eXpanded OPration codes
 
 func copCALLnn(cpu *CPU, nn uint16) {
-	cpu.push16(cpu.PC)
+	cpu.SP--
+	cpu.Memory.Set(cpu.SP, uint8(cpu.PC>>8))
+	cpu.SP--
+	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
 	cpu.PC = nn
 }
 

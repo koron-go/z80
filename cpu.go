@@ -135,13 +135,6 @@ func (cpu *CPU) fetch16() uint16 {
 	return (uint16(h) << 8) | uint16(l)
 }
 
-func (cpu *CPU) push16(v uint16) {
-	cpu.SP--
-	cpu.Memory.Set(cpu.SP, uint8(v>>8))
-	cpu.SP--
-	cpu.Memory.Set(cpu.SP, uint8(v))
-}
-
 func (cpu *CPU) ioIn(addr uint8) uint8 {
 	if cpu.IO == nil {
 		return 0
