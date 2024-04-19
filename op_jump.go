@@ -63,41 +63,58 @@ func oopDJNZe(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func copJPxnn(cpu *CPU, xflag bool) {
+func xopJPnZnn(cpu *CPU) {
 	nn := cpu.fetch16()
-	if xflag {
+	if !cpu.flagZ() {
 		cpu.PC = nn
 	}
 }
 
-func xopJPnZnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskZ == 0)
-}
-
 func xopJPfZnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskZ != 0)
+	nn := cpu.fetch16()
+	if cpu.flagZ() {
+		cpu.PC = nn
+	}
 }
 
 func xopJPnCnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskC == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagC() {
+		cpu.PC = nn
+	}
 }
 
 func xopJPfCnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskC != 0)
+	nn := cpu.fetch16()
+	if cpu.flagC() {
+		cpu.PC = nn
+	}
 }
 
 func xopJPnPVnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskPV == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagPV() {
+		cpu.PC = nn
+	}
 }
 
 func xopJPfPVnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskPV != 0)
+	nn := cpu.fetch16()
+	if cpu.flagPV() {
+		cpu.PC = nn
+	}
 }
 
 func xopJPnSnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskS == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagS() {
+		cpu.PC = nn
+	}
 }
 
 func xopJPfSnn(cpu *CPU) {
-	copJPxnn(cpu, cpu.AF.Lo&maskS != 0)
+	nn := cpu.fetch16()
+	if cpu.flagS() {
+		cpu.PC = nn
+	}
 }

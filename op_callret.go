@@ -1,11 +1,7 @@
 package z80
 
 func oopCALLnn(cpu *CPU) {
-	nn := cpu.fetch16()
-	cpu.SP -= 2
-	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
-	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-	cpu.PC = nn
+	copCALLnn(cpu, cpu.fetch16())
 }
 
 func oopRETI(cpu *CPU) {
@@ -38,46 +34,65 @@ func oopRET(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func copCALLxnn(cpu *CPU, xflag bool) {
-	nn := cpu.fetch16()
-	if xflag {
-		cpu.SP -= 2
-		cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
-		cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-		cpu.PC = nn
-	}
+func copCALLnn(cpu *CPU, nn uint16) {
+	cpu.push16(cpu.PC)
+	cpu.PC = nn
 }
 
 func xopCALLnZnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskZ == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagZ() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLfZnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskZ != 0)
+	nn := cpu.fetch16()
+	if cpu.flagZ() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLnCnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskC == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagC() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLfCnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskC != 0)
+	nn := cpu.fetch16()
+	if cpu.flagC() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLnPVnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskPV == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagPV() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLfPVnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskPV != 0)
+	nn := cpu.fetch16()
+	if cpu.flagPV() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLnSnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskS == 0)
+	nn := cpu.fetch16()
+	if !cpu.flagS() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopCALLfSnn(cpu *CPU) {
-	copCALLxnn(cpu, cpu.AF.Lo&maskS != 0)
+	nn := cpu.fetch16()
+	if cpu.flagS() {
+		copCALLnn(cpu, nn)
+	}
 }
 
 func xopRETnZ(cpu *CPU) {
