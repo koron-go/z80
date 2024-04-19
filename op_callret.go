@@ -39,12 +39,12 @@ func oopRET(cpu *CPU) {
 // eXpanded OPration codes
 
 func copCALLxnn(cpu *CPU, xflag bool) {
-	l, h := cpu.fetch2()
+	nn := cpu.fetch16()
 	if xflag {
 		cpu.SP -= 2
 		cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
 		cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-		cpu.PC = toU16(l, h)
+		cpu.PC = nn
 	}
 }
 

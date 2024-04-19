@@ -64,9 +64,9 @@ func oopDJNZe(cpu *CPU) {
 // eXpanded OPration codes
 
 func copJPxnn(cpu *CPU, xflag bool) {
-	l, h := cpu.fetch2()
+	nn := cpu.fetch16()
 	if xflag {
-		cpu.PC = toU16(l, h)
+		cpu.PC = nn
 	}
 }
 
