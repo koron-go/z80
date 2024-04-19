@@ -171,103 +171,103 @@ func (cpu *CPU) executeOne() {
 
 	// LD r1, r2
 	case 0x40:
-		//cpu.BC.Hi = cpu.BC.Hi
+		//cpu.BC.Hi = cpu.BC.Hi // LD B, B
 	case 0x41:
-		cpu.BC.Hi = cpu.BC.Lo
+		cpu.BC.Hi = cpu.BC.Lo // LD B, C
 	case 0x42:
-		cpu.BC.Hi = cpu.DE.Hi
+		cpu.BC.Hi = cpu.DE.Hi // LD B, D
 	case 0x43:
-		cpu.BC.Hi = cpu.DE.Lo
+		cpu.BC.Hi = cpu.DE.Lo // LD B, E
 	case 0x44:
-		cpu.BC.Hi = cpu.HL.Hi
+		cpu.BC.Hi = cpu.HL.Hi // LD B, H
 	case 0x45:
-		cpu.BC.Hi = cpu.HL.Lo
+		cpu.BC.Hi = cpu.HL.Lo // LD B, L
 	case 0x47:
-		cpu.BC.Hi = cpu.AF.Hi
+		cpu.BC.Hi = cpu.AF.Hi // LD B, A
 	case 0x48:
-		cpu.BC.Lo = cpu.BC.Hi
+		cpu.BC.Lo = cpu.BC.Hi // LD C, B
 	case 0x49:
-		//cpu.BC.Lo = cpu.BC.Lo
+		//cpu.BC.Lo = cpu.BC.Lo // LD C, B
 	case 0x4a:
-		cpu.BC.Lo = cpu.DE.Hi
+		cpu.BC.Lo = cpu.DE.Hi // LD C, D
 	case 0x4b:
-		cpu.BC.Lo = cpu.DE.Lo
+		cpu.BC.Lo = cpu.DE.Lo // LD C, E
 	case 0x4c:
-		cpu.BC.Lo = cpu.HL.Hi
+		cpu.BC.Lo = cpu.HL.Hi // LD C, H
 	case 0x4d:
-		cpu.BC.Lo = cpu.HL.Lo
+		cpu.BC.Lo = cpu.HL.Lo // LD C, L
 	case 0x4f:
-		cpu.BC.Lo = cpu.AF.Hi
+		cpu.BC.Lo = cpu.AF.Hi // LD C, A
 	case 0x50:
-		cpu.DE.Hi = cpu.BC.Hi
+		cpu.DE.Hi = cpu.BC.Hi // LD D, B
 	case 0x51:
-		cpu.DE.Hi = cpu.BC.Lo
+		cpu.DE.Hi = cpu.BC.Lo // LD D, C
 	case 0x52:
-		//cpu.DE.Hi = cpu.DE.Hi
+		//cpu.DE.Hi = cpu.DE.Hi // LD D, D
 	case 0x53:
-		cpu.DE.Hi = cpu.DE.Lo
+		cpu.DE.Hi = cpu.DE.Lo // LD D, E
 	case 0x54:
-		cpu.DE.Hi = cpu.HL.Hi
+		cpu.DE.Hi = cpu.HL.Hi // LD D, H
 	case 0x55:
-		cpu.DE.Hi = cpu.HL.Lo
+		cpu.DE.Hi = cpu.HL.Lo // LD D, L
 	case 0x57:
-		cpu.DE.Hi = cpu.AF.Hi
+		cpu.DE.Hi = cpu.AF.Hi // LD D, A
 	case 0x58:
-		cpu.DE.Lo = cpu.BC.Hi
+		cpu.DE.Lo = cpu.BC.Hi // LD E, B
 	case 0x59:
-		cpu.DE.Lo = cpu.BC.Lo
+		cpu.DE.Lo = cpu.BC.Lo // LD E, C
 	case 0x5a:
-		cpu.DE.Lo = cpu.DE.Hi
+		cpu.DE.Lo = cpu.DE.Hi // LD E, D
 	case 0x5b:
-		//cpu.DE.Lo = cpu.DE.Lo
+		//cpu.DE.Lo = cpu.DE.Lo // LD E, E
 	case 0x5c:
-		cpu.DE.Lo = cpu.HL.Hi
+		cpu.DE.Lo = cpu.HL.Hi // LD E, H
 	case 0x5d:
-		cpu.DE.Lo = cpu.HL.Lo
+		cpu.DE.Lo = cpu.HL.Lo // LD E, L
 	case 0x5f:
-		cpu.DE.Lo = cpu.AF.Hi
+		cpu.DE.Lo = cpu.AF.Hi // LD E, A
 	case 0x60:
-		cpu.HL.Hi = cpu.BC.Hi
+		cpu.HL.Hi = cpu.BC.Hi // LD H, B
 	case 0x61:
-		cpu.HL.Hi = cpu.BC.Lo
+		cpu.HL.Hi = cpu.BC.Lo // LD H, C
 	case 0x62:
-		cpu.HL.Hi = cpu.DE.Hi
+		cpu.HL.Hi = cpu.DE.Hi // LD H, D
 	case 0x63:
-		cpu.HL.Hi = cpu.DE.Lo
+		cpu.HL.Hi = cpu.DE.Lo // LD H, E
 	case 0x64:
-		//cpu.HL.Hi = cpu.HL.Hi
+		//cpu.HL.Hi = cpu.HL.Hi // LD H, H
 	case 0x65:
-		cpu.HL.Hi = cpu.HL.Lo
+		cpu.HL.Hi = cpu.HL.Lo // LD H, L
 	case 0x67:
-		cpu.HL.Hi = cpu.AF.Hi
+		cpu.HL.Hi = cpu.AF.Hi // LD H, A
 	case 0x68:
-		cpu.HL.Lo = cpu.BC.Hi
+		cpu.HL.Lo = cpu.BC.Hi // LD L, B
 	case 0x69:
-		cpu.HL.Lo = cpu.BC.Lo
+		cpu.HL.Lo = cpu.BC.Lo // LD L, C
 	case 0x6a:
-		cpu.HL.Lo = cpu.DE.Hi
+		cpu.HL.Lo = cpu.DE.Hi // LD L, D
 	case 0x6b:
-		cpu.HL.Lo = cpu.DE.Lo
+		cpu.HL.Lo = cpu.DE.Lo // LD L, E
 	case 0x6c:
-		cpu.HL.Lo = cpu.HL.Hi
+		cpu.HL.Lo = cpu.HL.Hi // LD L, H
 	case 0x6d:
-		//cpu.HL.Lo = cpu.HL.Lo
+		//cpu.HL.Lo = cpu.HL.Lo // LD L, L
 	case 0x6f:
-		cpu.HL.Lo = cpu.AF.Hi
+		cpu.HL.Lo = cpu.AF.Hi // LD L, A
 	case 0x78:
-		cpu.AF.Hi = cpu.BC.Hi
+		cpu.AF.Hi = cpu.BC.Hi // LD A, B
 	case 0x79:
-		cpu.AF.Hi = cpu.BC.Lo
+		cpu.AF.Hi = cpu.BC.Lo // LD A, C
 	case 0x7a:
-		cpu.AF.Hi = cpu.DE.Hi
+		cpu.AF.Hi = cpu.DE.Hi // LD A, D
 	case 0x7b:
-		cpu.AF.Hi = cpu.DE.Lo
+		cpu.AF.Hi = cpu.DE.Lo // LD A, E
 	case 0x7c:
-		cpu.AF.Hi = cpu.HL.Hi
+		cpu.AF.Hi = cpu.HL.Hi // LD A, H
 	case 0x7d:
-		cpu.AF.Hi = cpu.HL.Lo
+		cpu.AF.Hi = cpu.HL.Lo // LD A, L
 	case 0x7f:
-		//cpu.AF.Hi = cpu.AF.Hi
+		//cpu.AF.Hi = cpu.AF.Hi // LD A, A
 
 	case 0x46:
 		xopLDbHLP(cpu)
@@ -2147,8 +2147,7 @@ func (cpu *CPU) executeOne() {
 			oopLDSPIY(cpu)
 
 		case 0xcb:
-			d, c3 := cpu.fetch2()
-			switch c3 {
+			switch d, c3 := cpu.fetch2(); c3 {
 
 			case 0x06:
 				oopRLCIYdP(cpu, d)
