@@ -1,43 +1,43 @@
 package z80
 
-func oopLDIXnn(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDIXnn(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.IX = nn
 }
 
-func oopLDIYnn(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDIYnn(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.IY = nn
 }
 
-func oopLDHLnnP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDHLnnP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.HL.Lo = cpu.Memory.Get(nn)
 	cpu.HL.Hi = cpu.Memory.Get(nn + 1)
 }
 
-func oopLDIXnnP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDIXnnP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.IX = cpu.readU16(nn)
 }
 
-func oopLDIYnnP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDIYnnP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.IY = cpu.readU16(nn)
 }
 
-func oopLDnnPHL(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDnnPHL(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.HL.U16())
 }
 
-func oopLDnnPIX(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDnnPIX(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.IX)
 }
 
-func oopLDnnPIY(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func oopLDnnPIY(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.IY)
 }
 
@@ -98,61 +98,59 @@ func xopPOPreg(cpu *CPU, reg *Register) {
 	cpu.SP++
 }
 
-func xopLDbcnn(cpu *CPU, l, h uint8) {
-	cpu.BC.Lo = l
-	cpu.BC.Hi = h
+func xopLDbcnn(cpu *CPU) {
+	cpu.BC.Lo, cpu.BC.Hi = cpu.fetch2()
 }
 
-func xopLDdenn(cpu *CPU, l, h uint8) {
-	cpu.DE.Lo = l
-	cpu.DE.Hi = h
+func xopLDdenn(cpu *CPU) {
+	cpu.DE.Lo, cpu.DE.Hi = cpu.fetch2()
 }
 
-func xopLDhlnn(cpu *CPU, l, h uint8) {
-	cpu.HL.Lo = l
-	cpu.HL.Hi = h
+func xopLDhlnn(cpu *CPU) {
+	cpu.HL.Lo, cpu.HL.Hi = cpu.fetch2()
 }
 
-func xopLDspnn(cpu *CPU, l, h uint8) {
-	cpu.SP = toU16(l, h)
+func xopLDspnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	cpu.SP = nn
 }
 
-func xopLDnnPbc(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDnnPbc(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.BC.U16())
 }
 
-func xopLDnnPde(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDnnPde(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.DE.U16())
 }
 
-func xopLDnnPhl(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDnnPhl(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.HL.U16())
 }
 
-func xopLDnnPsp(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDnnPsp(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.writeU16(nn, cpu.SP)
 }
 
-func xopLDbcnnP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDbcnnP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.BC.SetU16(cpu.readU16(nn))
 }
 
-func xopLDdennP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDdennP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.DE.SetU16(cpu.readU16(nn))
 }
 
-func xopLDhlnnP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDhlnnP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.HL.SetU16(cpu.readU16(nn))
 }
 
-func xopLDspnnP(cpu *CPU, l, h uint8) {
-	nn := toU16(l, h)
+func xopLDspnnP(cpu *CPU) {
+	nn := cpu.fetch16()
 	cpu.SP = cpu.readU16(nn)
 }

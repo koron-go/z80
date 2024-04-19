@@ -93,6 +93,14 @@ func (cpu *CPU) flagZ() bool {
 	return cpu.AF.Lo&maskZ != 0
 }
 
+func (cpu *CPU) flagPV() bool {
+	return cpu.AF.Lo&maskPV != 0
+}
+
+func (cpu *CPU) flagS() bool {
+	return cpu.AF.Lo&maskS != 0
+}
+
 func (cpu *CPU) readU16(addr uint16) uint16 {
 	l := cpu.Memory.Get(addr)
 	h := cpu.Memory.Get(addr + 1)
@@ -109,6 +117,22 @@ func (cpu *CPU) fetch() uint8 {
 	v := cpu.Memory.Get(cpu.PC)
 	cpu.PC++
 	return v
+}
+
+func (cpu *CPU) fetch2() (l, h uint8) {
+	l = cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	h = cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	return l, h
+}
+
+func (cpu *CPU) fetch16() uint16 {
+	l := cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	h := cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	return (uint16(h) << 8) | uint16(l)
 }
 
 func (cpu *CPU) ioIn(addr uint8) uint8 {

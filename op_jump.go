@@ -1,32 +1,37 @@
 package z80
 
-func oopJPnn(cpu *CPU, l, h uint8) {
-	cpu.PC = toU16(l, h)
+func oopJPnn(cpu *CPU) {
+	cpu.PC = cpu.fetch16()
 }
 
-func oopJRe(cpu *CPU, off uint8) {
+func oopJRe(cpu *CPU) {
+	off := cpu.fetch()
 	cpu.PC = addrOff(cpu.PC, off)
 }
 
-func oopJRCe(cpu *CPU, off uint8) {
+func oopJRCe(cpu *CPU) {
+	off := cpu.fetch()
 	if cpu.flagC() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func oopJRNCe(cpu *CPU, off uint8) {
+func oopJRNCe(cpu *CPU) {
+	off := cpu.fetch()
 	if !cpu.flagC() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func oopJRZe(cpu *CPU, off uint8) {
+func oopJRZe(cpu *CPU) {
+	off := cpu.fetch()
 	if cpu.flagZ() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
 }
 
-func oopJRNZe(cpu *CPU, off uint8) {
+func oopJRNZe(cpu *CPU) {
+	off := cpu.fetch()
 	if !cpu.flagZ() {
 		cpu.PC = addrOff(cpu.PC, off)
 	}
@@ -47,7 +52,8 @@ func oopJPIYP(cpu *CPU) {
 	cpu.PC = p
 }
 
-func oopDJNZe(cpu *CPU, off uint8) {
+func oopDJNZe(cpu *CPU) {
+	off := cpu.fetch()
 	cpu.BC.Hi--
 	if cpu.BC.Hi != 0 {
 		cpu.PC = addrOff(cpu.PC, off)
@@ -57,50 +63,58 @@ func oopDJNZe(cpu *CPU, off uint8) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func xopJPnZnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskZ == 0 {
-		cpu.PC = toU16(l, h)
+func xopJPnZnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagZ() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPfZnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskZ != 0 {
-		cpu.PC = toU16(l, h)
+func xopJPfZnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagZ() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPnCnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskC == 0 {
-		cpu.PC = toU16(l, h)
+func xopJPnCnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagC() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPfCnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskC != 0 {
-		cpu.PC = toU16(l, h)
+func xopJPfCnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagC() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPnPVnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskPV == 0 {
-		cpu.PC = toU16(l, h)
+func xopJPnPVnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagPV() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPfPVnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskPV != 0 {
-		cpu.PC = toU16(l, h)
+func xopJPfPVnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagPV() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPnSnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskS == 0 {
-		cpu.PC = toU16(l, h)
+func xopJPnSnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagS() {
+		cpu.PC = nn
 	}
 }
 
-func xopJPfSnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskS != 0 {
-		cpu.PC = toU16(l, h)
+func xopJPfSnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagS() {
+		cpu.PC = nn
 	}
 }

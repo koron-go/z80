@@ -1,5 +1,10 @@
 package z80
 
+func oopCALLnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	copCALLnn(cpu, nn)
+}
+
 func oopRETI(cpu *CPU) {
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
@@ -24,64 +29,73 @@ func oopRET(cpu *CPU) {
 	cpu.SP++
 	h := cpu.Memory.Get(cpu.SP)
 	cpu.SP++
-	cpu.PC= (uint16(h) << 8) | uint16(l)
+	cpu.PC = (uint16(h) << 8) | uint16(l)
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func xopCALLnn(cpu *CPU, l, h uint8) {
-	cpu.SP -= 2
+func copCALLnn(cpu *CPU, nn uint16) {
+	cpu.SP--
+	cpu.Memory.Set(cpu.SP, uint8(cpu.PC>>8))
+	cpu.SP--
 	cpu.Memory.Set(cpu.SP, uint8(cpu.PC))
-	cpu.Memory.Set(cpu.SP+1, uint8(cpu.PC>>8))
-	cpu.PC = toU16(l, h)
+	cpu.PC = nn
 }
 
-func xopCALLnZnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskZ == 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLnZnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagZ() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLfZnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskZ != 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLfZnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagZ() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLnCnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskC == 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLnCnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagC() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLfCnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskC != 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLfCnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagC() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLnPVnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskPV == 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLnPVnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagPV() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLfPVnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskPV != 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLfPVnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagPV() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLnSnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskS == 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLnSnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if !cpu.flagS() {
+		copCALLnn(cpu, nn)
 	}
 }
 
-func xopCALLfSnn(cpu *CPU, l, h uint8) {
-	if cpu.AF.Lo&maskS != 0 {
-		xopCALLnn(cpu, l, h)
+func xopCALLfSnn(cpu *CPU) {
+	nn := cpu.fetch16()
+	if cpu.flagS() {
+		copCALLnn(cpu, nn)
 	}
 }
 
