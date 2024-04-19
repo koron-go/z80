@@ -473,13 +473,13 @@ func (cpu *CPU) executeOne() {
 		xopRETfS(cpu)
 
 	case 0xc1:
-		xopPOPreg(cpu, &cpu.BC)
+		xopPOPbc(cpu)
 	case 0xd1:
-		xopPOPreg(cpu, &cpu.DE)
+		xopPOPde(cpu)
 	case 0xe1:
-		xopPOPreg(cpu, &cpu.HL)
+		xopPOPhl(cpu)
 	case 0xf1:
-		xopPOPreg(cpu, &cpu.AF)
+		xopPOPaf(cpu)
 
 	case 0xc2:
 		xopJPnZnn(cpu)
@@ -519,13 +519,13 @@ func (cpu *CPU) executeOne() {
 		xopCALLfSnn(cpu)
 
 	case 0xc5:
-		xopPUSHreg(cpu, cpu.BC)
+		xopPUSHbc(cpu)
 	case 0xd5:
-		xopPUSHreg(cpu, cpu.DE)
+		xopPUSHde(cpu)
 	case 0xe5:
-		xopPUSHreg(cpu, cpu.HL)
+		xopPUSHhl(cpu)
 	case 0xf5:
-		xopPUSHreg(cpu, cpu.AF)
+		xopPUSHaf(cpu)
 
 	case 0xc6:
 		oopADDAn(cpu)
