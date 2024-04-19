@@ -76,7 +76,7 @@ func oopPOPIY(cpu *CPU) {
 //////////////////////////////////////////////////////////////////////////////
 // eXpanded OPration codes
 
-func xopPUSHreg(cpu *CPU, reg Register) {
+func copPUSHreg(cpu *CPU, reg Register) {
 	// Code before optimization
 	//cpu.SP -= 2
 	//cpu.Memory.Set(cpu.SP, reg.Lo)
@@ -87,7 +87,23 @@ func xopPUSHreg(cpu *CPU, reg Register) {
 	cpu.Memory.Set(cpu.SP, reg.Lo)
 }
 
-func xopPOPreg(cpu *CPU, reg *Register) {
+func xopPUSHbc(cpu *CPU) {
+	copPUSHreg(cpu, cpu.BC)
+}
+
+func xopPUSHde(cpu *CPU) {
+	copPUSHreg(cpu, cpu.DE)
+}
+
+func xopPUSHhl(cpu *CPU) {
+	copPUSHreg(cpu, cpu.HL)
+}
+
+func xopPUSHaf(cpu *CPU) {
+	copPUSHreg(cpu, cpu.AF)
+}
+
+func copPOPreg(cpu *CPU, reg *Register) {
 	// Code before optimization
 	//reg.Lo = cpu.Memory.Get(cpu.SP)
 	//reg.Hi = cpu.Memory.Get(cpu.SP + 1)
@@ -96,6 +112,22 @@ func xopPOPreg(cpu *CPU, reg *Register) {
 	cpu.SP++
 	reg.Hi = cpu.Memory.Get(cpu.SP)
 	cpu.SP++
+}
+
+func xopPOPbc(cpu *CPU) {
+	copPOPreg(cpu, &cpu.BC)
+}
+
+func xopPOPde(cpu *CPU) {
+	copPOPreg(cpu, &cpu.DE)
+}
+
+func xopPOPhl(cpu *CPU) {
+	copPOPreg(cpu, &cpu.HL)
+}
+
+func xopPOPaf(cpu *CPU) {
+	copPOPreg(cpu, &cpu.AF)
 }
 
 func xopLDbcnn(cpu *CPU) {
