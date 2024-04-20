@@ -40,6 +40,8 @@ func oopDAA(cpu *CPU) {
 }
 
 func oopHALT(cpu *CPU) {
+	// HALT does nothing. Since the program counter (PC) also does not advance, rewind it that was advanced by M1 fetch.
+	cpu.PC--
 	cpu.HALT = true
 }
 

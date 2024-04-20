@@ -2,10 +2,7 @@ package z80
 
 // executeOne executes only an op-code.
 func (cpu *CPU) executeOne() {
-	if cpu.HALT {
-		return
-	}
-	switch c0 := cpu.fetch(); c0 {
+	switch c0 := cpu.fetchM1(); c0 {
 	case 0x00:
 		oopNOP(cpu)
 
@@ -602,7 +599,7 @@ func (cpu *CPU) executeOne() {
 		oopCPn(cpu)
 
 	case 0xcb:
-		switch c1 := cpu.fetch(); c1 {
+		switch c1 := cpu.fetchM1(); c1 {
 
 		// RLC r / RLC (HL)
 		case 0x00:
@@ -1185,7 +1182,7 @@ func (cpu *CPU) executeOne() {
 		}
 
 	case 0xdd:
-		switch c1 := cpu.fetch(); c1 {
+		switch c1 := cpu.fetchM1(); c1 {
 
 		// ADD IX, pp
 		case 0x09:
@@ -1540,7 +1537,7 @@ func (cpu *CPU) executeOne() {
 			oopLDSPIX(cpu)
 
 		case 0xcb:
-			switch d, c3 := cpu.fetch2(); c3 {
+			switch d, c3 := cpu.fetch(), cpu.fetchM1(); c3 {
 
 			case 0x06:
 				oopRLCIXdP(cpu, d)
@@ -1628,7 +1625,7 @@ func (cpu *CPU) executeOne() {
 		}
 
 	case 0xed:
-		switch c1 := cpu.fetch(); c1 {
+		switch c1 := cpu.fetchM1(); c1 {
 
 		// IN r, (C)
 		// FIXME: IN r[6], (C) to apply flags only.
@@ -1792,7 +1789,7 @@ func (cpu *CPU) executeOne() {
 		}
 
 	case 0xfd:
-		switch c1 := cpu.fetch(); c1 {
+		switch c1 := cpu.fetchM1(); c1 {
 
 		// ADD IY, pp
 		case 0x09:
@@ -2147,7 +2144,7 @@ func (cpu *CPU) executeOne() {
 			oopLDSPIY(cpu)
 
 		case 0xcb:
-			switch d, c3 := cpu.fetch2(); c3 {
+			switch d, c3 := cpu.fetch(), cpu.fetchM1(); c3 {
 
 			case 0x06:
 				oopRLCIYdP(cpu, d)

@@ -49,6 +49,7 @@ func runZexdoc(name string) error {
 		IO:     io,
 	}
 
+	var stopProf = func() {}
 	if cpuprof != "" {
 		f, err := os.Create(cpuprof)
 		if err != nil {
@@ -58,7 +59,9 @@ func runZexdoc(name string) error {
 		if err := pprof.StartCPUProfile(f); err != nil {
 			return fmt.Errorf("could not start CPU profile: %w", err)
 		}
-		defer pprof.StopCPUProfile()
+		stopProf = func() {
+			pprof.StopCPUProfile()
+		}
 	}
 
 	for {
@@ -68,10 +71,13 @@ func runZexdoc(name string) error {
 				// TODO:
 				continue
 			}
+			stopProf()
 			return err
 		}
 		break
 	}
+
+	stopProf()
 
 	if memprof != "" {
 		f, err := os.Create(memprof)
@@ -85,7 +91,7 @@ func runZexdoc(name string) error {
 		}
 	}
 
-	if cpu.PC != 0xff04 {
+	if cpu.PC != 0xff03 {
 		return fmt.Errorf("halted on unexpected PC: %04x", cpu.PC)
 	}
 	return nil

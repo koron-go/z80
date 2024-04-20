@@ -71,10 +71,10 @@ func tADChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 	postGPR.AF.Lo = flags
 	postSPR := preSPR
 	postSPR.PC = 0x0002
-	postSPR.IR = Register{Lo: 0x01}
+	postSPR.IR = Register{Lo: 0x02}
 
 	tSteps(t,
-		fmt.Sprintf("ADC HL %[1]s (HL=%04[2]x %[1]s=%04[3]x C=%[4]t", r.Label, hl, ss, c),
+		fmt.Sprintf("ADC HL %[1]s (HL=%04[2]x %[1]s=%04[3]x C=%[4]t)", r.Label, hl, ss, c),
 		States{GPR: preGPR, SPR: preSPR}, mem, 1,
 		States{GPR: postGPR, SPR: postSPR}, mem, maskDefault)
 }
@@ -153,10 +153,10 @@ func tSBChlss(t *testing.T, r tReg, hl, ss uint16, c bool) {
 	postGPR.AF.Lo = flags
 	postSPR := preSPR
 	postSPR.PC = 0x0002
-	postSPR.IR = Register{Lo: 0x01}
+	postSPR.IR = Register{Lo: 0x02}
 
 	tSteps(t,
-		fmt.Sprintf("SBC HL %[1]s (HL=%04[2]x %[1]s=%04[3]x C=%[4]t", r.Label, hl, ss, c),
+		fmt.Sprintf("SBC HL %[1]s (HL=%04[2]x %[1]s=%04[3]x C=%[4]t)", r.Label, hl, ss, c),
 		States{GPR: preGPR, SPR: preSPR}, mem, 1,
 		States{GPR: postGPR, SPR: postSPR}, mem, maskDefault)
 }
