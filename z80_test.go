@@ -56,7 +56,7 @@ func tRunMinibios(t *testing.T, name, expOut string, breakpoints ...uint16) {
 		}
 		break
 	}
-	if cpu.PC != 0xff04 {
+	if cpu.PC != 0xff03 {
 		t.Errorf("halted on unexpected PC: %04x", cpu.PC)
 	}
 	if s := warnbuf.String(); s != "" {

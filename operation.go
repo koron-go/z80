@@ -2,9 +2,6 @@ package z80
 
 // executeOne executes only an op-code.
 func (cpu *CPU) executeOne() {
-	if cpu.HALT {
-		return
-	}
 	switch c0 := cpu.fetchM1(); c0 {
 	case 0x00:
 		oopNOP(cpu)
