@@ -6,6 +6,18 @@
 
 Z80 emulation in Go.
 
+koron-go/z80 is [highly compatible](#compatibility) with the actual Z80, and is extremely fast.
+
+## Getting started
+
+Install or update:
+
+```console
+$ go get github.com/koron-go/z80@latest
+```
+
+(WRITE MINIMAL SAMPLE CODES HERE)
+
 ## Compatibility
 
 Z80 instruction set exerciser (documented), passed all 67/67 (100%) tests.
@@ -93,10 +105,6 @@ $ make zexall
 * [x] stabd   - `ld (<bc,de>),a (96 cycles)`
 
 </details>
-
-## Getting started
-
-(TO BE DOCUMENTED)
 
 ## References
 
