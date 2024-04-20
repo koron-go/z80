@@ -6,7 +6,7 @@
 
 Z80 emulation in Go.
 
-## Progress
+## Compatibility
 
 Z80 instruction set exerciser (documented), passed all 67/67 (100%) tests.
 
@@ -14,6 +14,15 @@ You can try it with...
 ```console
 $ make zexdoc
 ```
+
+Z80 instruction set exerciser (all), passed all 67/67 (100%) tests.
+
+You can try it with...
+```console
+$ make zexall
+```
+
+<details>
 
 * [x] adc16   - `<adc,sbc> hl,<bc,de,hl,sp> (38,912 cycles)`
 * [x] add16   - `add hl,<bc,de,hl,sp> (19,456 cycles)`
@@ -83,15 +92,13 @@ $ make zexdoc
 * [x] st8ix3  - `ld (<ix,iy>+1),a (64 cycles)`
 * [x] stabd   - `ld (<bc,de>),a (96 cycles)`
 
+</details>
+
+## Getting started
+
+(TO BE DOCUMENTED)
+
 ## References
-
-* [Zilog Z80 DAA実行結果](http://ver0.sakura.ne.jp/doc/daa.html)
-
-    LZ8514(SHARPのZ80互換CPU)で実際に実行して得た結果
-
-* [Z80 DAA 内部キャリーフラグは実在するのか?](https://uniabis.net/pico/msx/z80daa/)
-
-* [8ビット CPU Z80命令セット](http://www.yamamo10.jp/yamamoto/comp/Z80/instructions/index.php)
 
 * [zmac - Z-80 Macro Cross Assembler](http://48k.ca/zmac.html)
 
@@ -111,6 +118,20 @@ $ make zexdoc
 
 * [fMSX](https://fms.komkon.org/fMSX/)
 
+* [Yet Another Z80 Emulator by AG](http://www.mathematik.uni-ulm.de/users/ag/yaze-ag/)
+
+* [Visual Z80 Remix](https://floooh.github.io/visualz80remix/)
+
+### Japanese documents
+
+* [Zilog Z80 DAA実行結果](http://ver0.sakura.ne.jp/doc/daa.html)
+
+    LZ8514(SHARPのZ80互換CPU)で実際に実行して得た結果
+
+* [Z80 DAA 内部キャリーフラグは実在するのか?](https://uniabis.net/pico/msx/z80daa/)
+
+* [8ビット CPU Z80命令セット](http://www.yamamo10.jp/yamamoto/comp/Z80/instructions/index.php)
+
 * [ＭＳＸテープイメージ解説書](http://park16.wakwak.com/~msx/imagesei/tape.html)
 
 * [MSX Datapack wiki](http://ngs.no.coocan.jp/doc/wiki.cgi/datapack?page=FrontPage)
@@ -119,10 +140,6 @@ $ make zexdoc
 
 * [MSX JAPAN/ファイル形式](https://msxjpn.jimdofree.com/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%BD%A2%E5%BC%8F/)
 
-* [Yet Another Z80 Emulator by AG](http://www.mathematik.uni-ulm.de/users/ag/yaze-ag/)
-
 * [8ビット CPU Z80タイミング](http://www.yamamo10.jp/yamamoto/comp/Z80/Z80_Timming/index.php)
 
 * [Z80のRレジスタについて](https://electrelic.com/electrelic/node/1506)
-
-* [Visual Z80 Remix](https://floooh.github.io/visualz80remix/)
