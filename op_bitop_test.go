@@ -31,7 +31,7 @@ func TestBitop_BITbr(t *testing.T) {
 						1,
 						States{
 							GPR: wantGPR,
-							SPR: SPR{PC: 2, IR: Register{Lo: 0x01},
+							SPR: SPR{PC: 2, IR: Register{Lo: 0x02},
 								IX: 0x1000,
 							}},
 						mem.Clone(),
@@ -64,7 +64,7 @@ func TestBitop_BITbIXd(t *testing.T) {
 						1,
 						States{
 							GPR: GPR{AF: Register{Lo: flag}},
-							SPR: SPR{PC: 4, IR: Register{Lo: 0x01},
+							SPR: SPR{PC: 4, IR: Register{Lo: 0x03},
 								IX: 0x1000,
 							}},
 						mem.Clone(),
@@ -97,7 +97,7 @@ func TestBitop_BITbIYd(t *testing.T) {
 						1,
 						States{
 							GPR: GPR{AF: Register{Lo: flag}},
-							SPR: SPR{PC: 4, IR: Register{Lo: 0x01},
+							SPR: SPR{PC: 4, IR: Register{Lo: 0x03},
 								IY: 0x4180,
 							}},
 						mem.Clone(),
@@ -125,7 +125,7 @@ func TestBitop_SETbIXd(t *testing.T) {
 					States{GPR: GPR{}, SPR: SPR{IX: base}},
 					mem,
 					States{GPR: GPR{},
-						SPR: SPR{PC: 4, IR: Register{Lo: 0x01}, IX: base}},
+						SPR: SPR{PC: 4, IR: Register{Lo: 0x03}, IX: base}},
 					wantMem)
 			}
 		})
@@ -148,7 +148,7 @@ func TestBitop_SETbIYd(t *testing.T) {
 					States{GPR: GPR{}, SPR: SPR{IY: base}},
 					mem,
 					States{GPR: GPR{},
-						SPR: SPR{PC: 4, IR: Register{Lo: 0x01}, IY: base}},
+						SPR: SPR{PC: 4, IR: Register{Lo: 0x03}, IY: base}},
 					wantMem)
 			}
 		})
@@ -171,7 +171,7 @@ func TestBitop_RESbIXd(t *testing.T) {
 					States{GPR: GPR{}, SPR: SPR{IX: base}},
 					mem,
 					States{GPR: GPR{},
-						SPR: SPR{PC: 4, IR: Register{Lo: 0x01}, IX: base}},
+						SPR: SPR{PC: 4, IR: Register{Lo: 0x03}, IX: base}},
 					wantMem)
 			}
 		})
@@ -194,7 +194,7 @@ func TestBitop_RESbIYd(t *testing.T) {
 					States{GPR: GPR{}, SPR: SPR{IY: base}},
 					mem,
 					States{GPR: GPR{},
-						SPR: SPR{PC: 4, IR: Register{Lo: 0x01}, IY: base}},
+						SPR: SPR{PC: 4, IR: Register{Lo: 0x03}, IY: base}},
 					wantMem)
 			}
 		})

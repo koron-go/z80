@@ -120,3 +120,9 @@ $ make zexdoc
 * [MSX JAPAN/ファイル形式](https://msxjpn.jimdofree.com/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%BD%A2%E5%BC%8F/)
 
 * [Yet Another Z80 Emulator by AG](http://www.mathematik.uni-ulm.de/users/ag/yaze-ag/)
+
+* [8ビット CPU Z80タイミング](http://www.yamamo10.jp/yamamoto/comp/Z80/Z80_Timming/index.php)
+
+* [Z80のRレジスタについて](https://electrelic.com/electrelic/node/1506)
+
+* [Visual Z80 Remix](https://floooh.github.io/visualz80remix/)

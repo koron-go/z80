@@ -491,7 +491,7 @@ func tADDAIXd(t *testing.T, av, dv uint8, ix uint16, mem MapMemory) {
 		}, mem, 1,
 		States{
 			GPR: postGPR,
-			SPR: SPR{IX: ix, PC: 0x0003, IR: Register{Lo: 0x01}},
+			SPR: SPR{IX: ix, PC: 0x0003, IR: Register{Lo: 0x02}},
 		}, mem, maskDefault)
 }
 
@@ -535,7 +535,7 @@ func tADDAIYd(t *testing.T, av, dv uint8, iy uint16, mem MapMemory) {
 		}, mem, 1,
 		States{
 			GPR: postGPR,
-			SPR: SPR{IY: iy, PC: 0x0003, IR: Register{Lo: 0x01}},
+			SPR: SPR{IY: iy, PC: 0x0003, IR: Register{Lo: 0x02}},
 		}, mem, maskDefault)
 }
 

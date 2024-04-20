@@ -135,6 +135,29 @@ func (cpu *CPU) fetch16() uint16 {
 	return (uint16(h) << 8) | uint16(l)
 }
 
+// fetchM1 fetches a byte for M1 cycle
+func (cpu *CPU) fetchM1() uint8 {
+	c := cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	// increment refresh counter
+	rc := cpu.IR.Lo
+	cpu.IR.Lo = rc&0x80 | (rc+1)&0x7f
+	return c
+}
+
+// fetchM1x2 fetches two bytes for M1 cycle.
+// First one is a data, second one is a part of opcode.
+func (cpu *CPU) fetchM1x2() (d, c uint8) {
+	d = cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	c = cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	// increment refresh counter
+	rc := cpu.IR.Lo
+	cpu.IR.Lo = rc&0x80 | (rc+1)&0x7f
+	return d, c
+}
+
 func (cpu *CPU) ioIn(addr uint8) uint8 {
 	if cpu.IO == nil {
 		return 0
@@ -180,9 +203,6 @@ func (cpu *CPU) Run(ctx context.Context) error {
 
 // Step executes an instruction.
 func (cpu *CPU) Step() {
-	// increment refresh counter
-	rc := cpu.IR.Lo
-	cpu.IR.Lo = rc&0x80 | (rc+1)&0x7f
 	// try interruptions.
 	oldPC := cpu.PC
 	if cpu.tryInterrupt() {
