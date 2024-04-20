@@ -1,7 +1,10 @@
 package z80
 
 import (
+	"context"
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -105,4 +108,85 @@ func maskFlags(s States, mask uint8) States {
 type tReg struct {
 	Label string
 	Code  int
+}
+
+type tINT struct {
+	data []uint8
+	reti bool
+}
+
+func (tint *tINT) CheckINT() []uint8 {
+	v := tint.data
+	if v != nil {
+		tint.data = nil
+		tint.reti = false
+	}
+	return v
+}
+
+func (tint *tINT) ReturnINT() {
+	tint.reti = true
+}
+
+func testIM0(t *testing.T, n uint8) {
+	var (
+		addr uint16 = uint16(n) * 8
+		code uint8  = 0xC7 + n*0x08
+	)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	tint := &tINT{}
+	cpu := &CPU{
+		States: States{SPR: SPR{PC: 0x0100}, IM: 1},
+		Memory: MapMemory{}.
+			// HALT
+			Put(0x0000, 0x76).
+			// RETI
+			Put(addr, 0xed, 0x4d).
+			// IM 0 ; HALT ; HALT (for return)
+			Put(0x0100,
+				0xed, 0x46,
+				0x76,
+				0x76,
+			),
+		IO:  &tForbiddenIO{},
+		INT: tint,
+	}
+
+	// Start the program and HALT at 0x0101
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0102 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x102, cpu.PC)
+	}
+	if cpu.IM != 0 {
+		t.Fatalf("unexpected interrupt mode: want=0 got=%d", cpu.IM)
+	}
+
+	// Interrupt with IM 0
+	tint.data = []uint8{code}
+	cpu.Step()
+	if cpu.PC != addr {
+		t.Fatalf("RST 38H not work: want=%04X got=%04X", addr, cpu.PC)
+	}
+
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0103 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
+	}
+	if !tint.reti {
+		t.Fatalf("RETI is not processed, unexpectedly")
+	}
+}
+
+func TestInterruptIM0(t *testing.T) {
+	for i := 0; i < 8; i++ {
+		t.Run(fmt.Sprintf("RST %02XH", i*8), func(t *testing.T) {
+			testIM0(t, uint8(i))
+		})
+	}
 }

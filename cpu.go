@@ -40,25 +40,34 @@ type im0data struct {
 	start uint16
 	end   uint16
 	data  []uint8
+
+	base Memory
 }
 
-func newIm0data(pc uint16, d []uint8) *im0data {
+func newIm0data(pc uint16, d []uint8, base Memory) *im0data {
 	return &im0data{
 		start: pc,
 		end:   pc + uint16(len(d)-1),
 		data:  d,
+		base:  base,
 	}
 }
 
 func (im0 *im0data) Get(addr uint16) uint8 {
 	if addr < im0.start || addr > im0.end {
-		return 0
+		// delegate to base Memory for out of range.
+		return im0.base.Get(addr)
 	}
 	return im0.data[addr-im0.start]
 }
 
 func (im0 *im0data) Set(addr uint16, value uint8) {
-	// invalid opepration, nothing to do.
+	if addr >= im0.start && addr <= im0.end {
+		// invalid opepration, nothing to do.
+		return
+	}
+	// delegate to base Memory for out of range.
+	im0.base.Set(addr, value)
 }
 
 func (cpu *CPU) failf(msg string, args ...interface{}) {
@@ -252,7 +261,7 @@ func (cpu *CPU) tryInterrupt() bool {
 	}
 	cpu.HALT = false
 	savedMemory := cpu.Memory
-	cpu.Memory = newIm0data(cpu.PC, d)
+	cpu.Memory = newIm0data(cpu.PC, d, savedMemory)
 	cpu.executeOne()
 	cpu.Memory = savedMemory
 	return true
