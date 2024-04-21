@@ -15,18 +15,15 @@ type CPU struct {
 	Memory Memory
 	IO     IO
 
-	INT  INT
-	NMI  NMI
-	IMon InterruptMonitor
+	RETNHandler RETNHandler
+	RETIHandler RETIHandler
 
-	Debug       bool
+	Interrupt *Interrupt
+
 	BreakPoints map[uint16]struct{}
 
 	// HALT indicates whether the last Run() is terminated with HALT op.
 	HALT bool
-
-	//InNMI indicates whether the NMI interrupt period is in progress.
-	InNMI bool
 }
 
 // States is collection of Z80's internal state.
@@ -107,7 +104,24 @@ type NMI interface {
 	ReturnNMI()
 }
 
-// InterruptMonitor monitors interruptions.
-type InterruptMonitor interface {
-	OnInterrupt(maskable bool, oldPC, newPC uint16)
+type Interrupt struct {
+	Type InterruptType
+	Data []uint8
+}
+
+type InterruptType int
+
+const (
+	NMIType InterruptType = iota
+	IMType
+)
+
+// RETNHandler will be called before execute RETN opcode.
+type RETNHandler interface {
+	RETNHandle()
+}
+
+// RETIHandler will be called before execute RETI opcode.
+type RETIHandler interface {
+	RETIHandle()
 }
