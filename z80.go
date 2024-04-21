@@ -98,6 +98,9 @@ type INT interface {
 type NMI interface {
 	// CheckNMI should return true if non-maskable interruption made.
 	CheckNMI() bool
+
+	// ReturnNMI is called when "RETN" op is executed.
+	ReturnNMI()
 }
 
 // InterruptMonitor monitors interruptions.

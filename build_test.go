@@ -61,6 +61,7 @@ func TestBuildWithINT(t *testing.T) {
 type dummyNMI struct{}
 
 func (dummyNMI) CheckNMI() bool { return false }
+func (dummyNMI) ReturnNMI()     {}
 
 func TestBuildWithNMI(t *testing.T) {
 	v := dummyNMI{}
