@@ -2,6 +2,7 @@ package z80
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -439,4 +440,20 @@ func TestInterruptNMI(t *testing.T) {
 			t.Fatal("IFF1 is true, unexpectedly")
 		}
 	})
+}
+
+func TestRunCancel(t *testing.T) {
+	cpu := &CPU{
+		States: States{SPR: SPR{PC: 0x0100}},
+		Memory: MapMemory{}.
+			// JR -2
+			Put(0x0100, 0x18, 0xfe),
+		IO: &tForbiddenIO{},
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	defer cancel()
+	err := cpu.Run(ctx)
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Errorf("unexpected error: %+v", err)
+	}
 }
