@@ -8,18 +8,25 @@ import "errors"
 // ErrBreakPoint shows PC is reached to one of break points.
 var ErrBreakPoint = errors.New("break point reached")
 
-// CPU is Z80 emulator.
+// CPU is the core of Z80 emulator.
 type CPU struct {
 	States
 
 	Memory Memory
 	IO     IO
-	INT    INT
-	NMI    NMI
-	IMon   InterruptMonitor
+
+	INT  INT
+	NMI  NMI
+	IMon InterruptMonitor
 
 	Debug       bool
 	BreakPoints map[uint16]struct{}
+
+	// HALT indicates whether the last Run() is terminated with HALT op.
+	HALT bool
+
+	//InNMI indicates whether the NMI interrupt period is in progress.
+	InNMI bool
 }
 
 // States is collection of Z80's internal state.
@@ -32,9 +39,6 @@ type States struct {
 	IFF1 bool
 	IFF2 bool
 	IM   int
-
-	HALT  bool
-	InNMI bool
 }
 
 // GPR is general purpose reigsters, pair of four registers AF, BC, DE and HL.

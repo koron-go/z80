@@ -180,6 +180,7 @@ func (cpu *CPU) Run(ctx context.Context) error {
 		atomic.StoreInt32(&canceled, 1)
 	}()
 
+	cpu.HALT = false
 	for {
 		if atomic.LoadInt32(&canceled) != 0 {
 			return ctxErr
@@ -217,7 +218,6 @@ func (cpu *CPU) tryInterrupt() bool {
 		return false
 	}
 	if cpu.NMI != nil && cpu.NMI.CheckNMI() {
-		cpu.HALT = false
 		cpu.SP -= 2
 		cpu.writeU16(cpu.SP, cpu.PC)
 		cpu.PC = 0x0066
@@ -236,7 +236,6 @@ func (cpu *CPU) tryInterrupt() bool {
 	}
 	switch cpu.IM {
 	case 1:
-		cpu.HALT = false
 		cpu.SP -= 2
 		cpu.writeU16(cpu.SP, cpu.PC)
 		cpu.PC = 0x0038
@@ -249,7 +248,6 @@ func (cpu *CPU) tryInterrupt() bool {
 				return false
 			}
 		}
-		cpu.HALT = false
 		cpu.SP -= 2
 		cpu.writeU16(cpu.SP, cpu.PC)
 		// The LSB of interruption data is ignored in IM 2
