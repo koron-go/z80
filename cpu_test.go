@@ -134,8 +134,8 @@ func (tint *tINT) ReturnINT() {
 
 func testIM0(t *testing.T, n uint8) {
 	var (
-		addr uint16 = uint16(n) * 8
-		code uint8  = 0xC7 + n*0x08
+		addr = uint16(n) * 8
+		code = 0xC7 + n*0x08
 	)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
