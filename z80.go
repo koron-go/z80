@@ -15,9 +15,13 @@ type CPU struct {
 	Memory Memory
 	IO     IO
 
+	// RETNHandle is called when CPU execute a RETN op.
 	RETNHandler RETNHandler
+	// RETIHandle is called when CPU execute a RETI op.
 	RETIHandler RETIHandler
 
+	// Interrupt is a signal to interrupt.  When you set non-nil value, then
+	// CPU.Step and CPU.Run treat it as one of Z80 interruptions.
 	Interrupt *Interrupt
 
 	BreakPoints map[uint16]struct{}
@@ -104,22 +108,29 @@ type NMI interface {
 	ReturnNMI()
 }
 
+// InterruptType is type of interruption.
 type InterruptType int
 
 const (
+	// NMIType is a type of NMI interruption.
 	NMIType InterruptType = iota
+	// IMType is a type of normal interruptions.
 	IMType
 )
 
+// Interrupt is interruption signal.  Put a point of Interrupt to
+// CPU.Interrupt, when you want to make an interrupt.
 type Interrupt struct {
 	Type InterruptType
 	Data []uint8
 }
 
+// NMIInterrupt creates a Interrupt objct for NMI.
 func NMIInterrupt() *Interrupt {
 	return &Interrupt{Type: NMIType}
 }
 
+// IM0Interrupt creates an Interrupt object for IM0.
 func IM0Interrupt(d uint8, others ...uint8) *Interrupt {
 	data := make([]uint8, len(others)+1)
 	data[0] = d
@@ -130,10 +141,12 @@ func IM0Interrupt(d uint8, others ...uint8) *Interrupt {
 	}
 }
 
+// IM1Interrupt creates an Interrupt object for IM1.
 func IM1Interrupt() *Interrupt {
 	return &Interrupt{Type: IMType}
 }
 
+// IM2Interrupt creates an Interrupt object for IM2.
 func IM2Interrupt(n uint8) *Interrupt {
 	return &Interrupt{
 		Type: IMType,
