@@ -162,7 +162,7 @@ func testIM0(t *testing.T, n uint8) {
 	}
 
 	// Interrupt with IM 0
-	cpu.Interrupt = &Interrupt{Type: IMType, Data: []uint8{code}}
+	cpu.Interrupt = IM0Interrupt(code)
 	cpu.Step()
 	if cpu.PC != addr {
 		t.Fatalf("RST 38H not work: want=%04X got=%04X", addr, cpu.PC)
@@ -233,7 +233,7 @@ func TestInterruptIM1(t *testing.T) {
 	}
 
 	// Interrupt with IM 1: with dummy data
-	cpu.Interrupt = &Interrupt{Type: IMType}
+	cpu.Interrupt = IM1Interrupt()
 	cpu.Step()
 	if cpu.PC != 0x0038 {
 		t.Fatalf("IM 1 interruption not work: want=%04X got=%04X", 0x0038, cpu.PC)
@@ -302,7 +302,7 @@ func testIM2(t *testing.T, addr uint16) {
 	}
 
 	// Interrupt with IM 2: with dummy empty byte array.
-	cpu.Interrupt = &Interrupt{Type: IMType, Data: []uint8{lo}}
+	cpu.Interrupt = IM2Interrupt(lo)
 	cpu.Step()
 	if cpu.PC != 0x00C0 {
 		t.Fatalf("IM 2 interruption not work: want=%04X got=%04X", 0x00C0, cpu.PC)
@@ -385,7 +385,7 @@ func testNMI(t *testing.T, iff1 bool) *CPU {
 	}
 
 	// Interrupt with NMI
-	cpu.Interrupt = &Interrupt{Type: NMIType}
+	cpu.Interrupt = NMIInterrupt()
 	cpu.Step()
 	if cpu.PC != 0x0066 {
 		t.Fatalf("NMI interruption not work: want=%04X got=%04X", 0x0066, cpu.PC)

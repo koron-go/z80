@@ -104,17 +104,42 @@ type NMI interface {
 	ReturnNMI()
 }
 
-type Interrupt struct {
-	Type InterruptType
-	Data []uint8
-}
-
 type InterruptType int
 
 const (
 	NMIType InterruptType = iota
 	IMType
 )
+
+type Interrupt struct {
+	Type InterruptType
+	Data []uint8
+}
+
+func NMIInterrupt() *Interrupt {
+	return &Interrupt{Type: NMIType}
+}
+
+func IM0Interrupt(d uint8, others ...uint8) *Interrupt {
+	data := make([]uint8, len(others)+1)
+	data[0] = d
+	copy(data[1:], others)
+	return &Interrupt{
+		Type: IMType,
+		Data: data,
+	}
+}
+
+func IM1Interrupt() *Interrupt {
+	return &Interrupt{Type: IMType}
+}
+
+func IM2Interrupt(n uint8) *Interrupt {
+	return &Interrupt{
+		Type: IMType,
+		Data: []uint8{n},
+	}
+}
 
 // RETNHandler will be called before execute RETN opcode.
 type RETNHandler interface {
