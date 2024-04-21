@@ -215,7 +215,7 @@ func TestInterruptIM1(t *testing.T) {
 			Put(0x0038,
 				0xfb,
 				0xed, 0x4d).
-			// IM 1 ; EI ; HALT ; HALT (for return)
+			// IM 1 ; EI ; HALT
 			Put(0x0100,
 				0xed, 0x56,
 				0xfb,
@@ -258,5 +258,86 @@ func TestInterruptIM1(t *testing.T) {
 	}
 	if !tint.reti {
 		t.Fatalf("RETI is not processed, unexpectedly")
+	}
+}
+
+func testIM2(t *testing.T, addr uint16) {
+	hi := uint8(addr >> 8)
+	lo := uint8(addr)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	tint := &tINT{}
+	cpu := &CPU{
+		States: States{SPR: SPR{PC: 0x0100}, IM: 0},
+		Memory: MapMemory{}.
+			// HALT
+			Put(0x0000, 0x76).
+			// EI ; RETI
+			Put(0x00C0,
+				0xfb, 0xed, 0x4d).
+			// IM 2 ; LD A, 20H ; LD I, A ; IM 1 ; EI ; HALT
+			Put(0x0100,
+				0xed, 0x5e,
+				0x3e, hi,
+				0xed, 0x47,
+				0xfb,
+				0x76,
+			).
+			// vector
+			Put(addr-2, 0, 0, 0xc0, 0x00, 0, 0),
+		IO:  &tForbiddenIO{},
+		INT: tint,
+	}
+
+	// Start the program and HALT at 0x0102
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0107 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x107, cpu.PC)
+	}
+	if cpu.IM != 2 {
+		t.Fatalf("unexpected interrupt mode: want=2 got=%d", cpu.IM)
+	}
+
+	// Interrupt with IM 1: with dummy empty byte array.
+	tint.data = []uint8{lo}
+	cpu.Step()
+	if cpu.PC != 0x00C0 {
+		t.Fatalf("IM 2 interruption not work: want=%04X got=%04X", 0x00C0, cpu.PC)
+	}
+	if cpu.IFF1 {
+		t.Fatal("IFF1 is true, unexpectedly")
+	}
+
+	// Return from the interruption.
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0107 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x107, cpu.PC)
+	}
+	if !cpu.IFF1 {
+		t.Fatal("IFF1 is false, unexpectedly")
+	}
+	if !tint.reti {
+		t.Fatalf("RETI is not processed, unexpectedly")
+	}
+}
+
+func TestInterruptIM2(t *testing.T) {
+	for _, addr := range []uint16{
+		0x3000,
+		0x3004,
+		0x3080,
+		0x4080,
+		0x40c0,
+		// odd values are invalid because of restriction of IM 2
+	} {
+		t.Run(fmt.Sprintf("IM 2 with %04X", addr), func(t *testing.T) {
+			testIM2(t, addr)
+		})
 	}
 }

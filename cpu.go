@@ -252,7 +252,8 @@ func (cpu *CPU) tryInterrupt() bool {
 		cpu.HALT = false
 		cpu.SP -= 2
 		cpu.writeU16(cpu.SP, cpu.PC)
-		cpu.PC = toU16(d[0]&0xfe, cpu.IR.Hi)
+		// The LSB of interruption data is ignored in IM 2
+		cpu.PC = cpu.readU16(toU16(d[0]&0xfe, cpu.IR.Hi))
 		cpu.IFF1 = false
 		return true
 	}
