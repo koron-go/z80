@@ -70,9 +70,9 @@ func (im0 *im0data) Set(addr uint16, value uint8) {
 	im0.base.Set(addr, value)
 }
 
-func (cpu *CPU) failf(msg string, args ...interface{}) {
-	log.Printf("Z80 fail: "+msg, args...)
-}
+//func (cpu *CPU) failf(msg string, args ...interface{}) {
+//	log.Printf("Z80 fail: "+msg, args...)
+//}
 
 func (cpu *CPU) warnf(msg string, args ...interface{}) {
 	log.Printf("Z80 warn: "+msg, args...)
@@ -180,6 +180,7 @@ func (cpu *CPU) Run(ctx context.Context) error {
 		atomic.StoreInt32(&canceled, 1)
 	}()
 
+	cpu.HALT = false
 	for {
 		if atomic.LoadInt32(&canceled) != 0 {
 			return ctxErr
@@ -200,75 +201,59 @@ func (cpu *CPU) Run(ctx context.Context) error {
 // Step executes an instruction.
 func (cpu *CPU) Step() {
 	// try interruptions.
-	oldPC := cpu.PC
-	if cpu.tryInterrupt() {
-		if cpu.IMon != nil {
-			cpu.IMon.OnInterrupt(cpu.InNMI, oldPC, cpu.PC)
-		}
+	if cpu.Interrupt != nil && cpu.processInterrupt() {
+		cpu.Interrupt = nil
 		return
 	}
 	// execute an op-code.
 	cpu.executeOne()
 }
 
-func (cpu *CPU) tryInterrupt() bool {
-	// check non-maskable interrupt.
-	if cpu.InNMI {
-		return false
-	}
-	if cpu.NMI != nil && cpu.NMI.CheckNMI() {
-		cpu.HALT = false
+func (cpu *CPU) processInterrupt() bool {
+	if cpu.Interrupt.Type == NMIType {
 		cpu.SP -= 2
 		cpu.writeU16(cpu.SP, cpu.PC)
 		cpu.PC = 0x0066
 		cpu.IFF2 = cpu.IFF1
 		cpu.IFF1 = false
-		cpu.InNMI = true
 		return true
 	}
 	// check maskable interrupt.
-	if !cpu.IFF1 || cpu.INT == nil {
+	if !cpu.IFF1 {
 		return false
 	}
-	d := cpu.INT.CheckINT()
-	if d == nil {
-		return false
-	}
+
 	switch cpu.IM {
+	case 0:
+		// Interrupt with IM 0
+		if len(cpu.Interrupt.Data) > 0 {
+			savedMemory := cpu.Memory
+			cpu.Memory = newIm0data(cpu.PC, cpu.Interrupt.Data, savedMemory)
+			cpu.executeOne()
+			cpu.Memory = savedMemory
+			cpu.IFF1 = false
+		}
+		return true
 	case 1:
-		cpu.HALT = false
+		// Interrupt with IM 1
 		cpu.SP -= 2
 		cpu.writeU16(cpu.SP, cpu.PC)
 		cpu.PC = 0x0038
 		cpu.IFF1 = false
 		return true
 	case 2:
-		if n := len(d); n != 1 {
-			cpu.failf("interruption data should be 1 byte in IM 2")
-			if n == 0 {
-				return false
-			}
+		// Interrupt with IM 2
+		if len(cpu.Interrupt.Data) > 0 {
+			cpu.SP -= 2
+			cpu.writeU16(cpu.SP, cpu.PC)
+			// The LSB of interruption vector is ignored in IM 2
+			cpu.PC = cpu.readU16(toU16(cpu.Interrupt.Data[0]&0xfe, cpu.IR.Hi))
+			cpu.IFF1 = false
 		}
-		cpu.HALT = false
-		cpu.SP -= 2
-		cpu.writeU16(cpu.SP, cpu.PC)
-		// The LSB of interruption data is ignored in IM 2
-		cpu.PC = cpu.readU16(toU16(d[0]&0xfe, cpu.IR.Hi))
-		cpu.IFF1 = false
 		return true
-	}
-	// interrupt with IM 0
-	if len(d) == 0 {
-		cpu.failf("interruption data should be longer 1 byte in IM 0")
+	default:
 		return false
 	}
-	cpu.HALT = false
-	savedMemory := cpu.Memory
-	cpu.Memory = newIm0data(cpu.PC, d, savedMemory)
-	cpu.executeOne()
-	cpu.Memory = savedMemory
-	cpu.IFF1 = false
-	return true
 }
 
 func (cpu *CPU) invalidCode(code ...uint8) {

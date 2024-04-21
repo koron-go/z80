@@ -39,24 +39,3 @@ func WithIO(v IO) Option {
 		cpu.IO = v
 	})
 }
-
-// WithINT is an option to setup with INT.
-func WithINT(v INT) Option {
-	return optionFunc(func(cpu *CPU) {
-		cpu.INT = v
-	})
-}
-
-// WithNMI is an option to setup with NMI.
-func WithNMI(v NMI) Option {
-	return optionFunc(func(cpu *CPU) {
-		cpu.NMI = v
-	})
-}
-
-// WithInterruptMonitor is an option to setup with InterruptMonitor.
-func WithInterruptMonitor(v InterruptMonitor) Option {
-	return optionFunc(func(cpu *CPU) {
-		cpu.IMon = v
-	})
-}

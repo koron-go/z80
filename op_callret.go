@@ -6,23 +6,22 @@ func oopCALLnn(cpu *CPU) {
 }
 
 func oopRETI(cpu *CPU) {
+	if cpu.RETIHandler != nil {
+		cpu.RETIHandler.RETIHandle()
+	}
+
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
-
-	if cpu.INT != nil {
-		cpu.INT.ReturnINT()
-	}
 }
 
 func oopRETN(cpu *CPU) {
+	if cpu.RETNHandler != nil {
+		cpu.RETNHandler.RETNHandle()
+	}
+
 	cpu.PC = cpu.readU16(cpu.SP)
 	cpu.SP += 2
 	cpu.IFF1 = cpu.IFF2
-
-	cpu.InNMI = false
-	if cpu.NMI != nil {
-		cpu.NMI.ReturnNMI()
-	}
 }
 
 func oopRET(cpu *CPU) {

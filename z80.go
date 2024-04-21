@@ -8,18 +8,26 @@ import "errors"
 // ErrBreakPoint shows PC is reached to one of break points.
 var ErrBreakPoint = errors.New("break point reached")
 
-// CPU is Z80 emulator.
+// CPU is the core of Z80 emulator.
 type CPU struct {
 	States
 
 	Memory Memory
 	IO     IO
-	INT    INT
-	NMI    NMI
-	IMon   InterruptMonitor
 
-	Debug       bool
+	// RETNHandle is called when CPU execute a RETN op.
+	RETNHandler RETNHandler
+	// RETIHandle is called when CPU execute a RETI op.
+	RETIHandler RETIHandler
+
+	// Interrupt is a signal to interrupt.  When you set non-nil value, then
+	// CPU.Step and CPU.Run treat it as one of Z80 interruptions.
+	Interrupt *Interrupt
+
 	BreakPoints map[uint16]struct{}
+
+	// HALT indicates whether the last Run() is terminated with HALT op.
+	HALT bool
 }
 
 // States is collection of Z80's internal state.
@@ -32,9 +40,6 @@ type States struct {
 	IFF1 bool
 	IFF2 bool
 	IM   int
-
-	HALT  bool
-	InNMI bool
 }
 
 // GPR is general purpose reigsters, pair of four registers AF, BC, DE and HL.
@@ -103,7 +108,58 @@ type NMI interface {
 	ReturnNMI()
 }
 
-// InterruptMonitor monitors interruptions.
-type InterruptMonitor interface {
-	OnInterrupt(maskable bool, oldPC, newPC uint16)
+// InterruptType is type of interruption.
+type InterruptType int
+
+const (
+	// NMIType is a type of NMI interruption.
+	NMIType InterruptType = iota
+	// IMType is a type of normal interruptions.
+	IMType
+)
+
+// Interrupt is interruption signal.  Put a point of Interrupt to
+// CPU.Interrupt, when you want to make an interrupt.
+type Interrupt struct {
+	Type InterruptType
+	Data []uint8
+}
+
+// NMIInterrupt creates a Interrupt objct for NMI.
+func NMIInterrupt() *Interrupt {
+	return &Interrupt{Type: NMIType}
+}
+
+// IM0Interrupt creates an Interrupt object for IM0.
+func IM0Interrupt(d uint8, others ...uint8) *Interrupt {
+	data := make([]uint8, len(others)+1)
+	data[0] = d
+	copy(data[1:], others)
+	return &Interrupt{
+		Type: IMType,
+		Data: data,
+	}
+}
+
+// IM1Interrupt creates an Interrupt object for IM1.
+func IM1Interrupt() *Interrupt {
+	return &Interrupt{Type: IMType}
+}
+
+// IM2Interrupt creates an Interrupt object for IM2.
+func IM2Interrupt(n uint8) *Interrupt {
+	return &Interrupt{
+		Type: IMType,
+		Data: []uint8{n},
+	}
+}
+
+// RETNHandler will be called before execute RETN opcode.
+type RETNHandler interface {
+	RETNHandle()
+}
+
+// RETIHandler will be called before execute RETI opcode.
+type RETIHandler interface {
+	RETIHandle()
 }
