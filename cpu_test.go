@@ -154,7 +154,7 @@ func testIM0(t *testing.T, n uint8) {
 		INT: tint,
 	}
 
-	// Start the program and HALT at 0x0101
+	// Start the program and HALT at 0x0102
 	if err := cpu.Run(ctx); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -188,5 +188,55 @@ func TestInterruptIM0(t *testing.T) {
 		t.Run(fmt.Sprintf("RST %02XH", i*8), func(t *testing.T) {
 			testIM0(t, uint8(i))
 		})
+	}
+}
+
+func TestInterruptIM1(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	tint := &tINT{}
+	cpu := &CPU{
+		States: States{SPR: SPR{PC: 0x0100}, IM: 0},
+		Memory: MapMemory{}.
+			// HALT
+			Put(0x0000, 0x76).
+			// RETI
+			Put(0x0038, 0xed, 0x4d).
+			// IM 1 ; HALT ; HALT (for return)
+			Put(0x0100,
+				0xed, 0x56,
+				0x76,
+			),
+		IO:  &tForbiddenIO{},
+		INT: tint,
+	}
+
+	// Start the program and HALT at 0x0102
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0102 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x102, cpu.PC)
+	}
+	if cpu.IM != 1 {
+		t.Fatalf("unexpected interrupt mode: want=1 got=%d", cpu.IM)
+	}
+
+	// Interrupt with IM 1: with dummy empty byte array.
+	tint.data = []uint8{}
+	cpu.Step()
+	if cpu.PC != 0x0038 {
+		t.Fatalf("IM 1 interruption not work: want=%04X got=%04X", 0x0038, cpu.PC)
+	}
+
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0102 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x102, cpu.PC)
+	}
+	if !tint.reti {
+		t.Fatalf("RETI is not processed, unexpectedly")
 	}
 }
