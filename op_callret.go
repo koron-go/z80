@@ -20,6 +20,9 @@ func oopRETN(cpu *CPU) {
 	cpu.IFF1 = cpu.IFF2
 
 	cpu.InNMI = false
+	if cpu.NMI != nil {
+		cpu.NMI.ReturnNMI()
+	}
 }
 
 func oopRET(cpu *CPU) {

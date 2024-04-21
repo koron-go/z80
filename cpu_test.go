@@ -115,11 +115,15 @@ type tINT struct {
 	reti bool
 }
 
+func (tint *tINT) interrupt(d ...uint8) {
+	tint.data = d
+	tint.reti = false
+}
+
 func (tint *tINT) CheckINT() []uint8 {
 	v := tint.data
 	if v != nil {
 		tint.data = nil
-		tint.reti = false
 	}
 	return v
 }
@@ -169,7 +173,7 @@ func testIM0(t *testing.T, n uint8) {
 	}
 
 	// Interrupt with IM 0
-	tint.data = []uint8{code}
+	tint.interrupt(code)
 	cpu.Step()
 	if cpu.PC != addr {
 		t.Fatalf("RST 38H not work: want=%04X got=%04X", addr, cpu.PC)
@@ -236,8 +240,8 @@ func TestInterruptIM1(t *testing.T) {
 		t.Fatalf("unexpected interrupt mode: want=1 got=%d", cpu.IM)
 	}
 
-	// Interrupt with IM 1: with dummy empty byte array.
-	tint.data = []uint8{}
+	// Interrupt with IM 1: with dummy data
+	tint.interrupt(0)
 	cpu.Step()
 	if cpu.PC != 0x0038 {
 		t.Fatalf("IM 1 interruption not work: want=%04X got=%04X", 0x0038, cpu.PC)
@@ -303,7 +307,7 @@ func testIM2(t *testing.T, addr uint16) {
 	}
 
 	// Interrupt with IM 1: with dummy empty byte array.
-	tint.data = []uint8{lo}
+	tint.interrupt(lo)
 	cpu.Step()
 	if cpu.PC != 0x00C0 {
 		t.Fatalf("IM 2 interruption not work: want=%04X got=%04X", 0x00C0, cpu.PC)
@@ -340,4 +344,122 @@ func TestInterruptIM2(t *testing.T) {
 			testIM2(t, addr)
 		})
 	}
+}
+
+type tNMI struct {
+	data bool
+	retn bool
+}
+
+func (tnmi *tNMI) interrupt() {
+	tnmi.data = true
+	tnmi.retn = false
+}
+
+func (tnmi *tNMI) CheckNMI() bool {
+	v := tnmi.data
+	if v {
+		tnmi.data = false
+	}
+	return v
+}
+
+func (tnmi *tNMI) ReturnNMI() {
+	tnmi.retn = true
+}
+
+func testNMI(t *testing.T, iff1 bool) (*CPU, *tINT) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var tint tINT
+	var tnmi tNMI
+	var diOrEi uint8 = 0xf3 // DI
+	if iff1 {
+		diOrEi = 0xfb
+	}
+	cpu := &CPU{
+		States: States{SPR: SPR{PC: 0x0100}, IM: 0},
+		Memory: MapMemory{}.
+			// HALT
+			Put(0x0000, 0x76).
+			Put(0x0038, 0x76).
+			// RETN
+			Put(0x0066,
+				0xed, 0x45).
+			// IM 1 ; DI ; HALT
+			Put(0x0100,
+				0xed, 0x56,
+				diOrEi,
+				0x76,
+			),
+		IO:  &tForbiddenIO{},
+		INT: &tint,
+		NMI: &tnmi,
+	}
+
+	// Start the program and HALT at 0x0102
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0103 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
+	}
+	if cpu.IM != 1 {
+		t.Fatalf("unexpected interrupt mode: want=%d got=%d", 1, cpu.IM)
+	}
+
+	// Interrupt with NMI
+	tnmi.interrupt()
+	cpu.Step()
+	if cpu.PC != 0x0066 {
+		t.Fatalf("NMI interruption not work: want=%04X got=%04X", 0x0066, cpu.PC)
+	}
+	if cpu.IFF1 {
+		t.Fatal("IFF1 should be false in NMI")
+	}
+
+	// Return from the interruption.
+	if err := cpu.Run(ctx); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cpu.PC != 0x0103 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
+	}
+	if cpu.IFF1 != iff1 {
+		t.Fatalf("unexpected IFF1 after NMI: want=%t got=%t", iff1, cpu.IFF1)
+	}
+	if !tnmi.retn {
+		t.Fatalf("RETN is not processed, unexpectedly")
+	}
+
+	return cpu, &tint
+}
+
+func TestInterruptNMI(t *testing.T) {
+	t.Run("DI", func(t *testing.T) {
+		cpu, tint := testNMI(t, false)
+		// Try to interrupt with IM 1: should be failed.
+		tint.interrupt(0)
+		cpu.Step()
+		if cpu.PC != 0x0103 {
+			t.Fatalf("IM 1 interruption should be failed: want=%04X got=%04X", 0x0103, cpu.PC)
+		}
+		if cpu.IFF1 {
+			t.Fatal("IFF1 is true, unexpectedly")
+		}
+	})
+
+	t.Run("EI", func(t *testing.T) {
+		cpu, tint := testNMI(t, true)
+		// Try to interrupt with IM 1: should be succeeded
+		tint.interrupt(0)
+		cpu.Step()
+		if cpu.PC != 0x0038 {
+			t.Fatalf("IM 1 interruption should be failed: want=%04X got=%04X", 0x0038, cpu.PC)
+		}
+		if cpu.IFF1 {
+			t.Fatal("IFF1 is true, unexpectedly")
+		}
+	})
 }
