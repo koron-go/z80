@@ -142,11 +142,14 @@ func testIM0(t *testing.T, n uint8) {
 		Memory: MapMemory{}.
 			// HALT
 			Put(0x0000, 0x76).
-			// RETI
-			Put(addr, 0xed, 0x4d).
-			// IM 0 ; HALT ; HALT (for return)
+			// EI ; RETI
+			Put(addr,
+				0xfb,
+				0xed, 0x4d).
+			// IM 0 ; EI ; HALT ; HALT (for return)
 			Put(0x0100,
 				0xed, 0x46,
+				0xfb,
 				0x76,
 				0x76,
 			),
@@ -158,8 +161,8 @@ func testIM0(t *testing.T, n uint8) {
 	if err := cpu.Run(ctx); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cpu.PC != 0x0102 {
-		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x102, cpu.PC)
+	if cpu.PC != 0x0103 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
 	}
 	if cpu.IM != 0 {
 		t.Fatalf("unexpected interrupt mode: want=0 got=%d", cpu.IM)
@@ -171,12 +174,19 @@ func testIM0(t *testing.T, n uint8) {
 	if cpu.PC != addr {
 		t.Fatalf("RST 38H not work: want=%04X got=%04X", addr, cpu.PC)
 	}
+	if cpu.IFF1 {
+		t.Fatal("IFF1 is true, unexpectedly")
+	}
 
+	// Return from the interruption.
 	if err := cpu.Run(ctx); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cpu.PC != 0x0103 {
-		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
+	if cpu.PC != 0x0104 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x104, cpu.PC)
+	}
+	if !cpu.IFF1 {
+		t.Fatal("IFF1 is false, unexpectedly")
 	}
 	if !tint.reti {
 		t.Fatalf("RETI is not processed, unexpectedly")
@@ -201,11 +211,14 @@ func TestInterruptIM1(t *testing.T) {
 		Memory: MapMemory{}.
 			// HALT
 			Put(0x0000, 0x76).
-			// RETI
-			Put(0x0038, 0xed, 0x4d).
-			// IM 1 ; HALT ; HALT (for return)
+			// EI ; RETI
+			Put(0x0038,
+				0xfb,
+				0xed, 0x4d).
+			// IM 1 ; EI ; HALT ; HALT (for return)
 			Put(0x0100,
 				0xed, 0x56,
+				0xfb,
 				0x76,
 			),
 		IO:  &tForbiddenIO{},
@@ -216,8 +229,8 @@ func TestInterruptIM1(t *testing.T) {
 	if err := cpu.Run(ctx); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cpu.PC != 0x0102 {
-		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x102, cpu.PC)
+	if cpu.PC != 0x0103 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
 	}
 	if cpu.IM != 1 {
 		t.Fatalf("unexpected interrupt mode: want=1 got=%d", cpu.IM)
@@ -229,12 +242,19 @@ func TestInterruptIM1(t *testing.T) {
 	if cpu.PC != 0x0038 {
 		t.Fatalf("IM 1 interruption not work: want=%04X got=%04X", 0x0038, cpu.PC)
 	}
+	if cpu.IFF1 {
+		t.Fatal("IFF1 is true, unexpectedly")
+	}
 
+	// Return from the interruption.
 	if err := cpu.Run(ctx); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cpu.PC != 0x0102 {
-		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x102, cpu.PC)
+	if cpu.PC != 0x0103 {
+		t.Fatalf("unexpected PC: want=%04X got=%04X", 0x103, cpu.PC)
+	}
+	if !cpu.IFF1 {
+		t.Fatal("IFF1 is false, unexpectedly")
 	}
 	if !tint.reti {
 		t.Fatalf("RETI is not processed, unexpectedly")
