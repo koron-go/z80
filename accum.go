@@ -1,5 +1,7 @@
 package z80
 
+// This file includes functions which related to "accumulator" or "ACL"
+
 import "math/bits"
 
 func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
