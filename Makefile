@@ -40,6 +40,9 @@ clean:
 	rm -f tmp/_cover.out tmp/cover.html
 	rm -f z80.asm
 
+list-upgradable-modules:
+	@go list -m -u -f '{{if .Update}}{{.Path}} {{.Version}} [{{.Update.Version}}]{{end}}' all
+
 .PHONY: zexdoc
 zexdoc:
 	$(MAKE) -C cmd/zexdoc run
@@ -53,3 +56,4 @@ z80.asm: *.go
 	go build -gcflags "-S" 2> $@
 
 # based on: github.com/koron-go/_skeleton/Makefile
+# $Hash:2c1001edc9ca8359f9467af709ea771dcceb3f831f606f1467284aaa$
