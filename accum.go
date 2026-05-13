@@ -2,7 +2,6 @@ package z80
 
 // This file includes functions which related to "accumulator" or "ACL"
 
-import "math/bits"
 
 func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
 	c := r ^ a ^ b
@@ -22,29 +21,15 @@ func (cpu *CPU) updateFlagArith8(r, a, b uint16, subtract bool) {
 }
 
 func (cpu *CPU) updateFlagLogic8(r uint8, and bool) {
-	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
-	var or uint8
-	or |= r & maskS53
-	if r == 0 {
-		or |= maskZ
-	}
+	var or uint8 = sz53p[r]
 	if and {
 		or |= maskH
 	}
-	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
-	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+	cpu.AF.Lo = or
 }
 
 func (cpu *CPU) updateFlagBitop(r uint8, carry uint8) {
-	var nand uint8 = maskS53 | maskZ | maskH | maskPV | maskN | maskC
-	var or uint8
-	or |= r & maskS53
-	if r == 0 {
-		or |= maskZ
-	}
-	or |= (uint8(bits.OnesCount8(r)%2) - 1) & maskPV
-	or |= carry & maskC
-	cpu.AF.Lo = cpu.AF.Lo&^nand | or
+	cpu.AF.Lo = sz53p[r] | (carry & maskC)
 }
 
 func (cpu *CPU) addU8(a, b uint8) uint8 {

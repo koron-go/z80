@@ -3,7 +3,6 @@ package z80
 import (
 	"context"
 	"log"
-	"sync/atomic"
 )
 
 const (
@@ -170,32 +169,25 @@ func (cpu *CPU) ioOut(addr uint8, value uint8) {
 
 // Run executes instructions till HALT or error.
 func (cpu *CPU) Run(ctx context.Context) error {
-	var ctxErr error
-	var canceled int32
-	ctx2, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		<-ctx2.Done()
-		ctxErr = ctx.Err()
-		atomic.StoreInt32(&canceled, 1)
-	}()
-
 	cpu.HALT = false
 	for {
-		if atomic.LoadInt32(&canceled) != 0 {
-			return ctxErr
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
 		}
-		cpu.Step()
-		if cpu.BreakPoints != nil {
-			if _, ok := cpu.BreakPoints[cpu.PC]; ok {
-				return ErrBreakPoint
+		for i := 0; i < 1000; i++ {
+			cpu.Step()
+			if cpu.BreakPoints != nil {
+				if _, ok := cpu.BreakPoints[cpu.PC]; ok {
+					return ErrBreakPoint
+				}
+			}
+			if cpu.HALT {
+				return nil
 			}
 		}
-		if cpu.HALT {
-			break
-		}
 	}
-	return nil
 }
 
 // Step executes an instruction.
