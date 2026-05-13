@@ -2,7 +2,13 @@ package z80
 
 // executeOne executes only an op-code.
 func (cpu *CPU) executeOne() {
-	switch c0 := cpu.fetchM1(); c0 {
+	// This is a manual inline version of fetchM1(). Since it's called
+	// frequently, a significant speedup can be expected.
+	c0 := cpu.Memory.Get(cpu.PC)
+	cpu.PC++
+	cpu.IR.Lo = cpu.IR.Lo&0x80 | (cpu.IR.Lo+1)&0x7f
+
+	switch c0 {
 	case 0x00:
 		oopNOP(cpu)
 
