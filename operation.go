@@ -926,7 +926,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0x85:
 		cpu.HL.Lo = cpu.bitres8(0, cpu.HL.Lo)
 	case 0x86:
-		xopBITbHLP(cpu, 0)
+		xopRESbHLP(cpu, 0)
 	case 0x87:
 		cpu.AF.Hi = cpu.bitres8(0, cpu.AF.Hi)
 
@@ -944,7 +944,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0x8d:
 		cpu.HL.Lo = cpu.bitres8(1, cpu.HL.Lo)
 	case 0x8e:
-		xopBITbHLP(cpu, 1)
+		xopRESbHLP(cpu, 1)
 	case 0x8f:
 		cpu.AF.Hi = cpu.bitres8(1, cpu.AF.Hi)
 
@@ -962,7 +962,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0x95:
 		cpu.HL.Lo = cpu.bitres8(2, cpu.HL.Lo)
 	case 0x96:
-		xopBITbHLP(cpu, 2)
+		xopRESbHLP(cpu, 2)
 	case 0x97:
 		cpu.AF.Hi = cpu.bitres8(2, cpu.AF.Hi)
 
@@ -980,7 +980,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0x9d:
 		cpu.HL.Lo = cpu.bitres8(3, cpu.HL.Lo)
 	case 0x9e:
-		xopBITbHLP(cpu, 3)
+		xopRESbHLP(cpu, 3)
 	case 0x9f:
 		cpu.AF.Hi = cpu.bitres8(3, cpu.AF.Hi)
 
@@ -998,7 +998,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0xa5:
 		cpu.HL.Lo = cpu.bitres8(4, cpu.HL.Lo)
 	case 0xa6:
-		xopBITbHLP(cpu, 4)
+		xopRESbHLP(cpu, 4)
 	case 0xa7:
 		cpu.AF.Hi = cpu.bitres8(4, cpu.AF.Hi)
 
@@ -1016,7 +1016,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0xad:
 		cpu.HL.Lo = cpu.bitres8(5, cpu.HL.Lo)
 	case 0xae:
-		xopBITbHLP(cpu, 5)
+		xopRESbHLP(cpu, 5)
 	case 0xaf:
 		cpu.AF.Hi = cpu.bitres8(5, cpu.AF.Hi)
 
@@ -1034,7 +1034,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0xb5:
 		cpu.HL.Lo = cpu.bitres8(6, cpu.HL.Lo)
 	case 0xb6:
-		xopBITbHLP(cpu, 6)
+		xopRESbHLP(cpu, 6)
 	case 0xb7:
 		cpu.AF.Hi = cpu.bitres8(6, cpu.AF.Hi)
 
@@ -1052,7 +1052,7 @@ func (cpu *CPU) executeCB(c0 uint8) {
 	case 0xbd:
 		cpu.HL.Lo = cpu.bitres8(7, cpu.HL.Lo)
 	case 0xbe:
-		xopBITbHLP(cpu, 7)
+		xopRESbHLP(cpu, 7)
 	case 0xbf:
 		cpu.AF.Hi = cpu.bitres8(7, cpu.AF.Hi)
 
