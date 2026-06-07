@@ -18,14 +18,14 @@ func (cpu *CPU) updateFlagIObZ() {
 }
 
 func oopINI(cpu *CPU) {
-	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
+	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Lo))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() + 1)
 	cpu.updateFlagIObZ()
 }
 
 func oopINIR(cpu *CPU) {
-	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
+	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Lo))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() + 1)
 	cpu.updateFlagIObZ()
@@ -35,14 +35,14 @@ func oopINIR(cpu *CPU) {
 }
 
 func oopIND(cpu *CPU) {
-	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
+	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Lo))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() - 1)
 	cpu.updateFlagIObZ()
 }
 
 func oopINDR(cpu *CPU) {
-	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Hi))
+	cpu.Memory.Set(cpu.HL.U16(), cpu.ioIn(cpu.BC.Lo))
 	cpu.BC.Hi--
 	cpu.HL.SetU16(cpu.HL.U16() - 1)
 	cpu.updateFlagIObZ()

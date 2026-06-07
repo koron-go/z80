@@ -52,7 +52,7 @@ func xopRESbIYdP(cpu *CPU, b, d uint8) {
 	cpu.Memory.Set(p, v)
 }
 
-func xopBITbHLP(cpu *CPU, b uint8) {
+func xopRESbHLP(cpu *CPU, b uint8) {
 	p := cpu.HL.U16()
 	x := cpu.Memory.Get(p)
 	x = cpu.bitres8(b, x)
