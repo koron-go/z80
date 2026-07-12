@@ -2,7 +2,7 @@
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/koron-go/z80)](https://pkg.go.dev/github.com/koron-go/z80)
 [![Actions/Go](https://github.com/koron-go/z80/workflows/Go/badge.svg)](https://github.com/koron-go/z80/actions?query=workflow%3AGo)
-[![Go Report Card](https://goreportcard.com/badge/github.com/koron-go/z80)](https://goreportcard.com/report/github.com/koron-go/z80)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/koron-go/z80)
 
 Z80 emulation in Go.
 
